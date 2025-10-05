@@ -243,9 +243,16 @@
         }
 
         function navigateDate(direction) {
-            const dateObj = new Date(currentDate + 'T00:00:00');
+            const parts = currentDate.split('-').map(Number);
+            // Month is 0-indexed in JavaScript Date, so parts[1] - 1
+            const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
             dateObj.setDate(dateObj.getDate() + direction);
-            const newDate = dateObj.toISOString().split('T')[0];
+            
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const newDate = `${year}-${month}-${day}`;
+
             setCurrentDate(newDate);
         }
 
