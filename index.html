@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #007bff;
+            --primary-color: #2c5f4d;
             --secondary-color: #6c757d;
-            --background-color: #f8f9fa;
+            --background-color: #cde8d9;
             --surface-color: #ffffff;
             --text-color: #212529;
             --success-color: #28a745;
@@ -63,6 +63,21 @@
         <section id="student-management"><h2><i class="fas fa-users"></i> الطلاب (<span id="registered-count">0</span>)</h2><div id="student-list-container"></div><div style="margin-top: 1rem;"><button id="manage-students-btn" class="btn"><i class="fas fa-user-edit"></i> إدارة قائمة الطلاب</button></div></section>
         <section id="actions"><h2><i class="fas fa-cogs"></i> الإجراءات والتقارير</h2><label for="message-template-select">قالب الرسالة:</label><select id="message-template-select"><option value="grouped" selected>حسب الحالة</option><option value="detailed">مفصل</option><option value="summary">ملخص</option></select><button id="generate-whatsapp-btn" class="btn-success" style="width: 100%; margin-top: 1rem;"><i class="fab fa-whatsapp"></i> إنشاء رسالة واتساب</button><div style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="print-report-btn" class="btn"><i class="fas fa-print"></i> طباعة تقرير</button><button id="export-csv-btn" class="btn"><i class="fas fa-file-csv"></i> تصدير Excel</button></div><div id="backup-restore-controls" style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="backup-btn" class="btn-secondary"><i class="fas fa-download"></i> تنزيل نسخة احتياطية</button><button id="restore-btn" class="btn-secondary"><i class="fas fa-upload"></i> استعادة نسخة</button><input type="file" id="restore-file-input" class="hidden" accept=".json">
 </div></section>
+        <section id="statistics-section">
+            <h2><i class="fas fa-chart-pie"></i> التقارير الإحصائية</h2>
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                <label for="stats-start-date">من:</label>
+                <input type="date" id="stats-start-date" style="flex-grow: 1;">
+                <label for="stats-end-date">إلى:</label>
+                <input type="date" id="stats-end-date" style="flex-grow: 1;">
+            </div>
+            <button id="generate-stats-btn" class="btn" style="width: 100%;"><i class="fas fa-calculator"></i> إنشاء التقرير الإحصائي</button>
+            <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1rem;">
+                <input type="number" id="stats-last-days" placeholder="عدد الأيام" style="width: 120px;">
+                <button id="generate-stats-last-days-btn" class="btn" style="flex-grow: 1;">تقرير لآخر 'ن' يوم(غير مكتكل الرجاء استعمال إنشاء التقرير الإحصائي)</button>
+            </div>
+            <div id="statistics-output" style="margin-top: 1rem; white-space: pre-wrap; background-color: #e9ecef; padding: 1rem; border-radius: 5px; direction: ltr; text-align: left; display: none;"></div>
+        </section>
         <section id="whatsapp-output-section" class="hidden"><h2>الرسالة المنسقة</h2><textarea id="whatsapp-output" readonly style="width: 100%; min-height: 150px; border: 1px solid #ccc; border-radius: 5px; padding: 0.5rem; font-family: monospace; font-size: 0.9rem; white-space: pre; background-color: #e9ecef; direction: ltr; text-align: left; margin-top: 1rem;"></textarea><div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;"><button id="copy-whatsapp-msg-btn" class="btn-info"><i class="fas fa-copy"></i> نسخ</button><button id="share-whatsapp-btn" style="background-color: #25d366; color: white;"><i class="fab fa-whatsapp"></i> مشاركة</button></div></section>
     </main>
 
@@ -126,7 +141,11 @@
             printReportBtn: $("print-report-btn"),
             exportCsvBtn: $("export-csv-btn"),
             refreshDataBtn: $("refresh-data-btn"),
-            factoryResetBtn: $("factory-reset-btn")
+            factoryResetBtn: $("factory-reset-btn"),
+            statsStartDate: $("stats-start-date"),
+            statsEndDate: $("stats-end-date"),
+            generateStatsBtn: $("generate-stats-btn"),
+            statisticsOutput: $("statistics-output")
         };
 
         const STORAGE_KEYS = {
@@ -617,7 +636,7 @@
         function generateWhatsappMessage() {
             const templates = {
                 standard: (data) => {
-                    let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*مسجد ${data.settings.mosqueName || ''}*\n*تاريخ: ${new Date(data.date).toLocaleDateString('ar-EG')}*`;
+                    let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*مسجد ${data.settings.mosqueName || ''}*\n*تاريخ: ${new Date(data.date).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}*`;
 
                     if (data.students.length === 0) {
                         return header + '\n\nلا يوجد طلاب مسجلون في القائمة.';
@@ -645,7 +664,7 @@
                     return msg;
                 },
                 grouped: (data) => {
-                    let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*مسجد ${data.settings.mosqueName || ''}*\n*تاريخ: ${new Date(data.date).toLocaleDateString('ar-EG')}*`;
+                    let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*مسجد ${data.settings.mosqueName || ''}*\n*تاريخ: ${new Date(data.date).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}*`;
             
                     if (data.students.length === 0) {
                         return header + '\n\nلا يوجد طلاب مسجلون في القائمة.';
@@ -788,6 +807,109 @@
             reader.readAsText(file);
         }
 
+        function generateStatisticsReport() {
+            const startDate = allSelectors.statsStartDate.value;
+            const endDate = allSelectors.statsEndDate.value;
+
+            if (!startDate || !endDate) {
+                alert("يرجى تحديد تاريخ البداية والنهاية.");
+                return;
+            }
+
+            if (new Date(startDate) > new Date(endDate)) {
+                alert("تاريخ البداية يجب أن يكون قبل تاريخ النهاية.");
+                return;
+            }
+
+            const stats = calculateStatistics(startDate, endDate);
+            displayStatistics(stats, startDate, endDate);
+        }
+
+        function calculateStatistics(startDate, endDate) {
+            const statusCounts = {};
+            const studentStatusCounts = {};
+            let recordedDays = 0;
+            const dateSet = new Set();
+
+            ATTENDANCE_OPTIONS.forEach(opt => statusCounts[opt.key] = 0);
+            studentMasterList.forEach(student => {
+                studentStatusCounts[student.id] = {};
+                ATTENDANCE_OPTIONS.forEach(opt => studentStatusCounts[student.id][opt.key] = 0);
+            });
+
+            for (const date in allDateData) {
+                if (date >= startDate && date <= endDate) {
+                    const dayData = allDateData[date];
+                    if (Object.keys(dayData).length > 0) {
+                        dateSet.add(date);
+                        for (const studentId in dayData) {
+                            const studentData = dayData[studentId];
+                            if (studentData.status && studentData.status.length > 0) {
+                                const statusKey = studentData.status[0];
+                                if (statusCounts.hasOwnProperty(statusKey)) {
+                                    statusCounts[statusKey]++;
+                                }
+                                if (studentStatusCounts[studentId] && studentStatusCounts[studentId].hasOwnProperty(statusKey)) {
+                                    studentStatusCounts[studentId][statusKey]++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            recordedDays = dateSet.size;
+
+            return { statusCounts, studentStatusCounts, recordedDays };
+        }
+
+        function displayStatistics(stats, startDate, endDate) {
+            const { statusCounts, studentStatusCounts, recordedDays } = stats;
+            let output = `*تقرير إحصائي من ${startDate} إلى ${endDate}*\n\n`;
+            output += `*إجمالي الأيام المسجلة: ${recordedDays}*\n\n`;
+
+            output += "*-- نسب الحالات --*\n";
+            let totalStatusOccurrences = 0;
+            for(const key in statusCounts) {
+                totalStatusOccurrences += statusCounts[key];
+            }
+
+            if (totalStatusOccurrences > 0) {
+                ATTENDANCE_OPTIONS.forEach(opt => {
+                    const count = statusCounts[opt.key];
+                    const percentage = ((count / totalStatusOccurrences) * 100).toFixed(1);
+                    output += `${opt.symbol} ${opt.label}: ${percentage}% (${count} مرات)\n`;
+                });
+            } else {
+                output += "لا توجد بيانات لعرضها.\n";
+            }
+
+
+            output += "\n*-- ترتيب الطلاب حسب الحالات --*\n";
+            ATTENDANCE_OPTIONS.forEach(option => {
+                const studentsWithStatus = [];
+                for (const studentId in studentStatusCounts) {
+                    const count = studentStatusCounts[studentId][option.key];
+                    if (count > 0) {
+                        const student = studentMasterList.find(s => s.id === studentId);
+                        if (student) {
+                            studentsWithStatus.push({ name: student.name, count: count });
+                        }
+                    }
+                }
+
+                if (studentsWithStatus.length > 0) {
+                    output += `\n*${option.symbol} ${option.label}*\n`;
+                    studentsWithStatus.sort((a, b) => b.count - a.count);
+                    studentsWithStatus.forEach((s, index) => {
+                        output += `${index + 1}. ${s.name} (${s.count} مرات)\n`;
+                    });
+                }
+            });
+
+            allSelectors.statisticsOutput.textContent = output;
+            allSelectors.statisticsOutput.style.display = 'block';
+        }
+
         // --- Event Listeners ---
         allSelectors.saveSettingsBtn.addEventListener('click', saveSettings);
         allSelectors.todayBtn.addEventListener('click', () => setCurrentDate(new Date().toISOString().split('T')[0]));
@@ -863,6 +985,8 @@
                 }
             }
         });
+
+        allSelectors.generateStatsBtn.addEventListener('click', generateStatisticsReport);
 
         allSelectors.copyWhatsappMsgBtn.addEventListener('click', () => {
             const textToCopy = allSelectors.whatsappOutput.value;
