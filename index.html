@@ -58,7 +58,15 @@
         <h1>متابع إنجاز الطلاب</h1>
     </header>
     <main>
-        <section id="settings"><h2><i class="fas fa-cogs"></i> الإعدادات العامة</h2><div style="display: grid; grid-template-columns: 1fr 2fr; gap: 0.5rem; margin-bottom: 0.5rem;"><input type="text" id="institution-type" placeholder="نوع المؤسسة (مسجد، دار...)"><input type="text" id="institution-name" placeholder="اسم المؤسسة (الصحابة...)"></div><input type="text" id="teacher-name" placeholder="اسم الأستاذ..."><button id="save-settings-btn" class="btn-success" style="width: 100%; margin-top: 0.5rem;"><i class="fas fa-save"></i> حفظ الإعدادات</button><div style="margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;"><button id="manage-statuses-btn" class="btn"><i class="fas fa-tags"></i> إدارة الحالات</button><button id="refresh-data-btn" class="btn-secondary"><i class="fas fa-sync-alt"></i> تحديث البيانات</button><button id="factory-reset-btn" class="btn-danger"><i class="fas fa-trash-alt"></i> إعادة ضبط</button></div></section>
+        <section id="settings"><h2><i class="fas fa-cogs"></i> الإعدادات العامة</h2><div style="display: grid; grid-template-columns: 1fr 2fr; gap: 0.5rem; margin-bottom: 0.5rem;"><input type="text" id="institution-type" placeholder="نوع المؤسسة (مسجد، دار...)"><input type="text" id="institution-name" placeholder="اسم المؤسسة (الصحابة...)"></div><input type="text" id="teacher-name" placeholder="اسم الأستاذ...">
+<div style="margin-top: 0.5rem;">
+    <label for="gender-template-select">قالب الحالات:</label>
+    <select id="gender-template-select" style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 5px; font-family: var(--font-family); font-size: 1rem;">
+        <option value="male" selected>قالب الطلاب (مذكر)</option>
+        <option value="female">قالب الطالبات (مؤنث)</option>
+    </select>
+    <p style="font-size: 0.8rem; color: var(--secondary-color); margin-top: 0.25rem;">ملاحظة: بعد تغيير القالب، اذهب إلى "إدارة الحالات" ثم اضغط على "استعادة الحالات الافتراضية" لتطبيق القالب الجديد.</p>
+</div><button id="save-settings-btn" class="btn-success" style="width: 100%; margin-top: 0.5rem;"><i class="fas fa-save"></i> حفظ الإعدادات</button><div style="margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;"><button id="manage-statuses-btn" class="btn"><i class="fas fa-tags"></i> إدارة الحالات</button><button id="refresh-data-btn" class="btn-secondary"><i class="fas fa-sync-alt"></i> تحديث البيانات</button><button id="factory-reset-btn" class="btn-danger"><i class="fas fa-trash-alt"></i> إعادة ضبط</button></div></section>
         <section id="date-management"><h2><i class="fas fa-calendar-alt"></i> إدارة التاريخ</h2><div style="display: flex; gap: 0.5rem; align-items: center;"><input type="date" id="current-date" style="flex-grow: 1;"><button id="today-btn"><i class="fas fa-calendar-day"></i></button></div><div id="date-display" style="text-align: center; margin: 1rem 0; font-weight: bold; color: var(--primary-color);"></div><div style="display: flex; gap: 0.5rem;"><button id="prev-day-btn" style="flex: 1;"><i class="fas fa-arrow-right"></i> السابق</button><button id="next-day-btn" style="flex: 1;">التالي <i class="fas fa-arrow-left"></i></button></div></section>
         <section id="student-management"><h2><i class="fas fa-users"></i> الطلاب (<span id="registered-count">0</span>)</h2><div id="student-list-container"></div><div style="margin-top: 1rem;"><button id="manage-students-btn" class="btn"><i class="fas fa-user-edit"></i> إدارة قائمة الطلاب</button></div></section>
         <section id="actions"><h2><i class="fas fa-cogs"></i> الإجراءات والتقارير</h2><label for="message-template-select">قالب الرسالة:</label><select id="message-template-select"><option value="grouped" selected>حسب الحالة</option><option value="detailed">مفصل</option><option value="summary">ملخص</option></select><button id="generate-whatsapp-btn" class="btn-success" style="width: 100%; margin-top: 1rem;"><i class="fab fa-whatsapp"></i> إنشاء رسالة واتساب</button><div style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="print-report-btn" class="btn"><i class="fas fa-print"></i> طباعة تقرير</button><button id="export-csv-btn" class="btn"><i class="fas fa-file-csv"></i> تصدير Excel</button></div><div id="backup-restore-controls" style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="backup-btn" class="btn-secondary"><i class="fas fa-download"></i> تنزيل نسخة احتياطية</button><button id="restore-btn" class="btn-secondary"><i class="fas fa-upload"></i> استعادة نسخة</button><input type="file" id="restore-file-input" class="hidden" accept=".json">
@@ -142,331 +150,367 @@
                     studentProfileModalOverlay: $("student-profile-modal-overlay"),
                     studentProfileTitle: $("student-profile-title"),
                     studentProfileContent: $("student-profile-content"),
-                    closeStudentProfileModalBtn: $("close-student-profile-modal"),
-                    printReportBtn: $("print-report-btn"),
-                    exportCsvBtn: $("export-csv-btn"),
-                    refreshDataBtn: $("refresh-data-btn"),
-                    factoryResetBtn: $("factory-reset-btn"),
-                    statsStartDate: $("stats-start-date"),
-                    statsEndDate: $("stats-end-date"),
-                    generateStatsBtn: $("generate-stats-btn"),
-                    statisticsOutput: $("statistics-output"),
-                    statsLastDays: $("stats-last-days"),
-                    generateStatsLastDaysBtn: $("generate-stats-last-days-btn"),
-                    statsActionsContainer: $("stats-actions-container"),
-                    copyStatsBtn: $("copy-stats-btn"),
-                    shareStatsBtn: $("share-stats-btn")
-                };
-        
-                const STORAGE_KEYS = {
-                    MASTER_LIST: 'studentTracker_v2_masterList',
-                    ALL_DATA: 'studentTracker_v2_allData',
-                    STATUSES: 'studentTracker_v2_statuses',
-                    SETTINGS: 'mosqueSettings_v2'
-                };
-        
-                const DEFAULT_STATUSES = [
-                    { key: 'excellent', label: 'أنجز بتميز.', symbol: '🌟', color: '#ffc107', notification: { enabled: true, days: 3 } },
-                    { key: 'completed_full', label: 'أنجز المقرر (الدرس والمراجعة).', symbol: '✅', color: '#28a745', notification: { enabled: false, days: 2 } },
-                    { key: 'completed_partial', label: 'أنجز جزء من المقرر.', symbol: '☑️', color: '#17a2b8', notification: { enabled: false, days: 2 } },
-                    { key: 'absent_unexcused', label: 'غائب بدون عذر.', symbol: '🔴', color: '#dc3545', notification: { enabled: true, days: 2 } },
-                    { key: 'absent_excused', label: 'مستأذن.', symbol: '🟠', color: '#fd7e14', notification: { enabled: false, days: 3 } },
-                    { key: 'not_completed', label: 'لم ينجز المقرر.', symbol: '❌', color: '#6c757d', notification: { enabled: true, days: 2 } }
-                ];
-        
-                let ATTENDANCE_OPTIONS = [];
-                let students = []; // This is the daily view model, a result of joining master list and daily data
-                let studentMasterList = []; // Array of {id, name}
-                let allDateData = {}; // Object of { date: { studentId: { status: [] } } }
-                let currentDate = '';
-        
-                function saveState() {
-                    if (currentDate) {
-                        const todaysData = {};
-                        students.forEach(student => {
-                            if (student.status && student.status.length > 0) {
-                                todaysData[student.id] = { status: student.status };
-                            }
-                        });
-                        if (Object.keys(todaysData).length > 0) {
-                            allDateData[currentDate] = todaysData;
-                        } else {
-                            delete allDateData[currentDate]; // Clean up empty dates
-                        }
-                    }
-                    localStorage.setItem(STORAGE_KEYS.ALL_DATA, JSON.stringify(allDateData));
-                    localStorage.setItem(STORAGE_KEYS.MASTER_LIST, JSON.stringify(studentMasterList));
-                    localStorage.setItem(STORAGE_KEYS.STATUSES, JSON.stringify(ATTENDANCE_OPTIONS));
-                }
-        
-                function loadState() {
-                    try {
-                        const storedAllData = localStorage.getItem(STORAGE_KEYS.ALL_DATA);
-                        const storedMasterList = localStorage.getItem(STORAGE_KEYS.MASTER_LIST);
-                        const storedStatuses = localStorage.getItem(STORAGE_KEYS.STATUSES);
-                        const storedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-        
-                        allDateData = storedAllData ? JSON.parse(storedAllData) : {};
-                        studentMasterList = storedMasterList ? JSON.parse(storedMasterList) : [];
-                        ATTENDANCE_OPTIONS = storedStatuses ? JSON.parse(storedStatuses) : JSON.parse(JSON.stringify(DEFAULT_STATUSES));
-                        
-                        ATTENDANCE_OPTIONS.forEach(opt => { 
-                            if (typeof opt.notification !== 'object') opt.notification = { enabled: false, days: 2 }; 
-                        });
-        
-                        if (storedSettings) {
-                            let settings = JSON.parse(storedSettings);
-                            // Migration from old settings format
-                            if (settings.mosqueName && !settings.institutionName) {
-                                settings.institutionName = settings.mosqueName;
-                                settings.institutionType = 'مسجد'; // Default type for migration
-                                delete settings.mosqueName;
-                                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings)); // Re-save in new format
-                            }
-                            allSelectors.institutionTypeInput.value = settings.institutionType || '';
-                            allSelectors.institutionNameInput.value = settings.institutionName || '';
-                            allSelectors.teacherNameInput.value = settings.teacherName || '';
-                        }
-                    } catch (e) {
-                        console.error("Failed to load state from localStorage", e);
-                        alert("فشل في تحميل البيانات المحفوظة. قد تكون تالفة.");
-                    }
-                }
-        
-                function saveSettings() {
-                    const institutionType = allSelectors.institutionTypeInput.value.trim();
-                    const institutionName = allSelectors.institutionNameInput.value.trim();
-                    const teacherName = allSelectors.teacherNameInput.value.trim();
-        
-                    allSelectors.institutionTypeInput.value = institutionType;
-                    allSelectors.institutionNameInput.value = institutionName;
-                    allSelectors.teacherNameInput.value = teacherName;
-        
-                    const settings = { 
-                        institutionType: institutionType,
-                        institutionName: institutionName, 
-                        teacherName: teacherName 
-                    };
-                    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
-                    alert('تم حفظ الإعدادات!');
-                }
-        
-                function setCurrentDate(dateString) {
-                    if (!dateString) return;
-                    saveState();
-                    currentDate = dateString;
-                    allSelectors.currentDateInput.value = currentDate;
-                    loadStudentsForDate(currentDate);
-                    updateDateDisplay();
-                    renderStudents();
-                    checkAndDisplayNotifications();
-                }
-        
-                function loadStudentsForDate(dateString) {
-                    const todaysData = allDateData[dateString] || {};
-                    students = studentMasterList.map(masterStudent => {
-                        const studentDataForToday = todaysData[masterStudent.id] || { status: [] };
-                        return {
-                            ...masterStudent, // Contains id and name
-                            status: JSON.parse(JSON.stringify(studentDataForToday.status)) // Deep copy
-                        };
-                    });
-                }
-        
-                function updateDateDisplay() {
-                    const dateObj = new Date(currentDate + 'T00:00:00');
-                    const today = new Date().toISOString().split('T')[0];
-                    let formattedDate = dateObj.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                    if (currentDate === today) formattedDate = `<span class="today-indicator">اليوم</span> ${formattedDate}`;
-                    allSelectors.dateDisplay.innerHTML = formattedDate;
-                }
-        
-                function navigateDate(direction) {
-                    const parts = currentDate.split('-').map(Number);
-                    // Month is 0-indexed in JavaScript Date, so parts[1] - 1
-                    const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
-                    dateObj.setDate(dateObj.getDate() + direction);
+                                closeStudentProfileModalBtn: $("close-student-profile-modal"),
+                                printReportBtn: $("print-report-btn"),
+                                exportCsvBtn: $("export-csv-btn"),
+                                refreshDataBtn: $("refresh-data-btn"),
+                                factoryResetBtn: $("factory-reset-btn"),
+                                genderTemplateSelect: $("gender-template-select"),
+                                statsStartDate: $("stats-start-date"),
+                                statsEndDate: $("stats-end-date"),
+                                generateStatsBtn: $("generate-stats-btn"),
+                                statisticsOutput: $("statistics-output"),
+                                statsLastDays: $("stats-last-days"),
+                                generateStatsLastDaysBtn: $("generate-stats-last-days-btn"),
+                                statsActionsContainer: $("stats-actions-container"),
+                                copyStatsBtn: $("copy-stats-btn"),
+                                shareStatsBtn: $("share-stats-btn")
+                            };
                     
-                    const year = dateObj.getFullYear();
-                    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-                    const day = String(dateObj.getDate()).padStart(2, '0');
-                    const newDate = `${year}-${month}-${day}`;
-        
-                    setCurrentDate(newDate);
-                }
-        
-                function toggleStudentStatus(studentId, statusKey) {
-                    const student = students.find(s => s.id === studentId);
-                    if (!student) return;
-                    if (!student.status) student.status = [];
-        
-                    const isAlreadyActive = student.status[0] === statusKey;
-        
-                    if (isAlreadyActive) {
-                        // If the clicked button is already the active one, deactivate it.
-                        student.status = [];
-                    } else {
-                        // Otherwise, set the clicked button as the one and only active status.
-                        student.status = [statusKey];
-                    }
-        
-                    saveState();
-                    renderStudents();
-                    checkAndDisplayNotifications();
-                }
-        
-                function renderStudents() {
-                    allSelectors.studentListContainer.innerHTML = '';
-                    allSelectors.registeredCountEl.textContent = studentMasterList.length;
-                    students.forEach(student => {
-                        const studentCard = document.createElement('div');
-                        studentCard.className = 'student-card';
-                        const studentNameEl = document.createElement('div');
-                        studentNameEl.className = 'student-name-link';
-                        studentNameEl.textContent = student.name;
-                        studentNameEl.onclick = () => openStudentProfile(student.id);
-                        const controlsContainer = document.createElement('div');
-                        controlsContainer.className = 'attendance-controls';
-                        ATTENDANCE_OPTIONS.forEach(option => {
-                            const btn = document.createElement('button');
-                            btn.className = 'attendance-btn';
-                            const isActive = student.status && student.status.includes(option.key);
-                            
-                            btn.style.backgroundColor = isActive ? option.color : '#cccccc'; // Lighter grey for inactive
-                            btn.style.color = 'white';
-                            
-                            if (isActive) {
-                                btn.classList.add('active');
+                            const STORAGE_KEYS = {
+                                MASTER_LIST: 'studentTracker_v2_masterList',
+                                ALL_DATA: 'studentTracker_v2_allData',
+                                STATUSES: 'studentTracker_v2_statuses',
+                                SETTINGS: 'mosqueSettings_v2'
+                            };
+                    
+                            const DEFAULT_STATUSES = [
+                                { key: 'excellent', label: 'أنجز بتميز.', symbol: '🌟', color: '#ffc107', notification: { enabled: true, days: 3 } },
+                                { key: 'completed_full', label: 'أنجز المقرر (الدرس والمراجعة).', symbol: '✅', color: '#28a745', notification: { enabled: false, days: 2 } },
+                                { key: 'completed_partial', label: 'أنجز جزء من المقرر.', symbol: '☑️', color: '#17a2b8', notification: { enabled: false, days: 2 } },
+                                { key: 'absent_unexcused', label: 'غائب بدون عذر.', symbol: '🔴', color: '#dc3545', notification: { enabled: true, days: 2 } },
+                                { key: 'absent_excused', label: 'مستأذن.', symbol: '🟠', color: '#fd7e14', notification: { enabled: false, days: 3 } },
+                                { key: 'not_completed', label: 'لم ينجز المقرر.', symbol: '❌', color: '#6c757d', notification: { enabled: true, days: 2 } }
+                            ];
+                    
+                            const DEFAULT_STATUSES_FEMALE = [
+                                { key: 'excellent', label: 'أنجزت بتميز.', symbol: '🌟', color: '#ffc107', notification: { enabled: true, days: 3 } },
+                                { key: 'completed_full', label: 'أنجزت المقرر (الدرس والمراجعة).', symbol: '✅', color: '#28a745', notification: { enabled: false, days: 2 } },
+                                { key: 'completed_partial', label: 'أنجزت جزء من المقرر.', symbol: '☑️', color: '#17a2b8', notification: { enabled: false, days: 2 } },
+                                { key: 'absent_unexcused', label: 'غائبة بدون عذر.', symbol: '🔴', color: '#dc3545', notification: { enabled: true, days: 2 } },
+                                { key: 'absent_excused', label: 'مستأذنة.', symbol: '🟠', color: '#fd7e14', notification: { enabled: false, days: 3 } },
+                                { key: 'not_completed', label: 'لم تنجز المقرر.', symbol: '❌', color: '#6c757d', notification: { enabled: true, days: 2 } }
+                            ];
+                    
+                            let ATTENDANCE_OPTIONS = [];
+                            let students = []; // This is the daily view model, a result of joining master list and daily data
+                            let studentMasterList = []; // Array of {id, name}
+                            let allDateData = {}; // Object of { date: { studentId: { status: [] } } }
+                            let currentDate = '';
+                    
+                            function saveState() {
+                                if (currentDate) {
+                                    const todaysData = {};
+                                    students.forEach(student => {
+                                        if (student.status && student.status.length > 0) {
+                                            todaysData[student.id] = { status: student.status };
+                                        }
+                                    });
+                                    if (Object.keys(todaysData).length > 0) {
+                                        allDateData[currentDate] = todaysData;
+                                    } else {
+                                        delete allDateData[currentDate]; // Clean up empty dates
+                                    }
+                                }
+                                localStorage.setItem(STORAGE_KEYS.ALL_DATA, JSON.stringify(allDateData));
+                                localStorage.setItem(STORAGE_KEYS.MASTER_LIST, JSON.stringify(studentMasterList));
+                                localStorage.setItem(STORAGE_KEYS.STATUSES, JSON.stringify(ATTENDANCE_OPTIONS));
+                            }
+                    
+                            function loadState() {
+                                try {
+                                    const storedAllData = localStorage.getItem(STORAGE_KEYS.ALL_DATA);
+                                    const storedMasterList = localStorage.getItem(STORAGE_KEYS.MASTER_LIST);
+                                    const storedStatuses = localStorage.getItem(STORAGE_KEYS.STATUSES);
+                                    const storedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+                    
+                                    allDateData = storedAllData ? JSON.parse(storedAllData) : {};
+                                    studentMasterList = storedMasterList ? JSON.parse(storedMasterList) : [];
+                                    
+                                    let settings = storedSettings ? JSON.parse(storedSettings) : {};
+                                    // Migration from old settings format
+                                    if (settings.mosqueName && !settings.institutionName) {
+                                        settings.institutionName = settings.mosqueName;
+                                        settings.institutionType = 'مسجد'; // Default type for migration
+                                        delete settings.mosqueName;
+                                        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings)); // Re-save in new format
+                                    }
+                                    allSelectors.institutionTypeInput.value = settings.institutionType || '';
+                                    allSelectors.institutionNameInput.value = settings.institutionName || '';
+                                    allSelectors.teacherNameInput.value = settings.teacherName || '';
+                                    allSelectors.genderTemplateSelect.value = settings.genderTemplate || 'male';
+                    
+                                    if (storedStatuses) {
+                                        ATTENDANCE_OPTIONS = JSON.parse(storedStatuses);
+                                    } else {
+                                        const template = settings.genderTemplate || 'male';
+                                        ATTENDANCE_OPTIONS = template === 'female'
+                                            ? JSON.parse(JSON.stringify(DEFAULT_STATUSES_FEMALE))
+                                            : JSON.parse(JSON.stringify(DEFAULT_STATUSES));
+                                    }
+                    
+                                    ATTENDANCE_OPTIONS.forEach(opt => { 
+                                        if (typeof opt.notification !== 'object') opt.notification = { enabled: false, days: 2 }; 
+                                    });
+                    
+                                } catch (e) {
+                                    console.error("Failed to load state from localStorage", e);
+                                    alert("فشل في تحميل البيانات المحفوظة. قد تكون تالفة.");
+                                }
+                            }
+                    
+                            function saveSettings() {
+                                const institutionType = allSelectors.institutionTypeInput.value.trim();
+                                const institutionName = allSelectors.institutionNameInput.value.trim();
+                                const teacherName = allSelectors.teacherNameInput.value.trim();
+                                const genderTemplate = allSelectors.genderTemplateSelect.value;
+                    
+                                allSelectors.institutionTypeInput.value = institutionType;
+                                allSelectors.institutionNameInput.value = institutionName;
+                                allSelectors.teacherNameInput.value = teacherName;
+                    
+                                const settings = { 
+                                    institutionType: institutionType,
+                                    institutionName: institutionName, 
+                                    teacherName: teacherName,
+                                    genderTemplate: genderTemplate
+                                };
+                                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+                                alert('تم حفظ الإعدادات!');
+                            }
+                    
+                            function setCurrentDate(dateString) {
+                                if (!dateString) return;
+                                saveState();
+                                currentDate = dateString;
+                                allSelectors.currentDateInput.value = currentDate;
+                                loadStudentsForDate(currentDate);
+                                updateDateDisplay();
+                                renderStudents();
+                                checkAndDisplayNotifications();
+                            }
+                    
+                            function loadStudentsForDate(dateString) {
+                                const todaysData = allDateData[dateString] || {};
+                                students = studentMasterList.map(masterStudent => {
+                                    const studentDataForToday = todaysData[masterStudent.id] || { status: [] };
+                                    return {
+                                        ...masterStudent, // Contains id and name
+                                        status: JSON.parse(JSON.stringify(studentDataForToday.status)) // Deep copy
+                                    };
+                                });
+                            }
+                    
+                            function updateDateDisplay() {
+                                const dateObj = new Date(currentDate + 'T00:00:00');
+                                const today = new Date().toISOString().split('T')[0];
+                                let formattedDate = dateObj.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                                if (currentDate === today) formattedDate = `<span class="today-indicator">اليوم</span> ${formattedDate}`;
+                                allSelectors.dateDisplay.innerHTML = formattedDate;
+                            }
+                    
+                            function navigateDate(direction) {
+                                const parts = currentDate.split('-').map(Number);
+                                // Month is 0-indexed in JavaScript Date, so parts[1] - 1
+                                const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+                                dateObj.setDate(dateObj.getDate() + direction);
+                                
+                                const year = dateObj.getFullYear();
+                                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                                const day = String(dateObj.getDate()).padStart(2, '0');
+                                const newDate = `${year}-${month}-${day}`;
+                    
+                                setCurrentDate(newDate);
+                            }
+                    
+                            function toggleStudentStatus(studentId, statusKey) {
+                                const student = students.find(s => s.id === studentId);
+                                if (!student) return;
+                                if (!student.status) student.status = [];
+                    
+                                const isAlreadyActive = student.status[0] === statusKey;
+                    
+                                if (isAlreadyActive) {
+                                    // If the clicked button is already the active one, deactivate it.
+                                    student.status = [];
+                                } else {
+                                    // Otherwise, set the clicked button as the one and only active status.
+                                    student.status = [statusKey];
+                                }
+                    
+                                saveState();
+                                renderStudents();
+                                checkAndDisplayNotifications();
+                            }
+                    
+                            function renderStudents() {
+                                allSelectors.studentListContainer.innerHTML = '';
+                                allSelectors.registeredCountEl.textContent = studentMasterList.length;
+                    
+                                if (studentMasterList.length === 0) {
+                                    const emptyStateHTML = `
+                                        <div style="text-align: center; padding: 2rem; color: var(--secondary-color);">
+                                            <i class="fas fa-users" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                            <p>لا يوجد طلاب مسجلون بعد.</p>
+                                            <p>ابدأ بالضغط على زر "إدارة قائمة الطلاب" لإضافة أول طالب.</p>
+                                        </div>
+                                    `;
+                                    allSelectors.studentListContainer.innerHTML = emptyStateHTML;
+                                    return;
+                                }
+                    
+                                students.forEach(student => {
+                                    const studentCard = document.createElement('div');
+                                    studentCard.className = 'student-card';
+                                    const studentNameEl = document.createElement('div');
+                                    studentNameEl.className = 'student-name-link';
+                                    studentNameEl.textContent = student.name;
+                                    studentNameEl.onclick = () => openStudentProfile(student.id);
+                                    const controlsContainer = document.createElement('div');
+                                    controlsContainer.className = 'attendance-controls';
+                                    ATTENDANCE_OPTIONS.forEach(option => {
+                                        const btn = document.createElement('button');
+                                        btn.className = 'attendance-btn';
+                                        const isActive = student.status && student.status.includes(option.key);
+                                        
+                                        btn.style.backgroundColor = isActive ? option.color : '#cccccc'; // Lighter grey for inactive
+                                        btn.style.color = 'white';
+                                        
+                                        if (isActive) {
+                                            btn.classList.add('active');
+                                        }
+                                        
+                                        btn.innerHTML = `${option.symbol} ${option.label}`;
+                                        btn.onclick = () => toggleStudentStatus(student.id, option.key);
+                                        controlsContainer.appendChild(btn);
+                                    });
+                                    studentCard.appendChild(studentNameEl);
+                                    studentCard.appendChild(controlsContainer);
+                                    allSelectors.studentListContainer.appendChild(studentCard);
+                                });
+                            }
+                    
+                            function openModal(modalOverlay) { modalOverlay.classList.add('visible'); allSelectors.mainOverlay.classList.add('visible'); }
+                            function closeModal(modalOverlay) { modalOverlay.classList.remove('visible'); allSelectors.mainOverlay.classList.remove('visible'); }
+                    
+                            function renderMasterStudentList() {
+                                allSelectors.masterStudentListContainer.innerHTML = '';
+                                studentMasterList.forEach(student => {
+                                    const itemDiv = document.createElement('div');
+                                    itemDiv.className = 'master-student-item';
+                                    itemDiv.style = 'padding: 0.5rem; border-bottom: 1px solid #eee;';
+                                    const viewMode = document.createElement('div');
+                                    viewMode.className = 'view-mode';
+                                    viewMode.innerHTML = `<span>${student.name}</span><div><button class="btn-secondary btn-edit" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">تعديل</button><button class="btn-danger btn-delete" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حذف</button></div>`;
+                                    const editMode = document.createElement('div');
+                                    editMode.className = 'edit-mode';
+                                    editMode.style.display = 'none';
+                                    editMode.innerHTML = `<input type="text" value="${student.name}" style="flex-grow: 1;"><div><button class="btn-success btn-save" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حفظ</button><button class="btn-secondary btn-cancel" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">إلغاء</button></div>`;
+                                    itemDiv.appendChild(viewMode);
+                                    itemDiv.appendChild(editMode);
+                                    allSelectors.masterStudentListContainer.appendChild(itemDiv);
+                                    itemDiv.querySelector('.btn-edit').onclick = () => { viewMode.style.display = 'none'; editMode.style.display = 'flex'; };
+                                    itemDiv.querySelector('.btn-cancel').onclick = () => { viewMode.style.display = 'flex'; editMode.style.display = 'none'; };
+                                    itemDiv.querySelector('.btn-delete').onclick = () => deleteFromMasterList(student.id);
+                                    itemDiv.querySelector('.btn-save').onclick = () => handleEditStudent(student.id, itemDiv.querySelector('input').value.trim());
+                                });
+                            }
+                    
+                            function handleEditStudent(studentId, newName) {
+                                if (!newName) { renderMasterStudentList(); return; }
+                                const studentToUpdate = studentMasterList.find(s => s.id === studentId);
+                                if (!studentToUpdate) return;
+                    
+                                const isDuplicate = studentMasterList.some(s => s.name === newName && s.id !== studentId);
+                                if (isDuplicate) {
+                                    alert('اسم الطالب موجود بالفعل.');
+                                    return;
+                                }
+                    
+                                studentToUpdate.name = newName;
+                                saveState();
+                                loadStudentsForDate(currentDate);
+                                renderStudents();
+                                renderMasterStudentList();
+                            }
+                    
+                            function deleteFromMasterList(studentId) {
+                                const studentToDelete = studentMasterList.find(s => s.id === studentId);
+                                if (!studentToDelete) return;
+                    
+                                if (confirm(`هل أنت متأكد من حذف الطالب "${studentToDelete.name}"? سيتم حذف جميع سجلاته.`)) {
+                                    studentMasterList = studentMasterList.filter(s => s.id !== studentId);
+                                    Object.keys(allDateData).forEach(date => {
+                                        delete allDateData[date][studentId];
+                                    });
+                                    saveState();
+                                    loadStudentsForDate(currentDate);
+                                    renderStudents();
+                                    renderMasterStudentList();
+                                }
+                            }
+                    
+                            function renderStatusesList() {
+                                allSelectors.statusesListContainer.innerHTML = '';
+                                ATTENDANCE_OPTIONS.forEach(status => {
+                                    const itemWrapper = document.createElement('div');
+                                    itemWrapper.style.padding = '0.5rem';
+                                    itemWrapper.style.borderBottom = '1px solid #eee';
+                                    const statusRow = document.createElement('div');
+                                    statusRow.className = 'status-item-row';
+                    
+                                    const isProtected = status.key === 'absent_unexcused' || status.key === 'absent_excused';
+                                    const deleteBtnHTML = isProtected
+                                        ? `<button class="btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem; opacity: 0.6; cursor: not-allowed;" disabled>أساسي</button>`
+                                        : `<button class="btn-danger btn-delete-status" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حذف</button>`;
+                    
+                                    statusRow.innerHTML = `<div><span style="display: inline-block; width: 20px; height: 20px; background-color: ${status.color}; border-radius: 50%; margin-left: 10px;"></span><strong>${status.label}</strong> (${status.symbol})</div><div><button class="btn-secondary btn-notif-settings" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;"><i class="fas fa-cog"></i></button>${deleteBtnHTML}</div>`;
+                                    
+                                    const settingsDiv = document.createElement('div');
+                                    settingsDiv.className = 'notification-settings-panel';
+                                    settingsDiv.style.display = 'none';
+                                    settingsDiv.style.padding = '0.5rem';
+                                    settingsDiv.style.marginTop = '0.5rem';
+                                    settingsDiv.style.backgroundColor = '#f8f9fa';
+                                    settingsDiv.innerHTML = `<label style="display: flex; align-items: center; gap: 0.5rem;"><input type="checkbox" class="notif-enabled" ${status.notification.enabled ? 'checked' : ''}> تفعيل الإشعار لهذه الحالة</label><div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;"><span>تنبيه بعد:</span><input type="number" class="notif-days" value="${status.notification.days}" min="2" style="width: 60px;"><span>أيام متتالية</span></div>`;
+                                    
+                                    itemWrapper.appendChild(statusRow);
+                                    itemWrapper.appendChild(settingsDiv);
+                                    allSelectors.statusesListContainer.appendChild(itemWrapper);
+                                    
+                                    itemWrapper.querySelector('.btn-notif-settings').onclick = () => { settingsDiv.style.display = settingsDiv.style.display === 'none' ? 'block' : 'none'; };
+                                    
+                                    if (!isProtected) {
+                                        itemWrapper.querySelector('.btn-delete-status').onclick = () => deleteStatus(status.key);
+                                    }
+                    
+                                    const enabledCheckbox = itemWrapper.querySelector('.notif-enabled');
+                                    const daysInput = itemWrapper.querySelector('.notif-days');
+                                    enabledCheckbox.onchange = () => { status.notification.enabled = enabledCheckbox.checked; saveState(); };
+                                    daysInput.onchange = () => { status.notification.days = parseInt(daysInput.value) || 2; saveState(); };
+                                });
+                            }
+                    
+                            function deleteStatus(keyToDelete) {
+                                if (ATTENDANCE_OPTIONS.length <= 2) { alert('يجب أن تبقى حالتان على الأقل.'); return; }
+                                if (confirm('هل أنت متأكد من حذف هذه الحالة؟')) {
+                                    ATTENDANCE_OPTIONS = ATTENDANCE_OPTIONS.filter(s => s.key !== keyToDelete);
+                                    saveState();
+                                    renderStatusesList();
+                                }
                             }
                             
-                            btn.innerHTML = `${option.symbol} ${option.label}`;
-                            btn.onclick = () => toggleStudentStatus(student.id, option.key);
-                            controlsContainer.appendChild(btn);
-                        });
-                        studentCard.appendChild(studentNameEl);
-                        studentCard.appendChild(controlsContainer);
-                        allSelectors.studentListContainer.appendChild(studentCard);
-                    });
-                }
-        
-                function openModal(modalOverlay) { modalOverlay.classList.add('visible'); allSelectors.mainOverlay.classList.add('visible'); }
-                function closeModal(modalOverlay) { modalOverlay.classList.remove('visible'); allSelectors.mainOverlay.classList.remove('visible'); }
-        
-                function renderMasterStudentList() {
-                    allSelectors.masterStudentListContainer.innerHTML = '';
-                    studentMasterList.forEach(student => {
-                        const itemDiv = document.createElement('div');
-                        itemDiv.className = 'master-student-item';
-                        itemDiv.style = 'padding: 0.5rem; border-bottom: 1px solid #eee;';
-                        const viewMode = document.createElement('div');
-                        viewMode.className = 'view-mode';
-                        viewMode.innerHTML = `<span>${student.name}</span><div><button class="btn-secondary btn-edit" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">تعديل</button><button class="btn-danger btn-delete" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حذف</button></div>`;
-                        const editMode = document.createElement('div');
-                        editMode.className = 'edit-mode';
-                        editMode.style.display = 'none';
-                        editMode.innerHTML = `<input type="text" value="${student.name}" style="flex-grow: 1;"><div><button class="btn-success btn-save" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حفظ</button><button class="btn-secondary btn-cancel" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">إلغاء</button></div>`;
-                        itemDiv.appendChild(viewMode);
-                        itemDiv.appendChild(editMode);
-                        allSelectors.masterStudentListContainer.appendChild(itemDiv);
-                        itemDiv.querySelector('.btn-edit').onclick = () => { viewMode.style.display = 'none'; editMode.style.display = 'flex'; };
-                        itemDiv.querySelector('.btn-cancel').onclick = () => { viewMode.style.display = 'flex'; editMode.style.display = 'none'; };
-                        itemDiv.querySelector('.btn-delete').onclick = () => deleteFromMasterList(student.id);
-                        itemDiv.querySelector('.btn-save').onclick = () => handleEditStudent(student.id, itemDiv.querySelector('input').value.trim());
-                    });
-                }
-        
-                function handleEditStudent(studentId, newName) {
-                    if (!newName) { renderMasterStudentList(); return; }
-                    const studentToUpdate = studentMasterList.find(s => s.id === studentId);
-                    if (!studentToUpdate) return;
-        
-                    const isDuplicate = studentMasterList.some(s => s.name === newName && s.id !== studentId);
-                    if (isDuplicate) {
-                        alert('اسم الطالب موجود بالفعل.');
-                        return;
-                    }
-        
-                    studentToUpdate.name = newName;
-                    saveState();
-                    loadStudentsForDate(currentDate);
-                    renderStudents();
-                    renderMasterStudentList();
-                }
-        
-                function deleteFromMasterList(studentId) {
-                    const studentToDelete = studentMasterList.find(s => s.id === studentId);
-                    if (!studentToDelete) return;
-        
-                    if (confirm(`هل أنت متأكد من حذف الطالب "${studentToDelete.name}"? سيتم حذف جميع سجلاته.`)) {
-                        studentMasterList = studentMasterList.filter(s => s.id !== studentId);
-                        Object.keys(allDateData).forEach(date => {
-                            delete allDateData[date][studentId];
-                        });
-                        saveState();
-                        loadStudentsForDate(currentDate);
-                        renderStudents();
-                        renderMasterStudentList();
-                    }
-                }
-        
-                function renderStatusesList() {
-                    allSelectors.statusesListContainer.innerHTML = '';
-                    ATTENDANCE_OPTIONS.forEach(status => {
-                        const itemWrapper = document.createElement('div');
-                        itemWrapper.style.padding = '0.5rem';
-                        itemWrapper.style.borderBottom = '1px solid #eee';
-                        const statusRow = document.createElement('div');
-                        statusRow.className = 'status-item-row';
-        
-                        const isProtected = status.key === 'absent_unexcused' || status.key === 'absent_excused';
-                        const deleteBtnHTML = isProtected
-                            ? `<button class="btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem; opacity: 0.6; cursor: not-allowed;" disabled>أساسي</button>`
-                            : `<button class="btn-danger btn-delete-status" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حذف</button>`;
-        
-                        statusRow.innerHTML = `<div><span style="display: inline-block; width: 20px; height: 20px; background-color: ${status.color}; border-radius: 50%; margin-left: 10px;"></span><strong>${status.label}</strong> (${status.symbol})</div><div><button class="btn-secondary btn-notif-settings" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;"><i class="fas fa-cog"></i></button>${deleteBtnHTML}</div>`;
-                        
-                        const settingsDiv = document.createElement('div');
-                        settingsDiv.className = 'notification-settings-panel';
-                        settingsDiv.style.display = 'none';
-                        settingsDiv.style.padding = '0.5rem';
-                        settingsDiv.style.marginTop = '0.5rem';
-                        settingsDiv.style.backgroundColor = '#f8f9fa';
-                        settingsDiv.innerHTML = `<label style="display: flex; align-items: center; gap: 0.5rem;"><input type="checkbox" class="notif-enabled" ${status.notification.enabled ? 'checked' : ''}> تفعيل الإشعار لهذه الحالة</label><div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;"><span>تنبيه بعد:</span><input type="number" class="notif-days" value="${status.notification.days}" min="2" style="width: 60px;"><span>أيام متتالية</span></div>`;
-                        
-                        itemWrapper.appendChild(statusRow);
-                        itemWrapper.appendChild(settingsDiv);
-                        allSelectors.statusesListContainer.appendChild(itemWrapper);
-                        
-                        itemWrapper.querySelector('.btn-notif-settings').onclick = () => { settingsDiv.style.display = settingsDiv.style.display === 'none' ? 'block' : 'none'; };
-                        
-                        if (!isProtected) {
-                            itemWrapper.querySelector('.btn-delete-status').onclick = () => deleteStatus(status.key);
-                        }
-        
-                        const enabledCheckbox = itemWrapper.querySelector('.notif-enabled');
-                        const daysInput = itemWrapper.querySelector('.notif-days');
-                        enabledCheckbox.onchange = () => { status.notification.enabled = enabledCheckbox.checked; saveState(); };
-                        daysInput.onchange = () => { status.notification.days = parseInt(daysInput.value) || 2; saveState(); };
-                    });
-                }
-        
-                function deleteStatus(keyToDelete) {
-                    if (ATTENDANCE_OPTIONS.length <= 2) { alert('يجب أن تبقى حالتان على الأقل.'); return; }
-                    if (confirm('هل أنت متأكد من حذف هذه الحالة؟')) {
-                        ATTENDANCE_OPTIONS = ATTENDANCE_OPTIONS.filter(s => s.key !== keyToDelete);
-                        saveState();
-                        renderStatusesList();
-                    }
-                }
-                
-                function resetStatusesToDefault() {
-                    if (confirm('هل أنت متأكد؟ سيتم استبدال قائمتك الحالية للحالات بالقائمة الافتراضية.')) {
-                        ATTENDANCE_OPTIONS = JSON.parse(JSON.stringify(DEFAULT_STATUSES));
-                        saveState();
-                        renderStatusesList();
-                        renderStudents();
-                    }
-                }
+                            function resetStatusesToDefault() {
+                                if (confirm('هل أنت متأكد؟ سيتم استبدال قائمتك الحالية للحالات بالقائمة الافتراضية.')) {
+                                    const template = allSelectors.genderTemplateSelect.value;
+                                    ATTENDANCE_OPTIONS = template === 'female'
+                                        ? JSON.parse(JSON.stringify(DEFAULT_STATUSES_FEMALE))
+                                        : JSON.parse(JSON.stringify(DEFAULT_STATUSES));
+                                    saveState();
+                                    renderStatusesList();
+                                    renderStudents();
+                                }
+                            }
         
                 function openStudentProfile(studentId) {
                     const student = studentMasterList.find(s => s.id === studentId);
@@ -785,20 +829,19 @@
                                     document.body.removeChild(link);
                                 }
                         
-                                function downloadBackup() {
-                                    const settings = { mosqueName: allSelectors.mosqueNameInput.value, teacherName: allSelectors.teacherNameInput.value };
-                                    const backupData = { version: "2.0", timestamp: new Date().toISOString(), settings: settings, masterList: studentMasterList, allData: allDateData, statuses: ATTENDANCE_OPTIONS };
-                                    const dataStr = JSON.stringify(backupData, null, 2);
-                                    const blob = new Blob([dataStr], { type: "application/json" });
-                                    const url = URL.createObjectURL(blob);
-                                    const a = document.createElement('a');
-                                    a.href = url;
-                                    a.download = `student-tracker-backup-v2-${new Date().toISOString().split('T')[0]}.json`;
-                                    document.body.appendChild(a);
-                                    a.click();
-                                    document.body.removeChild(a);
-                                }
-                        
+                                        function downloadBackup() {
+                                            const settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS) || '{}');
+                                            const backupData = { version: "2.0", timestamp: new Date().toISOString(), settings: settings, masterList: studentMasterList, allData: allDateData, statuses: ATTENDANCE_OPTIONS };
+                                            const dataStr = JSON.stringify(backupData, null, 2);
+                                            const blob = new Blob([dataStr], { type: "application/json" });
+                                            const url = URL.createObjectURL(blob);
+                                            const a = document.createElement('a');
+                                            a.href = url;
+                                            a.download = `student-tracker-backup-v2-${new Date().toISOString().split('T')[0]}.json`;
+                                            document.body.appendChild(a);
+                                            a.click();
+                                            document.body.removeChild(a);
+                                        }                        
                                 function handleRestore(event) {
                                     const file = event.target.files[0];
                                     if (!file) return;
