@@ -396,6 +396,7 @@
                                 localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
                                 allSelectors.saveSettingsBtn.classList.remove('call-to-action');
                                 updateUIText(genderTemplate);
+                                renderStudents(); // Re-render the student list to update the empty state text
                                 alert('تم حفظ الإعدادات!');
                             }
                     
