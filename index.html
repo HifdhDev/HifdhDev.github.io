@@ -842,33 +842,47 @@
                                             a.click();
                                             document.body.removeChild(a);
                                         }                        
-                                function handleRestore(event) {
-                                    const file = event.target.files[0];
-                                    if (!file) return;
-                                    const reader = new FileReader();
-                                    reader.onload = function(e) {
-                                        try {
-                                            const backupData = JSON.parse(e.target.result);
-                                            if (backupData.version !== "2.0" || !backupData.masterList || !backupData.allData) throw new Error("ملف نسخة احتياطية غير متوافق.");
-                                            if (confirm("تحذير: سيتم استبدال جميع البيانات الحالية. هل أنت متأكد؟")) {
-                                                studentMasterList = backupData.masterList;
-                                                allDateData = backupData.allData;
-                                                if (backupData.statuses) ATTENDANCE_OPTIONS = backupData.statuses;
-                                                if (backupData.settings) {
-                                                    allSelectors.mosqueNameInput.value = backupData.settings.mosqueName || '';
-                                                    allSelectors.teacherNameInput.value = backupData.settings.teacherName || '';
-                                                    saveSettings();
-                                                }
-                                                saveState();
-                                                setCurrentDate(currentDate || new Date().toISOString().split('T')[0]);
-                                                alert('تم استعادة البيانات بنجاح!');
-                                            }
-                                        } catch (error) { alert('فشل قراءة الملف: ' + error.message); }
-                                        allSelectors.restoreFileInput.value = '';
-                                    };
-                                    reader.readAsText(file);
-                                }
-                        
+                                        function handleRestore(event) {
+                                            const file = event.target.files[0];
+                                            if (!file) return;
+                                            const reader = new FileReader();
+                                            reader.onload = function(e) {
+                                                try {
+                                                    const backupData = JSON.parse(e.target.result);
+                                                    if (backupData.version !== "2.0" || !backupData.masterList || !backupData.allData) throw new Error("ملف نسخة احتياطية غير متوافق.");
+                                                    if (confirm("تحذير: سيتم استبدال جميع البيانات الحالية. هل أنت متأكد؟")) {
+                                                        studentMasterList = backupData.masterList;
+                                                        allDateData = backupData.allData;
+                                                        if (backupData.statuses) ATTENDANCE_OPTIONS = backupData.statuses;
+                                                        
+                                                        if (backupData.settings) {
+                                                            const settings = backupData.settings;
+                                                            // Handle both old and new backup formats
+                                                            if (settings.mosqueName && !settings.institutionName) {
+                                                                // Old format: Migrate settings
+                                                                allSelectors.institutionTypeInput.value = 'مسجد';
+                                                                allSelectors.institutionNameInput.value = settings.mosqueName || '';
+                                                                allSelectors.teacherNameInput.value = settings.teacherName || '';
+                                                                allSelectors.genderTemplateSelect.value = 'male'; // Old backups were implicitly male
+                                                            } else {
+                                                                // New format
+                                                                allSelectors.institutionTypeInput.value = settings.institutionType || '';
+                                                                allSelectors.institutionNameInput.value = settings.institutionName || '';
+                                                                allSelectors.teacherNameInput.value = settings.teacherName || '';
+                                                                allSelectors.genderTemplateSelect.value = settings.genderTemplate || 'male';
+                                                            }
+                                                            saveSettings(); // Save the restored and potentially migrated settings
+                                                        }
+                                
+                                                        saveState(); // Save the main data (students, statuses, etc.)
+                                                        setCurrentDate(currentDate || new Date().toISOString().split('T')[0]);
+                                                        alert('تم استعادة البيانات بنجاح!');
+                                                    }
+                                                } catch (error) { alert('فشل قراءة الملف: ' + error.message); }
+                                                allSelectors.restoreFileInput.value = '';
+                                            };
+                                            reader.readAsText(file);
+                                        }                        
                                 function generateStatisticsReport() {
                                     const startDate = allSelectors.statsStartDate.value;
                                     const endDate = allSelectors.statsEndDate.value;
