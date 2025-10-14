@@ -58,11 +58,12 @@
         <h1>متابع إنجاز الطلاب</h1>
     </header>
     <main>
-        <section id="settings"><h2><i class="fas fa-cogs"></i> الإعدادات العامة</h2><input type="text" id="mosque-name" placeholder="اسم المسجد..."><input type="text" id="teacher-name" placeholder="اسم الأستاذ..."><button id="save-settings-btn" class="btn-success"><i class="fas fa-save"></i> حفظ الإعدادات</button><div style="margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;"><button id="manage-statuses-btn" class="btn"><i class="fas fa-tags"></i> إدارة الحالات</button><button id="refresh-data-btn" class="btn-secondary"><i class="fas fa-sync-alt"></i> تحديث البيانات</button><button id="factory-reset-btn" class="btn-danger"><i class="fas fa-trash-alt"></i> إعادة ضبط</button></div></section>
+        <section id="settings"><h2><i class="fas fa-cogs"></i> الإعدادات العامة</h2><div style="display: grid; grid-template-columns: 1fr 2fr; gap: 0.5rem; margin-bottom: 0.5rem;"><input type="text" id="institution-type" placeholder="نوع المؤسسة (مسجد، دار...)"><input type="text" id="institution-name" placeholder="اسم المؤسسة (الصحابة...)"></div><input type="text" id="teacher-name" placeholder="اسم الأستاذ..."><button id="save-settings-btn" class="btn-success" style="width: 100%; margin-top: 0.5rem;"><i class="fas fa-save"></i> حفظ الإعدادات</button><div style="margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;"><button id="manage-statuses-btn" class="btn"><i class="fas fa-tags"></i> إدارة الحالات</button><button id="refresh-data-btn" class="btn-secondary"><i class="fas fa-sync-alt"></i> تحديث البيانات</button><button id="factory-reset-btn" class="btn-danger"><i class="fas fa-trash-alt"></i> إعادة ضبط</button></div></section>
         <section id="date-management"><h2><i class="fas fa-calendar-alt"></i> إدارة التاريخ</h2><div style="display: flex; gap: 0.5rem; align-items: center;"><input type="date" id="current-date" style="flex-grow: 1;"><button id="today-btn"><i class="fas fa-calendar-day"></i></button></div><div id="date-display" style="text-align: center; margin: 1rem 0; font-weight: bold; color: var(--primary-color);"></div><div style="display: flex; gap: 0.5rem;"><button id="prev-day-btn" style="flex: 1;"><i class="fas fa-arrow-right"></i> السابق</button><button id="next-day-btn" style="flex: 1;">التالي <i class="fas fa-arrow-left"></i></button></div></section>
         <section id="student-management"><h2><i class="fas fa-users"></i> الطلاب (<span id="registered-count">0</span>)</h2><div id="student-list-container"></div><div style="margin-top: 1rem;"><button id="manage-students-btn" class="btn"><i class="fas fa-user-edit"></i> إدارة قائمة الطلاب</button></div></section>
         <section id="actions"><h2><i class="fas fa-cogs"></i> الإجراءات والتقارير</h2><label for="message-template-select">قالب الرسالة:</label><select id="message-template-select"><option value="grouped" selected>حسب الحالة</option><option value="detailed">مفصل</option><option value="summary">ملخص</option></select><button id="generate-whatsapp-btn" class="btn-success" style="width: 100%; margin-top: 1rem;"><i class="fab fa-whatsapp"></i> إنشاء رسالة واتساب</button><div style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="print-report-btn" class="btn"><i class="fas fa-print"></i> طباعة تقرير</button><button id="export-csv-btn" class="btn"><i class="fas fa-file-csv"></i> تصدير Excel</button></div><div id="backup-restore-controls" style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="backup-btn" class="btn-secondary"><i class="fas fa-download"></i> تنزيل نسخة احتياطية</button><button id="restore-btn" class="btn-secondary"><i class="fas fa-upload"></i> استعادة نسخة</button><input type="file" id="restore-file-input" class="hidden" accept=".json">
 </div></section>
+        <section id="whatsapp-output-section" class="hidden"><h2>الرسالة المنسقة</h2><textarea id="whatsapp-output" readonly style="width: 100%; min-height: 150px; border: 1px solid #ccc; border-radius: 5px; padding: 0.5rem; font-family: monospace; font-size: 0.9rem; white-space: pre; background-color: #e9ecef; direction: ltr; text-align: left; margin-top: 1rem;"></textarea><div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;"><button id="copy-whatsapp-msg-btn" class="btn-info"><i class="fas fa-copy"></i> نسخ</button><button id="share-whatsapp-btn" style="background-color: #25d366; color: white;"><i class="fab fa-whatsapp"></i> مشاركة</button></div></section>
         <section id="statistics-section">
             <h2><i class="fas fa-chart-pie"></i> التقارير الإحصائية</h2>
             <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
@@ -74,11 +75,14 @@
             <button id="generate-stats-btn" class="btn" style="width: 100%;"><i class="fas fa-calculator"></i> إنشاء التقرير الإحصائي</button>
             <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1rem;">
                 <input type="number" id="stats-last-days" placeholder="عدد الأيام" style="width: 120px;">
-                <button id="generate-stats-last-days-btn" class="btn" style="flex-grow: 1;">تقرير لآخر 'ن' يوم(غير مكتكل الرجاء استعمال إنشاء التقرير الإحصائي)</button>
+                <button id="generate-stats-last-days-btn" class="btn" style="flex-grow: 1;">تقرير لآخر 'ن' يوم</button>
             </div>
             <div id="statistics-output" style="margin-top: 1rem; white-space: pre-wrap; background-color: #e9ecef; padding: 1rem; border-radius: 5px; direction: ltr; text-align: left; display: none;"></div>
+            <div id="stats-actions-container" style="display: none; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
+                <button id="copy-stats-btn" class="btn btn-info"><i class="fas fa-copy"></i> نسخ التقرير</button>
+                <button id="share-stats-btn" class="btn" style="background-color: #25d366; color: white;"><i class="fab fa-whatsapp"></i> مشاركة عبر واتساب</button>
+            </div>
         </section>
-        <section id="whatsapp-output-section" class="hidden"><h2>الرسالة المنسقة</h2><textarea id="whatsapp-output" readonly style="width: 100%; min-height: 150px; border: 1px solid #ccc; border-radius: 5px; padding: 0.5rem; font-family: monospace; font-size: 0.9rem; white-space: pre; background-color: #e9ecef; direction: ltr; text-align: left; margin-top: 1rem;"></textarea><div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;"><button id="copy-whatsapp-msg-btn" class="btn-info"><i class="fas fa-copy"></i> نسخ</button><button id="share-whatsapp-btn" style="background-color: #25d366; color: white;"><i class="fab fa-whatsapp"></i> مشاركة</button></div></section>
     </main>
 
     <!-- Modals & Sidebars -->
@@ -93,594 +97,455 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const $ = (id) => document.getElementById(id);
-        const allSelectors = {
-            studentListContainer: $("student-list-container"),
-            notificationsBtn: $("notifications-btn"),
-            notificationCountBadge: $("notification-count"),
-            notificationsList: $("notifications-list"),
-            notificationsSidebar: $("notifications-sidebar"),
-            closeNotifications: $("close-notifications"),
-            mainOverlay: $("main-overlay"),
-            mosqueNameInput: $("mosque-name"),
-            teacherNameInput: $("teacher-name"),
-            saveSettingsBtn: $("save-settings-btn"),
-            currentDateInput: $("current-date"),
-            dateDisplay: $("date-display"),
-            todayBtn: $("today-btn"),
-            prevDayBtn: $("prev-day-btn"),
-            nextDayBtn: $("next-day-btn"),
-            generateWhatsappBtn: $("generate-whatsapp-btn"),
-            whatsappOutputSection: $("whatsapp-output-section"),
-            whatsappOutput: $("whatsapp-output"),
-            copyWhatsappMsgBtn: $("copy-whatsapp-msg-btn"),
-            shareWhatsappBtn: $("share-whatsapp-btn"),
-            messageTemplateSelect: $("message-template-select"),
-            registeredCountEl: $("registered-count"),
-            backupBtn: $("backup-btn"),
-            restoreBtn: $("restore-btn"),
-            restoreFileInput: $("restore-file-input"),
-            manageStudentsBtn: $("manage-students-btn"),
-            studentModalOverlay: $("student-modal-overlay"),
-            masterStudentListContainer: $("master-student-list"),
-            addStudentForm: $("add-student-form"),
-            newStudentNameInput: $("new-student-name"),
-            closeStudentModalBtn: $("close-student-modal"),
-            manageStatusesBtn: $("manage-statuses-btn"),
-            statusesModalOverlay: $("statuses-modal-overlay"),
-            statusesListContainer: $("statuses-list"),
-            addStatusForm: $("add-status-form"),
-            newStatusLabelInput: $("new-status-label"),
-            newStatusSymbolInput: $("new-status-symbol"),
-            newStatusColorInput: $("new-status-color"),
-            closeStatusesModalBtn: $("close-statuses-modal"),
-            resetStatusesBtn: $("reset-statuses-btn"),
-            studentProfileModalOverlay: $("student-profile-modal-overlay"),
-            studentProfileTitle: $("student-profile-title"),
-            studentProfileContent: $("student-profile-content"),
-            closeStudentProfileModalBtn: $("close-student-profile-modal"),
-            printReportBtn: $("print-report-btn"),
-            exportCsvBtn: $("export-csv-btn"),
-            refreshDataBtn: $("refresh-data-btn"),
-            factoryResetBtn: $("factory-reset-btn"),
-            statsStartDate: $("stats-start-date"),
-            statsEndDate: $("stats-end-date"),
-            generateStatsBtn: $("generate-stats-btn"),
-            statisticsOutput: $("statistics-output")
-        };
-
-        const STORAGE_KEYS = {
-            MASTER_LIST: 'studentTracker_v2_masterList',
-            ALL_DATA: 'studentTracker_v2_allData',
-            STATUSES: 'studentTracker_v2_statuses',
-            SETTINGS: 'mosqueSettings_v2'
-        };
-
-        const DEFAULT_STATUSES = [
-            { key: 'excellent', label: 'أنجز بتميز.', symbol: '🌟', color: '#ffc107', notification: { enabled: true, days: 3 } },
-            { key: 'completed_full', label: 'أنجز المقرر (الدرس والمراجعة).', symbol: '✅', color: '#28a745', notification: { enabled: false, days: 2 } },
-            { key: 'completed_partial', label: 'أنجز جزء من المقرر.', symbol: '☑️', color: '#17a2b8', notification: { enabled: false, days: 2 } },
-            { key: 'absent_unexcused', label: 'غائب بدون عذر.', symbol: '🔴', color: '#dc3545', notification: { enabled: true, days: 2 } },
-            { key: 'absent_excused', label: 'مستأذن.', symbol: '🟠', color: '#fd7e14', notification: { enabled: false, days: 3 } },
-            { key: 'not_completed', label: 'لم ينجز المقرر.', symbol: '❌', color: '#6c757d', notification: { enabled: true, days: 2 } }
-        ];
-
-        let ATTENDANCE_OPTIONS = [];
-        let students = []; // This is the daily view model, a result of joining master list and daily data
-        let studentMasterList = []; // Array of {id, name}
-        let allDateData = {}; // Object of { date: { studentId: { status: [] } } }
-        let currentDate = '';
-
-        function saveState() {
-            if (currentDate) {
-                const todaysData = {};
-                students.forEach(student => {
-                    if (student.status && student.status.length > 0) {
-                        todaysData[student.id] = { status: student.status };
-                    }
-                });
-                if (Object.keys(todaysData).length > 0) {
-                    allDateData[currentDate] = todaysData;
-                } else {
-                    delete allDateData[currentDate]; // Clean up empty dates
-                }
-            }
-            localStorage.setItem(STORAGE_KEYS.ALL_DATA, JSON.stringify(allDateData));
-            localStorage.setItem(STORAGE_KEYS.MASTER_LIST, JSON.stringify(studentMasterList));
-            localStorage.setItem(STORAGE_KEYS.STATUSES, JSON.stringify(ATTENDANCE_OPTIONS));
-        }
-
-        function loadState() {
-            try {
-                const storedAllData = localStorage.getItem(STORAGE_KEYS.ALL_DATA);
-                const storedMasterList = localStorage.getItem(STORAGE_KEYS.MASTER_LIST);
-                const storedStatuses = localStorage.getItem(STORAGE_KEYS.STATUSES);
-                const storedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-
-                allDateData = storedAllData ? JSON.parse(storedAllData) : {};
-                studentMasterList = storedMasterList ? JSON.parse(storedMasterList) : [];
-                ATTENDANCE_OPTIONS = storedStatuses ? JSON.parse(storedStatuses) : JSON.parse(JSON.stringify(DEFAULT_STATUSES));
-                
-                ATTENDANCE_OPTIONS.forEach(opt => { 
-                    if (typeof opt.notification !== 'object') opt.notification = { enabled: false, days: 2 }; 
-                });
-
-                if (storedSettings) {
-                    const settings = JSON.parse(storedSettings);
-                    allSelectors.mosqueNameInput.value = settings.mosqueName || '';
-                    allSelectors.teacherNameInput.value = settings.teacherName || '';
-                }
-            } catch (e) {
-                console.error("Failed to load state from localStorage", e);
-                alert("فشل في تحميل البيانات المحفوظة. قد تكون تالفة.");
-            }
-        }
-
-        function saveSettings() {
-            const mosqueName = allSelectors.mosqueNameInput.value.trim();
-            const teacherName = allSelectors.teacherNameInput.value.trim();
-
-            // Update the input fields with the trimmed values so the user sees the change
-            allSelectors.mosqueNameInput.value = mosqueName;
-            allSelectors.teacherNameInput.value = teacherName;
-
-            const settings = { 
-                mosqueName: mosqueName, 
-                teacherName: teacherName 
-            };
-            localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
-            alert('تم حفظ الإعدادات!');
-        }
-
-        function setCurrentDate(dateString) {
-            if (!dateString) return;
-            saveState();
-            currentDate = dateString;
-            allSelectors.currentDateInput.value = currentDate;
-            loadStudentsForDate(currentDate);
-            updateDateDisplay();
-            renderStudents();
-            checkAndDisplayNotifications();
-        }
-
-        function loadStudentsForDate(dateString) {
-            const todaysData = allDateData[dateString] || {};
-            students = studentMasterList.map(masterStudent => {
-                const studentDataForToday = todaysData[masterStudent.id] || { status: [] };
-                return {
-                    ...masterStudent, // Contains id and name
-                    status: JSON.parse(JSON.stringify(studentDataForToday.status)) // Deep copy
+                const allSelectors = {
+                    studentListContainer: $("student-list-container"),
+                    notificationsBtn: $("notifications-btn"),
+                    notificationCountBadge: $("notification-count"),
+                    notificationsList: $("notifications-list"),
+                    notificationsSidebar: $("notifications-sidebar"),
+                    closeNotifications: $("close-notifications"),
+                    mainOverlay: $("main-overlay"),
+                    institutionTypeInput: $("institution-type"),
+                    institutionNameInput: $("institution-name"),
+                    teacherNameInput: $("teacher-name"),
+                    saveSettingsBtn: $("save-settings-btn"),
+                    currentDateInput: $("current-date"),
+                    dateDisplay: $("date-display"),
+                    todayBtn: $("today-btn"),
+                    prevDayBtn: $("prev-day-btn"),
+                    nextDayBtn: $("next-day-btn"),
+                    generateWhatsappBtn: $("generate-whatsapp-btn"),
+                    whatsappOutputSection: $("whatsapp-output-section"),
+                    whatsappOutput: $("whatsapp-output"),
+                    copyWhatsappMsgBtn: $("copy-whatsapp-msg-btn"),
+                    shareWhatsappBtn: $("share-whatsapp-btn"),
+                    messageTemplateSelect: $("message-template-select"),
+                    registeredCountEl: $("registered-count"),
+                    backupBtn: $("backup-btn"),
+                    restoreBtn: $("restore-btn"),
+                    restoreFileInput: $("restore-file-input"),
+                    manageStudentsBtn: $("manage-students-btn"),
+                    studentModalOverlay: $("student-modal-overlay"),
+                    masterStudentListContainer: $("master-student-list"),
+                    addStudentForm: $("add-student-form"),
+                    newStudentNameInput: $("new-student-name"),
+                    closeStudentModalBtn: $("close-student-modal"),
+                    manageStatusesBtn: $("manage-statuses-btn"),
+                    statusesModalOverlay: $("statuses-modal-overlay"),
+                    statusesListContainer: $("statuses-list"),
+                    addStatusForm: $("add-status-form"),
+                    newStatusLabelInput: $("new-status-label"),
+                    newStatusSymbolInput: $("new-status-symbol"),
+                    newStatusColorInput: $("new-status-color"),
+                    closeStatusesModalBtn: $("close-statuses-modal"),
+                    resetStatusesBtn: $("reset-statuses-btn"),
+                    studentProfileModalOverlay: $("student-profile-modal-overlay"),
+                    studentProfileTitle: $("student-profile-title"),
+                    studentProfileContent: $("student-profile-content"),
+                    closeStudentProfileModalBtn: $("close-student-profile-modal"),
+                    printReportBtn: $("print-report-btn"),
+                    exportCsvBtn: $("export-csv-btn"),
+                    refreshDataBtn: $("refresh-data-btn"),
+                    factoryResetBtn: $("factory-reset-btn"),
+                    statsStartDate: $("stats-start-date"),
+                    statsEndDate: $("stats-end-date"),
+                    generateStatsBtn: $("generate-stats-btn"),
+                    statisticsOutput: $("statistics-output"),
+                    statsLastDays: $("stats-last-days"),
+                    generateStatsLastDaysBtn: $("generate-stats-last-days-btn"),
+                    statsActionsContainer: $("stats-actions-container"),
+                    copyStatsBtn: $("copy-stats-btn"),
+                    shareStatsBtn: $("share-stats-btn")
                 };
-            });
-        }
-
-        function updateDateDisplay() {
-            const dateObj = new Date(currentDate + 'T00:00:00');
-            const today = new Date().toISOString().split('T')[0];
-            let formattedDate = dateObj.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            if (currentDate === today) formattedDate = `<span class="today-indicator">اليوم</span> ${formattedDate}`;
-            allSelectors.dateDisplay.innerHTML = formattedDate;
-        }
-
-        function navigateDate(direction) {
-            const parts = currentDate.split('-').map(Number);
-            // Month is 0-indexed in JavaScript Date, so parts[1] - 1
-            const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
-            dateObj.setDate(dateObj.getDate() + direction);
-            
-            const year = dateObj.getFullYear();
-            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const day = String(dateObj.getDate()).padStart(2, '0');
-            const newDate = `${year}-${month}-${day}`;
-
-            setCurrentDate(newDate);
-        }
-
-        function toggleStudentStatus(studentId, statusKey) {
-            const student = students.find(s => s.id === studentId);
-            if (!student) return;
-            if (!student.status) student.status = [];
-
-            const isAlreadyActive = student.status[0] === statusKey;
-
-            if (isAlreadyActive) {
-                // If the clicked button is already the active one, deactivate it.
-                student.status = [];
-            } else {
-                // Otherwise, set the clicked button as the one and only active status.
-                student.status = [statusKey];
-            }
-
-            saveState();
-            renderStudents();
-            checkAndDisplayNotifications();
-        }
-
-        function renderStudents() {
-            allSelectors.studentListContainer.innerHTML = '';
-            allSelectors.registeredCountEl.textContent = studentMasterList.length;
-            students.forEach(student => {
-                const studentCard = document.createElement('div');
-                studentCard.className = 'student-card';
-                const studentNameEl = document.createElement('div');
-                studentNameEl.className = 'student-name-link';
-                studentNameEl.textContent = student.name;
-                studentNameEl.onclick = () => openStudentProfile(student.id);
-                const controlsContainer = document.createElement('div');
-                controlsContainer.className = 'attendance-controls';
-                ATTENDANCE_OPTIONS.forEach(option => {
-                    const btn = document.createElement('button');
-                    btn.className = 'attendance-btn';
-                    const isActive = student.status && student.status.includes(option.key);
-                    
-                    btn.style.backgroundColor = isActive ? option.color : '#cccccc'; // Lighter grey for inactive
-                    btn.style.color = 'white';
-                    
-                    if (isActive) {
-                        btn.classList.add('active');
-                    }
-                    
-                    btn.innerHTML = `${option.symbol} ${option.label}`;
-                    btn.onclick = () => toggleStudentStatus(student.id, option.key);
-                    controlsContainer.appendChild(btn);
-                });
-                studentCard.appendChild(studentNameEl);
-                studentCard.appendChild(controlsContainer);
-                allSelectors.studentListContainer.appendChild(studentCard);
-            });
-        }
-
-        function openModal(modalOverlay) { modalOverlay.classList.add('visible'); allSelectors.mainOverlay.classList.add('visible'); }
-        function closeModal(modalOverlay) { modalOverlay.classList.remove('visible'); allSelectors.mainOverlay.classList.remove('visible'); }
-
-        function renderMasterStudentList() {
-            allSelectors.masterStudentListContainer.innerHTML = '';
-            studentMasterList.forEach(student => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'master-student-item';
-                itemDiv.style = 'padding: 0.5rem; border-bottom: 1px solid #eee;';
-                const viewMode = document.createElement('div');
-                viewMode.className = 'view-mode';
-                viewMode.innerHTML = `<span>${student.name}</span><div><button class="btn-secondary btn-edit" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">تعديل</button><button class="btn-danger btn-delete" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حذف</button></div>`;
-                const editMode = document.createElement('div');
-                editMode.className = 'edit-mode';
-                editMode.style.display = 'none';
-                editMode.innerHTML = `<input type="text" value="${student.name}" style="flex-grow: 1;"><div><button class="btn-success btn-save" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حفظ</button><button class="btn-secondary btn-cancel" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">إلغاء</button></div>`;
-                itemDiv.appendChild(viewMode);
-                itemDiv.appendChild(editMode);
-                allSelectors.masterStudentListContainer.appendChild(itemDiv);
-                itemDiv.querySelector('.btn-edit').onclick = () => { viewMode.style.display = 'none'; editMode.style.display = 'flex'; };
-                itemDiv.querySelector('.btn-cancel').onclick = () => { viewMode.style.display = 'flex'; editMode.style.display = 'none'; };
-                itemDiv.querySelector('.btn-delete').onclick = () => deleteFromMasterList(student.id);
-                itemDiv.querySelector('.btn-save').onclick = () => handleEditStudent(student.id, itemDiv.querySelector('input').value.trim());
-            });
-        }
-
-        function handleEditStudent(studentId, newName) {
-            if (!newName) { renderMasterStudentList(); return; }
-            const studentToUpdate = studentMasterList.find(s => s.id === studentId);
-            if (!studentToUpdate) return;
-
-            const isDuplicate = studentMasterList.some(s => s.name === newName && s.id !== studentId);
-            if (isDuplicate) {
-                alert('اسم الطالب موجود بالفعل.');
-                return;
-            }
-
-            studentToUpdate.name = newName;
-            saveState();
-            loadStudentsForDate(currentDate);
-            renderStudents();
-            renderMasterStudentList();
-        }
-
-        function deleteFromMasterList(studentId) {
-            const studentToDelete = studentMasterList.find(s => s.id === studentId);
-            if (!studentToDelete) return;
-
-            if (confirm(`هل أنت متأكد من حذف الطالب "${studentToDelete.name}"? سيتم حذف جميع سجلاته.`)) {
-                studentMasterList = studentMasterList.filter(s => s.id !== studentId);
-                Object.keys(allDateData).forEach(date => {
-                    delete allDateData[date][studentId];
-                });
-                saveState();
-                loadStudentsForDate(currentDate);
-                renderStudents();
-                renderMasterStudentList();
-            }
-        }
-
-        function renderStatusesList() {
-            allSelectors.statusesListContainer.innerHTML = '';
-            ATTENDANCE_OPTIONS.forEach(status => {
-                const itemWrapper = document.createElement('div');
-                itemWrapper.style.padding = '0.5rem';
-                itemWrapper.style.borderBottom = '1px solid #eee';
-                const statusRow = document.createElement('div');
-                statusRow.className = 'status-item-row';
-
-                const isProtected = status.key === 'absent_unexcused' || status.key === 'absent_excused';
-                const deleteBtnHTML = isProtected
-                    ? `<button class="btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem; opacity: 0.6; cursor: not-allowed;" disabled>أساسي</button>`
-                    : `<button class="btn-danger btn-delete-status" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حذف</button>`;
-
-                statusRow.innerHTML = `<div><span style="display: inline-block; width: 20px; height: 20px; background-color: ${status.color}; border-radius: 50%; margin-left: 10px;"></span><strong>${status.label}</strong> (${status.symbol})</div><div><button class="btn-secondary btn-notif-settings" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;"><i class="fas fa-cog"></i></button>${deleteBtnHTML}</div>`;
-                
-                const settingsDiv = document.createElement('div');
-                settingsDiv.className = 'notification-settings-panel';
-                settingsDiv.style.display = 'none';
-                settingsDiv.style.padding = '0.5rem';
-                settingsDiv.style.marginTop = '0.5rem';
-                settingsDiv.style.backgroundColor = '#f8f9fa';
-                settingsDiv.innerHTML = `<label style="display: flex; align-items: center; gap: 0.5rem;"><input type="checkbox" class="notif-enabled" ${status.notification.enabled ? 'checked' : ''}> تفعيل الإشعار لهذه الحالة</label><div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;"><span>تنبيه بعد:</span><input type="number" class="notif-days" value="${status.notification.days}" min="2" style="width: 60px;"><span>أيام متتالية</span></div>`;
-                
-                itemWrapper.appendChild(statusRow);
-                itemWrapper.appendChild(settingsDiv);
-                allSelectors.statusesListContainer.appendChild(itemWrapper);
-                
-                itemWrapper.querySelector('.btn-notif-settings').onclick = () => { settingsDiv.style.display = settingsDiv.style.display === 'none' ? 'block' : 'none'; };
-                
-                if (!isProtected) {
-                    itemWrapper.querySelector('.btn-delete-status').onclick = () => deleteStatus(status.key);
-                }
-
-                const enabledCheckbox = itemWrapper.querySelector('.notif-enabled');
-                const daysInput = itemWrapper.querySelector('.notif-days');
-                enabledCheckbox.onchange = () => { status.notification.enabled = enabledCheckbox.checked; saveState(); };
-                daysInput.onchange = () => { status.notification.days = parseInt(daysInput.value) || 2; saveState(); };
-            });
-        }
-
-        function deleteStatus(keyToDelete) {
-            if (ATTENDANCE_OPTIONS.length <= 2) { alert('يجب أن تبقى حالتان على الأقل.'); return; }
-            if (confirm('هل أنت متأكد من حذف هذه الحالة؟')) {
-                ATTENDANCE_OPTIONS = ATTENDANCE_OPTIONS.filter(s => s.key !== keyToDelete);
-                saveState();
-                renderStatusesList();
-            }
-        }
         
-        function resetStatusesToDefault() {
-            if (confirm('هل أنت متأكد؟ سيتم استبدال قائمتك الحالية للحالات بالقائمة الافتراضية.')) {
-                ATTENDANCE_OPTIONS = JSON.parse(JSON.stringify(DEFAULT_STATUSES));
-                saveState();
-                renderStatusesList();
-                renderStudents();
-            }
-        }
-
-        function openStudentProfile(studentId) {
-            const student = studentMasterList.find(s => s.id === studentId);
-            if (!student) return;
-            allSelectors.studentProfileTitle.innerHTML = `<i class="fas fa-user-circle"></i> سجل الطالب: ${student.name}`;
-            const history = getStudentHistory(studentId);
-            let contentHTML = '<div style="max-height: 40vh; overflow-y: auto;">';
-            if (history.length > 0) {
-                history.forEach(record => {
-                    const symbols = record.statuses.map(key => ATTENDANCE_OPTIONS.find(opt => opt.key === key)?.symbol || '').join(' ');
-                    contentHTML += `<div style="padding: 0.5rem; border-bottom: 1px solid #eee;"><strong>${new Date(record.date + 'T00:00:00').toLocaleDateString('ar-EG')}</strong>: ${symbols}</div>`;
-                });
-            } else { contentHTML += '<p>لا توجد سجلات لهذا الطالب.</p>'; }
-            contentHTML += '</div>';
-            allSelectors.studentProfileContent.innerHTML = contentHTML;
-            openModal(allSelectors.studentProfileModalOverlay);
-        }
-
-        function getStudentHistory(studentId) {
-            const history = [];
-            const sortedDates = Object.keys(allDateData).sort((a, b) => new Date(b) - new Date(a));
-            sortedDates.forEach(date => {
-                if (allDateData[date][studentId] && allDateData[date][studentId].status.length > 0) {
-                    history.push({ date: date, statuses: allDateData[date][studentId].status });
-                }
-            });
-            return history;
-        }
-
-        function checkAndDisplayNotifications() {
-            const notifications = [];
-            const sortedDates = Object.keys(allDateData).sort((a,b) => new Date(b) - new Date(a));
-            if (sortedDates.length < 1) { renderNotifications([]); return; }
-            const activeNotifRules = ATTENDANCE_OPTIONS.filter(opt => opt.notification?.enabled);
-            studentMasterList.forEach(student => {
-                activeNotifRules.forEach(rule => {
-                    let consecutiveCount = 0;
-                    for (const date of sortedDates) {
-                        const studentData = allDateData[date]?.[student.id];
-                        if (studentData?.status.includes(rule.key)) {
-                            consecutiveCount++;
-                        } else {
-                            break;
-                        }
-                    }
-                    if (consecutiveCount >= rule.notification.days) {
-                        notifications.push({ type: 'warning', title: `تكرار حالة "${rule.label}"`, desc: `الطالب ${student.name} لديه هذه الحالة لـ ${consecutiveCount} أيام متتالية.` });
-                    }
-                });
-            });
-            renderNotifications(notifications);
-        }
-
-        function renderNotifications(notifications) {
-            allSelectors.notificationsList.innerHTML = '';
-            allSelectors.notificationCountBadge.textContent = notifications.length;
-            if (notifications.length === 0) {
-                allSelectors.notificationsList.innerHTML = '<p style="text-align: center; color: #6c757d;">لا توجد إشعارات.</p>';
-                allSelectors.notificationCountBadge.style.display = 'none';
-                return;
-            }
-            allSelectors.notificationCountBadge.style.display = 'flex';
-            notifications.forEach(notif => {
-                const item = document.createElement('div');
-                item.className = 'notification-item';
-                item.innerHTML = `<div class="notification-icon" style="color: var(--warning-color);"><i class="fas fa-exclamation-triangle"></i></div><div class="notification-content"><div class="notification-title">${notif.title}</div><div>${notif.desc}</div></div>`;
-                allSelectors.notificationsList.appendChild(item);
-            });
-        }
-
-        function generatePrintView() {
-            const settings = { mosqueName: allSelectors.mosqueNameInput.value, teacherName: allSelectors.teacherNameInput.value };
-            const dateObj = new Date(currentDate + 'T00:00:00');
-            const formattedDate = dateObj.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-            const groupedByStatus = {};
-            const notRecorded = [];
-
-            students.forEach(student => {
-                if (student.status && student.status.length > 0) {
-                    const statusKey = student.status[0];
-                    if (!groupedByStatus[statusKey]) {
-                        groupedByStatus[statusKey] = [];
-                    }
-                    groupedByStatus[statusKey].push(student.name);
-                } else {
-                    notRecorded.push(student.name);
-                }
-            });
-
-            let summaryHtml = '<h2>ملخص الحالات</h2>';
-            if (Object.keys(groupedByStatus).length === 0 && notRecorded.length === students.length) {
-                summaryHtml += '<p style="text-align:center;">لم يتم تسجيل أي حالة لأي طالب.</p>';
-            } else {
-                ATTENDANCE_OPTIONS.forEach(option => {
-                    const statusKey = option.key;
-                    if (groupedByStatus[statusKey]) {
-                        summaryHtml += `<h4>${option.symbol} ${option.label} (${groupedByStatus[statusKey].length})</h4>`;
-                        summaryHtml += '<ul>';
-                        groupedByStatus[statusKey].sort((a, b) => a.localeCompare(b)).forEach(name => {
-                            summaryHtml += `<li>${name}</li>`;
+                const STORAGE_KEYS = {
+                    MASTER_LIST: 'studentTracker_v2_masterList',
+                    ALL_DATA: 'studentTracker_v2_allData',
+                    STATUSES: 'studentTracker_v2_statuses',
+                    SETTINGS: 'mosqueSettings_v2'
+                };
+        
+                const DEFAULT_STATUSES = [
+                    { key: 'excellent', label: 'أنجز بتميز.', symbol: '🌟', color: '#ffc107', notification: { enabled: true, days: 3 } },
+                    { key: 'completed_full', label: 'أنجز المقرر (الدرس والمراجعة).', symbol: '✅', color: '#28a745', notification: { enabled: false, days: 2 } },
+                    { key: 'completed_partial', label: 'أنجز جزء من المقرر.', symbol: '☑️', color: '#17a2b8', notification: { enabled: false, days: 2 } },
+                    { key: 'absent_unexcused', label: 'غائب بدون عذر.', symbol: '🔴', color: '#dc3545', notification: { enabled: true, days: 2 } },
+                    { key: 'absent_excused', label: 'مستأذن.', symbol: '🟠', color: '#fd7e14', notification: { enabled: false, days: 3 } },
+                    { key: 'not_completed', label: 'لم ينجز المقرر.', symbol: '❌', color: '#6c757d', notification: { enabled: true, days: 2 } }
+                ];
+        
+                let ATTENDANCE_OPTIONS = [];
+                let students = []; // This is the daily view model, a result of joining master list and daily data
+                let studentMasterList = []; // Array of {id, name}
+                let allDateData = {}; // Object of { date: { studentId: { status: [] } } }
+                let currentDate = '';
+        
+                function saveState() {
+                    if (currentDate) {
+                        const todaysData = {};
+                        students.forEach(student => {
+                            if (student.status && student.status.length > 0) {
+                                todaysData[student.id] = { status: student.status };
+                            }
                         });
-                        summaryHtml += '</ul>';
-                    }
-                });
-
-                if (notRecorded.length > 0) {
-                    summaryHtml += `<h4>لم يتم التسجيل (${notRecorded.length})</h4>`;
-                    summaryHtml += '<ul>';
-                    notRecorded.sort((a, b) => a.localeCompare(b)).forEach(name => {
-                        summaryHtml += `<li>${name}</li>`;
-                    });
-                    summaryHtml += '</ul>';
-                }
-            }
-            summaryHtml += '<hr style="margin: 2rem 0;">';
-
-            let reportHtml = `
-                <html>
-                <head>
-                    <title>تقرير إنجاز الطلاب</title>
-                    <meta charset="UTF-8">
-                    <style>
-                        body { font-family: 'Tajawal', sans-serif; direction: rtl; }
-                        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
-                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                        th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
-                        th { background-color: #f2f2f2; }
-                        h1, h2, h3 { text-align: center; }
-                        h4 { border-bottom: 1px solid #eee; padding-bottom: 5px; color: #333; }
-                        ul { padding-right: 20px; list-style-type: circle; }
-                    </style>
-                </head>
-                <body>
-                    <h1>تقرير إنجاز الطلاب</h1>
-                    <h2>مسجد: ${settings.mosqueName || 'غير محدد'} | الأستاذ: ${settings.teacherName || 'غير محدد'}</h2>
-                    <h3>تاريخ: ${formattedDate}</h3>
-                    ${summaryHtml}
-                    <h2 style="margin-top: 2rem;">التفاصيل الكاملة</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>اسم الطالب</th>
-                                <th>الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-
-            const allStudentsSorted = [...students].sort((a, b) => a.name.localeCompare(b.name));
-            
-            if (allStudentsSorted.length > 0) {
-                allStudentsSorted.forEach(student => {
-                    const statusKey = student.status && student.status[0];
-                    let statusText = 'لم يتم التسجيل';
-                    if(statusKey){
-                        const option = ATTENDANCE_OPTIONS.find(opt => opt.key === statusKey);
-                        if(option) statusText = `${option.symbol} ${option.label}`;
-                    }
-                    
-                    reportHtml += `
-                        <tr>
-                            <td>${student.name}</td>
-                            <td>${statusText}</td>
-                        </tr>
-                    `;
-                });
-            } else {
-                reportHtml += '<tr><td colspan="2" style="text-align:center;">لا يوجد طلاب مسجلون.</td></tr>';
-            }
-
-            reportHtml += `
-                        </tbody>
-                    </table>
-                </body>
-                </html>
-            `;
-
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(reportHtml);
-            printWindow.document.close();
-            setTimeout(() => { // Timeout to ensure content is loaded
-                printWindow.print();
-            }, 500);
-        }
-
-        function generateWhatsappMessage() {
-            const templates = {
-                standard: (data) => {
-                    let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*مسجد ${data.settings.mosqueName || ''}*\n*تاريخ: ${new Date(data.date).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}*`;
-
-                    if (data.students.length === 0) {
-                        return header + '\n\nلا يوجد طلاب مسجلون في القائمة.';
-                    }
-
-                    const absenceKeys = ['absent_unexcused', 'absent_excused'];
-                    const presentCount = data.students.filter(s => s.status.length > 0 && !s.status.some(key => absenceKeys.includes(key))).length;
-
-                    let msg = header + `\n\n*عدد الحضور: ${presentCount}* من ${data.students.length}\n\n*--- سجل الطلاب ---*\n`; // Added subheading
-
-                    data.students.forEach((student, i) => {
-                        const statusKey = student.status && student.status[0];
-                        let statusText;
-
-                        if (statusKey) {
-                            const option = ATTENDANCE_OPTIONS.find(opt => opt.key === statusKey);
-                            statusText = option ? `${option.symbol} ${option.label}` : 'حالة غير معروفة';
+                        if (Object.keys(todaysData).length > 0) {
+                            allDateData[currentDate] = todaysData;
                         } else {
-                            statusText = 'لم يتم التسجيل';
+                            delete allDateData[currentDate]; // Clean up empty dates
                         }
-                        
-                        msg += `${i + 1}. ${student.name}\n   ${statusText}\n`;
-                    });
-
-                    return msg;
-                },
-                grouped: (data) => {
-                    let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*مسجد ${data.settings.mosqueName || ''}*\n*تاريخ: ${new Date(data.date).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}*`;
-            
-                    if (data.students.length === 0) {
-                        return header + '\n\nلا يوجد طلاب مسجلون في القائمة.';
                     }
-
-                    // --- ADDED: Attendance Count Logic ---
-                    const absenceKeys = ['absent_unexcused', 'absent_excused'];
-                    const presentCount = data.students.filter(s => s.status.length > 0 && !s.status.some(key => absenceKeys.includes(key))).length;
-                    let msg = header + `\n\n*عدد الحضور: ${presentCount}* من ${data.students.length}\n`;
-                    // --- END ADDED ---
-
+                    localStorage.setItem(STORAGE_KEYS.ALL_DATA, JSON.stringify(allDateData));
+                    localStorage.setItem(STORAGE_KEYS.MASTER_LIST, JSON.stringify(studentMasterList));
+                    localStorage.setItem(STORAGE_KEYS.STATUSES, JSON.stringify(ATTENDANCE_OPTIONS));
+                }
+        
+                function loadState() {
+                    try {
+                        const storedAllData = localStorage.getItem(STORAGE_KEYS.ALL_DATA);
+                        const storedMasterList = localStorage.getItem(STORAGE_KEYS.MASTER_LIST);
+                        const storedStatuses = localStorage.getItem(STORAGE_KEYS.STATUSES);
+                        const storedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+        
+                        allDateData = storedAllData ? JSON.parse(storedAllData) : {};
+                        studentMasterList = storedMasterList ? JSON.parse(storedMasterList) : [];
+                        ATTENDANCE_OPTIONS = storedStatuses ? JSON.parse(storedStatuses) : JSON.parse(JSON.stringify(DEFAULT_STATUSES));
+                        
+                        ATTENDANCE_OPTIONS.forEach(opt => { 
+                            if (typeof opt.notification !== 'object') opt.notification = { enabled: false, days: 2 }; 
+                        });
+        
+                        if (storedSettings) {
+                            let settings = JSON.parse(storedSettings);
+                            // Migration from old settings format
+                            if (settings.mosqueName && !settings.institutionName) {
+                                settings.institutionName = settings.mosqueName;
+                                settings.institutionType = 'مسجد'; // Default type for migration
+                                delete settings.mosqueName;
+                                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings)); // Re-save in new format
+                            }
+                            allSelectors.institutionTypeInput.value = settings.institutionType || '';
+                            allSelectors.institutionNameInput.value = settings.institutionName || '';
+                            allSelectors.teacherNameInput.value = settings.teacherName || '';
+                        }
+                    } catch (e) {
+                        console.error("Failed to load state from localStorage", e);
+                        alert("فشل في تحميل البيانات المحفوظة. قد تكون تالفة.");
+                    }
+                }
+        
+                function saveSettings() {
+                    const institutionType = allSelectors.institutionTypeInput.value.trim();
+                    const institutionName = allSelectors.institutionNameInput.value.trim();
+                    const teacherName = allSelectors.teacherNameInput.value.trim();
+        
+                    allSelectors.institutionTypeInput.value = institutionType;
+                    allSelectors.institutionNameInput.value = institutionName;
+                    allSelectors.teacherNameInput.value = teacherName;
+        
+                    const settings = { 
+                        institutionType: institutionType,
+                        institutionName: institutionName, 
+                        teacherName: teacherName 
+                    };
+                    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+                    alert('تم حفظ الإعدادات!');
+                }
+        
+                function setCurrentDate(dateString) {
+                    if (!dateString) return;
+                    saveState();
+                    currentDate = dateString;
+                    allSelectors.currentDateInput.value = currentDate;
+                    loadStudentsForDate(currentDate);
+                    updateDateDisplay();
+                    renderStudents();
+                    checkAndDisplayNotifications();
+                }
+        
+                function loadStudentsForDate(dateString) {
+                    const todaysData = allDateData[dateString] || {};
+                    students = studentMasterList.map(masterStudent => {
+                        const studentDataForToday = todaysData[masterStudent.id] || { status: [] };
+                        return {
+                            ...masterStudent, // Contains id and name
+                            status: JSON.parse(JSON.stringify(studentDataForToday.status)) // Deep copy
+                        };
+                    });
+                }
+        
+                function updateDateDisplay() {
+                    const dateObj = new Date(currentDate + 'T00:00:00');
+                    const today = new Date().toISOString().split('T')[0];
+                    let formattedDate = dateObj.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    if (currentDate === today) formattedDate = `<span class="today-indicator">اليوم</span> ${formattedDate}`;
+                    allSelectors.dateDisplay.innerHTML = formattedDate;
+                }
+        
+                function navigateDate(direction) {
+                    const parts = currentDate.split('-').map(Number);
+                    // Month is 0-indexed in JavaScript Date, so parts[1] - 1
+                    const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+                    dateObj.setDate(dateObj.getDate() + direction);
+                    
+                    const year = dateObj.getFullYear();
+                    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                    const day = String(dateObj.getDate()).padStart(2, '0');
+                    const newDate = `${year}-${month}-${day}`;
+        
+                    setCurrentDate(newDate);
+                }
+        
+                function toggleStudentStatus(studentId, statusKey) {
+                    const student = students.find(s => s.id === studentId);
+                    if (!student) return;
+                    if (!student.status) student.status = [];
+        
+                    const isAlreadyActive = student.status[0] === statusKey;
+        
+                    if (isAlreadyActive) {
+                        // If the clicked button is already the active one, deactivate it.
+                        student.status = [];
+                    } else {
+                        // Otherwise, set the clicked button as the one and only active status.
+                        student.status = [statusKey];
+                    }
+        
+                    saveState();
+                    renderStudents();
+                    checkAndDisplayNotifications();
+                }
+        
+                function renderStudents() {
+                    allSelectors.studentListContainer.innerHTML = '';
+                    allSelectors.registeredCountEl.textContent = studentMasterList.length;
+                    students.forEach(student => {
+                        const studentCard = document.createElement('div');
+                        studentCard.className = 'student-card';
+                        const studentNameEl = document.createElement('div');
+                        studentNameEl.className = 'student-name-link';
+                        studentNameEl.textContent = student.name;
+                        studentNameEl.onclick = () => openStudentProfile(student.id);
+                        const controlsContainer = document.createElement('div');
+                        controlsContainer.className = 'attendance-controls';
+                        ATTENDANCE_OPTIONS.forEach(option => {
+                            const btn = document.createElement('button');
+                            btn.className = 'attendance-btn';
+                            const isActive = student.status && student.status.includes(option.key);
+                            
+                            btn.style.backgroundColor = isActive ? option.color : '#cccccc'; // Lighter grey for inactive
+                            btn.style.color = 'white';
+                            
+                            if (isActive) {
+                                btn.classList.add('active');
+                            }
+                            
+                            btn.innerHTML = `${option.symbol} ${option.label}`;
+                            btn.onclick = () => toggleStudentStatus(student.id, option.key);
+                            controlsContainer.appendChild(btn);
+                        });
+                        studentCard.appendChild(studentNameEl);
+                        studentCard.appendChild(controlsContainer);
+                        allSelectors.studentListContainer.appendChild(studentCard);
+                    });
+                }
+        
+                function openModal(modalOverlay) { modalOverlay.classList.add('visible'); allSelectors.mainOverlay.classList.add('visible'); }
+                function closeModal(modalOverlay) { modalOverlay.classList.remove('visible'); allSelectors.mainOverlay.classList.remove('visible'); }
+        
+                function renderMasterStudentList() {
+                    allSelectors.masterStudentListContainer.innerHTML = '';
+                    studentMasterList.forEach(student => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'master-student-item';
+                        itemDiv.style = 'padding: 0.5rem; border-bottom: 1px solid #eee;';
+                        const viewMode = document.createElement('div');
+                        viewMode.className = 'view-mode';
+                        viewMode.innerHTML = `<span>${student.name}</span><div><button class="btn-secondary btn-edit" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">تعديل</button><button class="btn-danger btn-delete" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حذف</button></div>`;
+                        const editMode = document.createElement('div');
+                        editMode.className = 'edit-mode';
+                        editMode.style.display = 'none';
+                        editMode.innerHTML = `<input type="text" value="${student.name}" style="flex-grow: 1;"><div><button class="btn-success btn-save" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حفظ</button><button class="btn-secondary btn-cancel" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">إلغاء</button></div>`;
+                        itemDiv.appendChild(viewMode);
+                        itemDiv.appendChild(editMode);
+                        allSelectors.masterStudentListContainer.appendChild(itemDiv);
+                        itemDiv.querySelector('.btn-edit').onclick = () => { viewMode.style.display = 'none'; editMode.style.display = 'flex'; };
+                        itemDiv.querySelector('.btn-cancel').onclick = () => { viewMode.style.display = 'flex'; editMode.style.display = 'none'; };
+                        itemDiv.querySelector('.btn-delete').onclick = () => deleteFromMasterList(student.id);
+                        itemDiv.querySelector('.btn-save').onclick = () => handleEditStudent(student.id, itemDiv.querySelector('input').value.trim());
+                    });
+                }
+        
+                function handleEditStudent(studentId, newName) {
+                    if (!newName) { renderMasterStudentList(); return; }
+                    const studentToUpdate = studentMasterList.find(s => s.id === studentId);
+                    if (!studentToUpdate) return;
+        
+                    const isDuplicate = studentMasterList.some(s => s.name === newName && s.id !== studentId);
+                    if (isDuplicate) {
+                        alert('اسم الطالب موجود بالفعل.');
+                        return;
+                    }
+        
+                    studentToUpdate.name = newName;
+                    saveState();
+                    loadStudentsForDate(currentDate);
+                    renderStudents();
+                    renderMasterStudentList();
+                }
+        
+                function deleteFromMasterList(studentId) {
+                    const studentToDelete = studentMasterList.find(s => s.id === studentId);
+                    if (!studentToDelete) return;
+        
+                    if (confirm(`هل أنت متأكد من حذف الطالب "${studentToDelete.name}"? سيتم حذف جميع سجلاته.`)) {
+                        studentMasterList = studentMasterList.filter(s => s.id !== studentId);
+                        Object.keys(allDateData).forEach(date => {
+                            delete allDateData[date][studentId];
+                        });
+                        saveState();
+                        loadStudentsForDate(currentDate);
+                        renderStudents();
+                        renderMasterStudentList();
+                    }
+                }
+        
+                function renderStatusesList() {
+                    allSelectors.statusesListContainer.innerHTML = '';
+                    ATTENDANCE_OPTIONS.forEach(status => {
+                        const itemWrapper = document.createElement('div');
+                        itemWrapper.style.padding = '0.5rem';
+                        itemWrapper.style.borderBottom = '1px solid #eee';
+                        const statusRow = document.createElement('div');
+                        statusRow.className = 'status-item-row';
+        
+                        const isProtected = status.key === 'absent_unexcused' || status.key === 'absent_excused';
+                        const deleteBtnHTML = isProtected
+                            ? `<button class="btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem; opacity: 0.6; cursor: not-allowed;" disabled>أساسي</button>`
+                            : `<button class="btn-danger btn-delete-status" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حذف</button>`;
+        
+                        statusRow.innerHTML = `<div><span style="display: inline-block; width: 20px; height: 20px; background-color: ${status.color}; border-radius: 50%; margin-left: 10px;"></span><strong>${status.label}</strong> (${status.symbol})</div><div><button class="btn-secondary btn-notif-settings" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;"><i class="fas fa-cog"></i></button>${deleteBtnHTML}</div>`;
+                        
+                        const settingsDiv = document.createElement('div');
+                        settingsDiv.className = 'notification-settings-panel';
+                        settingsDiv.style.display = 'none';
+                        settingsDiv.style.padding = '0.5rem';
+                        settingsDiv.style.marginTop = '0.5rem';
+                        settingsDiv.style.backgroundColor = '#f8f9fa';
+                        settingsDiv.innerHTML = `<label style="display: flex; align-items: center; gap: 0.5rem;"><input type="checkbox" class="notif-enabled" ${status.notification.enabled ? 'checked' : ''}> تفعيل الإشعار لهذه الحالة</label><div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;"><span>تنبيه بعد:</span><input type="number" class="notif-days" value="${status.notification.days}" min="2" style="width: 60px;"><span>أيام متتالية</span></div>`;
+                        
+                        itemWrapper.appendChild(statusRow);
+                        itemWrapper.appendChild(settingsDiv);
+                        allSelectors.statusesListContainer.appendChild(itemWrapper);
+                        
+                        itemWrapper.querySelector('.btn-notif-settings').onclick = () => { settingsDiv.style.display = settingsDiv.style.display === 'none' ? 'block' : 'none'; };
+                        
+                        if (!isProtected) {
+                            itemWrapper.querySelector('.btn-delete-status').onclick = () => deleteStatus(status.key);
+                        }
+        
+                        const enabledCheckbox = itemWrapper.querySelector('.notif-enabled');
+                        const daysInput = itemWrapper.querySelector('.notif-days');
+                        enabledCheckbox.onchange = () => { status.notification.enabled = enabledCheckbox.checked; saveState(); };
+                        daysInput.onchange = () => { status.notification.days = parseInt(daysInput.value) || 2; saveState(); };
+                    });
+                }
+        
+                function deleteStatus(keyToDelete) {
+                    if (ATTENDANCE_OPTIONS.length <= 2) { alert('يجب أن تبقى حالتان على الأقل.'); return; }
+                    if (confirm('هل أنت متأكد من حذف هذه الحالة؟')) {
+                        ATTENDANCE_OPTIONS = ATTENDANCE_OPTIONS.filter(s => s.key !== keyToDelete);
+                        saveState();
+                        renderStatusesList();
+                    }
+                }
+                
+                function resetStatusesToDefault() {
+                    if (confirm('هل أنت متأكد؟ سيتم استبدال قائمتك الحالية للحالات بالقائمة الافتراضية.')) {
+                        ATTENDANCE_OPTIONS = JSON.parse(JSON.stringify(DEFAULT_STATUSES));
+                        saveState();
+                        renderStatusesList();
+                        renderStudents();
+                    }
+                }
+        
+                function openStudentProfile(studentId) {
+                    const student = studentMasterList.find(s => s.id === studentId);
+                    if (!student) return;
+                    allSelectors.studentProfileTitle.innerHTML = `<i class="fas fa-user-circle"></i> سجل الطالب: ${student.name}`;
+                    const history = getStudentHistory(studentId);
+                    let contentHTML = '<div style="max-height: 40vh; overflow-y: auto;">';
+                    if (history.length > 0) {
+                        history.forEach(record => {
+                            const symbols = record.statuses.map(key => ATTENDANCE_OPTIONS.find(opt => opt.key === key)?.symbol || '').join(' ');
+                            contentHTML += `<div style="padding: 0.5rem; border-bottom: 1px solid #eee;"><strong>${new Date(record.date + 'T00:00:00').toLocaleDateString('ar-EG')}</strong>: ${symbols}</div>`;
+                        });
+                    } else { contentHTML += '<p>لا توجد سجلات لهذا الطالب.</p>'; }
+                    contentHTML += '</div>';
+                    allSelectors.studentProfileContent.innerHTML = contentHTML;
+                    openModal(allSelectors.studentProfileModalOverlay);
+                }
+        
+                function getStudentHistory(studentId) {
+                    const history = [];
+                    const sortedDates = Object.keys(allDateData).sort((a, b) => new Date(b) - new Date(a));
+                    sortedDates.forEach(date => {
+                        if (allDateData[date][studentId] && allDateData[date][studentId].status.length > 0) {
+                            history.push({ date: date, statuses: allDateData[date][studentId].status });
+                        }
+                    });
+                    return history;
+                }
+        
+                function checkAndDisplayNotifications() {
+                    const notifications = [];
+                    const sortedDates = Object.keys(allDateData).sort((a,b) => new Date(b) - new Date(a));
+                    if (sortedDates.length < 1) { renderNotifications([]); return; }
+                    const activeNotifRules = ATTENDANCE_OPTIONS.filter(opt => opt.notification?.enabled);
+                    studentMasterList.forEach(student => {
+                        activeNotifRules.forEach(rule => {
+                            let consecutiveCount = 0;
+                            for (const date of sortedDates) {
+                                const studentData = allDateData[date]?.[student.id];
+                                if (studentData?.status.includes(rule.key)) {
+                                    consecutiveCount++;
+                                } else {
+                                    break;
+                                }
+                            }
+                            if (consecutiveCount >= rule.notification.days) {
+                                notifications.push({ type: 'warning', title: `تكرار حالة "${rule.label}"`, desc: `الطالب ${student.name} لديه هذه الحالة لـ ${consecutiveCount} أيام متتالية.` });
+                            }
+                        });
+                    });
+                    renderNotifications(notifications);
+                }
+        
+                function renderNotifications(notifications) {
+                    allSelectors.notificationsList.innerHTML = '';
+                    allSelectors.notificationCountBadge.textContent = notifications.length;
+                    if (notifications.length === 0) {
+                        allSelectors.notificationsList.innerHTML = '<p style="text-align: center; color: #6c757d;">لا توجد إشعارات.</p>';
+                        allSelectors.notificationCountBadge.style.display = 'none';
+                        return;
+                    }
+                    allSelectors.notificationCountBadge.style.display = 'flex';
+                    notifications.forEach(notif => {
+                        const item = document.createElement('div');
+                        item.className = 'notification-item';
+                        item.innerHTML = `<div class="notification-icon" style="color: var(--warning-color);"><i class="fas fa-exclamation-triangle"></i></div><div class="notification-content"><div class="notification-title">${notif.title}</div><div>${notif.desc}</div></div>`;
+                        allSelectors.notificationsList.appendChild(item);
+                    });
+                }
+        
+                function generatePrintView() {
+                    const settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS) || '{}');
+                    const dateObj = new Date(currentDate + 'T00:00:00');
+                    const formattedDate = dateObj.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        
                     const groupedByStatus = {};
                     const notRecorded = [];
-
-                    // Group students
-                    data.students.forEach(student => {
+        
+                    students.forEach(student => {
                         if (student.status && student.status.length > 0) {
                             const statusKey = student.status[0];
                             if (!groupedByStatus[statusKey]) {
@@ -691,304 +556,501 @@
                             notRecorded.push(student.name);
                         }
                     });
-
-                    // Build the message string for students with status
-                    ATTENDANCE_OPTIONS.forEach(option => {
-                        const statusKey = option.key;
-                        if (groupedByStatus[statusKey]) {
-                            const statusText = `*${option.symbol} ${option.label} (${groupedByStatus[statusKey].length})*`;
-                            msg += `\n${statusText}\n`;
-                            groupedByStatus[statusKey].forEach(name => {
-                                msg += `- ${name}\n`;
-                            });
-                        }
-                    });
-
-                    // Add the "Not Recorded" group if there are any
-                    if (notRecorded.length > 0) {
-                        msg += `\n*لم يتم التسجيل (${notRecorded.length})*\n`;
-                        notRecorded.forEach(name => {
-                            msg += `- ${name}\n`;
-                        });
-                    }
-
-                    return msg;
-                },
-                detailed: (data) => { // This is still the old, likely broken, detailed view
-                    let msg = `*تقرير مفصل ليوم ${new Date(data.date).toLocaleDateString('ar-EG', { weekday: 'long' })}*\n\n`;
-                    const present = data.students.filter(s => s.status.includes('present'));
-                    const absent = data.students.filter(s => s.status.includes('absent'));
-                    if (present.length > 0) {
-                        msg += `✅ *الحضور (${present.length})*\n`;
-                        present.forEach(s => {
-                            const details = s.status.filter(st => st !== 'present').map(key => ATTENDANCE_OPTIONS.find(opt => opt.key === key)?.label || '').join(', ');
-                            msg += `- ${s.name}` + (details ? ` (${details})\n` : '\n');
-                        });
-                    }
-                    if (absent.length > 0) msg += `\n❌ *الغياب (${absent.length})*\n` + absent.map(s => `- ${s.name}`).join('\n');
-                    return msg;
-                },
-                summary: (data) => {
-                    let msg = `*ملخص اليوم*\n`;
-                    ATTENDANCE_OPTIONS.forEach(option => {
-                        const count = data.students.filter(s => s.status.includes(option.key)).length;
-                        if (count > 0) msg += `${option.symbol} ${option.label}: ${count}\n`;
-                    });
-                    return msg;
-                }
-            };
-            const templateFunction = templates[allSelectors.messageTemplateSelect.value] || templates.standard;
-            const settings = { mosqueName: allSelectors.mosqueNameInput.value, teacherName: allSelectors.teacherNameInput.value };
-            const data = { students: students, date: currentDate, settings: settings };
-            allSelectors.whatsappOutput.value = templateFunction(data);
-            allSelectors.whatsappOutputSection.classList.remove('hidden');
-        }
-
-        function exportToCSV() {
-            let csvContent = '\uFEFF' + 'التاريخ,اسم الطالب,الحالات\r\n';
-            const sortedDates = Object.keys(allDateData).sort((a, b) => new Date(a) - new Date(b));
-            for (const date of sortedDates) {
-                for (const studentId in allDateData[date]) {
-                    const student = studentMasterList.find(s => s.id === studentId);
-                    if (student) {
-                        const statusLabels = allDateData[date][studentId].status.map(key => ATTENDANCE_OPTIONS.find(opt => opt.key === key)?.label || key).join('; ');
-                        csvContent += [date, student.name, `"${statusLabels}"`].join(',') + '\r\n';
-                    }
-                }
-            }
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", "student_report.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function downloadBackup() {
-            const settings = { mosqueName: allSelectors.mosqueNameInput.value, teacherName: allSelectors.teacherNameInput.value };
-            const backupData = { version: "2.0", timestamp: new Date().toISOString(), settings: settings, masterList: studentMasterList, allData: allDateData, statuses: ATTENDANCE_OPTIONS };
-            const dataStr = JSON.stringify(backupData, null, 2);
-            const blob = new Blob([dataStr], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `student-tracker-backup-v2-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        function handleRestore(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const backupData = JSON.parse(e.target.result);
-                    if (backupData.version !== "2.0" || !backupData.masterList || !backupData.allData) throw new Error("ملف نسخة احتياطية غير متوافق.");
-                    if (confirm("تحذير: سيتم استبدال جميع البيانات الحالية. هل أنت متأكد؟")) {
-                        studentMasterList = backupData.masterList;
-                        allDateData = backupData.allData;
-                        if (backupData.statuses) ATTENDANCE_OPTIONS = backupData.statuses;
-                        if (backupData.settings) {
-                            allSelectors.mosqueNameInput.value = backupData.settings.mosqueName || '';
-                            allSelectors.teacherNameInput.value = backupData.settings.teacherName || '';
-                            saveSettings();
-                        }
-                        saveState();
-                        setCurrentDate(currentDate || new Date().toISOString().split('T')[0]);
-                        alert('تم استعادة البيانات بنجاح!');
-                    }
-                } catch (error) { alert('فشل قراءة الملف: ' + error.message); }
-                allSelectors.restoreFileInput.value = '';
-            };
-            reader.readAsText(file);
-        }
-
-        function generateStatisticsReport() {
-            const startDate = allSelectors.statsStartDate.value;
-            const endDate = allSelectors.statsEndDate.value;
-
-            if (!startDate || !endDate) {
-                alert("يرجى تحديد تاريخ البداية والنهاية.");
-                return;
-            }
-
-            if (new Date(startDate) > new Date(endDate)) {
-                alert("تاريخ البداية يجب أن يكون قبل تاريخ النهاية.");
-                return;
-            }
-
-            const stats = calculateStatistics(startDate, endDate);
-            displayStatistics(stats, startDate, endDate);
-        }
-
-        function calculateStatistics(startDate, endDate) {
-            const statusCounts = {};
-            const studentStatusCounts = {};
-            let recordedDays = 0;
-            const dateSet = new Set();
-
-            ATTENDANCE_OPTIONS.forEach(opt => statusCounts[opt.key] = 0);
-            studentMasterList.forEach(student => {
-                studentStatusCounts[student.id] = {};
-                ATTENDANCE_OPTIONS.forEach(opt => studentStatusCounts[student.id][opt.key] = 0);
-            });
-
-            for (const date in allDateData) {
-                if (date >= startDate && date <= endDate) {
-                    const dayData = allDateData[date];
-                    if (Object.keys(dayData).length > 0) {
-                        dateSet.add(date);
-                        for (const studentId in dayData) {
-                            const studentData = dayData[studentId];
-                            if (studentData.status && studentData.status.length > 0) {
-                                const statusKey = studentData.status[0];
-                                if (statusCounts.hasOwnProperty(statusKey)) {
-                                    statusCounts[statusKey]++;
-                                }
-                                if (studentStatusCounts[studentId] && studentStatusCounts[studentId].hasOwnProperty(statusKey)) {
-                                    studentStatusCounts[studentId][statusKey]++;
-                                }
+        
+                    let summaryHtml = '<h2>ملخص الحالات</h2>';
+                    if (Object.keys(groupedByStatus).length === 0 && notRecorded.length === students.length) {
+                        summaryHtml += '<p style="text-align:center;">لم يتم تسجيل أي حالة لأي طالب.</p>';
+                    } else {
+                        ATTENDANCE_OPTIONS.forEach(option => {
+                            const statusKey = option.key;
+                            if (groupedByStatus[statusKey]) {
+                                summaryHtml += `<h4>${option.symbol} ${option.label} (${groupedByStatus[statusKey].length})</h4>`;
+                                summaryHtml += '<ul>';
+                                groupedByStatus[statusKey].sort((a, b) => a.localeCompare(b)).forEach(name => {
+                                    summaryHtml += `<li>${name}</li>`;
+                                });
+                                summaryHtml += '</ul>';
                             }
+                        });
+        
+                        if (notRecorded.length > 0) {
+                            summaryHtml += `<h4>لم يتم التسجيل (${notRecorded.length})</h4>`;
+                            summaryHtml += '<ul>';
+                            notRecorded.sort((a, b) => a.localeCompare(b)).forEach(name => {
+                                summaryHtml += `<li>${name}</li>`;
+                            });
+                            summaryHtml += '</ul>';
                         }
                     }
-                }
-            }
-            recordedDays = dateSet.size;
-
-            return { statusCounts, studentStatusCounts, recordedDays };
-        }
-
-        function displayStatistics(stats, startDate, endDate) {
-            const { statusCounts, studentStatusCounts, recordedDays } = stats;
-            let output = `*تقرير إحصائي من ${startDate} إلى ${endDate}*\n\n`;
-            output += `*إجمالي الأيام المسجلة: ${recordedDays}*\n\n`;
-
-            output += "*-- نسب الحالات --*\n";
-            let totalStatusOccurrences = 0;
-            for(const key in statusCounts) {
-                totalStatusOccurrences += statusCounts[key];
-            }
-
-            if (totalStatusOccurrences > 0) {
-                ATTENDANCE_OPTIONS.forEach(opt => {
-                    const count = statusCounts[opt.key];
-                    const percentage = ((count / totalStatusOccurrences) * 100).toFixed(1);
-                    output += `${opt.symbol} ${opt.label}: ${percentage}% (${count} مرات)\n`;
-                });
-            } else {
-                output += "لا توجد بيانات لعرضها.\n";
-            }
-
-
-            output += "\n*-- ترتيب الطلاب حسب الحالات --*\n";
-            ATTENDANCE_OPTIONS.forEach(option => {
-                const studentsWithStatus = [];
-                for (const studentId in studentStatusCounts) {
-                    const count = studentStatusCounts[studentId][option.key];
-                    if (count > 0) {
-                        const student = studentMasterList.find(s => s.id === studentId);
-                        if (student) {
-                            studentsWithStatus.push({ name: student.name, count: count });
-                        }
+                    summaryHtml += '<hr style="margin: 2rem 0;">';
+        
+                    let reportHtml = `
+                        <html>
+                        <head>
+                            <title>تقرير إنجاز الطلاب</title>
+                            <meta charset="UTF-8">
+                            <style>
+                                body { font-family: 'Tajawal', sans-serif; direction: rtl; }
+                                @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+                                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                                th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
+                                th { background-color: #f2f2f2; }
+                                h1, h2, h3 { text-align: center; }
+                                h4 { border-bottom: 1px solid #eee; padding-bottom: 5px; color: #333; }
+                                ul { padding-right: 20px; list-style-type: circle; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>تقرير إنجاز الطلاب</h1>
+                            <h2>${(settings.institutionType || '')} ${(settings.institutionName || 'غير محدد')} | الأستاذ: ${settings.teacherName || 'غير محدد'}</h2>
+                            <h3>تاريخ: ${formattedDate}</h3>
+                            ${summaryHtml}
+                            <h2 style="margin-top: 2rem;">التفاصيل الكاملة</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>اسم الطالب</th>
+                                        <th>الحالة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+        
+                    const allStudentsSorted = [...students].sort((a, b) => a.name.localeCompare(b.name));
+                    
+                    if (allStudentsSorted.length > 0) {
+                        allStudentsSorted.forEach(student => {
+                            const statusKey = student.status && student.status[0];
+                            let statusText = 'لم يتم التسجيل';
+                            if(statusKey){
+                                const option = ATTENDANCE_OPTIONS.find(opt => opt.key === statusKey);
+                                if(option) statusText = `${option.symbol} ${option.label}`;
+                            }
+                            
+                            reportHtml += `
+                                <tr>
+                                    <td>${student.name}</td>
+                                    <td>${statusText}</td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        reportHtml += '<tr><td colspan="2" style="text-align:center;">لا يوجد طلاب مسجلون.</td></tr>';
                     }
+        
+                    reportHtml += `
+                                </tbody>
+                            </table>
+                        </body>
+                        </html>
+                    `;
+        
+                    const printWindow = window.open('', '_blank');
+                    printWindow.document.write(reportHtml);
+                    printWindow.document.close();
+                    setTimeout(() => { // Timeout to ensure content is loaded
+                        printWindow.print();
+                    }, 500);
                 }
-
-                if (studentsWithStatus.length > 0) {
-                    output += `\n*${option.symbol} ${option.label}*\n`;
-                    studentsWithStatus.sort((a, b) => b.count - a.count);
-                    studentsWithStatus.forEach((s, index) => {
-                        output += `${index + 1}. ${s.name} (${s.count} مرات)\n`;
-                    });
-                }
-            });
-
-            allSelectors.statisticsOutput.textContent = output;
-            allSelectors.statisticsOutput.style.display = 'block';
-        }
-
-        // --- Event Listeners ---
-        allSelectors.saveSettingsBtn.addEventListener('click', saveSettings);
-        allSelectors.todayBtn.addEventListener('click', () => setCurrentDate(new Date().toISOString().split('T')[0]));
-        allSelectors.prevDayBtn.addEventListener('click', () => navigateDate(-1));
-        allSelectors.nextDayBtn.addEventListener('click', () => navigateDate(1));
-        allSelectors.currentDateInput.addEventListener('change', () => setCurrentDate(allSelectors.currentDateInput.value));
-        allSelectors.generateWhatsappBtn.addEventListener('click', generateWhatsappMessage);
-        allSelectors.exportCsvBtn.addEventListener('click', exportToCSV);
-        allSelectors.printReportBtn.addEventListener('click', generatePrintView);
-        allSelectors.backupBtn.addEventListener('click', downloadBackup);
-        allSelectors.restoreBtn.addEventListener('click', () => allSelectors.restoreFileInput.click());
-        allSelectors.restoreFileInput.addEventListener('change', handleRestore);
-        allSelectors.notificationsBtn.addEventListener('click', () => { allSelectors.notificationsSidebar.classList.add('open'); allSelectors.mainOverlay.classList.add('visible'); });
-        allSelectors.closeNotifications.addEventListener('click', () => { allSelectors.notificationsSidebar.classList.remove('open'); allSelectors.mainOverlay.classList.remove('visible'); });
-        allSelectors.manageStudentsBtn.addEventListener('click', () => { renderMasterStudentList(); openModal(allSelectors.studentModalOverlay); });
-        allSelectors.closeStudentModalBtn.addEventListener('click', () => closeModal(allSelectors.studentModalOverlay));
-        allSelectors.addStudentForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const newName = allSelectors.newStudentNameInput.value.trim();
-            if (newName && !studentMasterList.some(s => s.name === newName)) {
-                const newStudent = {
-                    id: `student_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-                    name: newName
-                };
-                studentMasterList.push(newStudent);
-                saveState();
-                loadStudentsForDate(currentDate);
-                renderStudents();
-                renderMasterStudentList();
-                allSelectors.newStudentNameInput.value = '';
-            } else if (studentMasterList.some(s => s.name === newName)) {
-                alert('الطالب موجود بالفعل');
-            }
-        });
-        allSelectors.manageStatusesBtn.addEventListener('click', () => { renderStatusesList(); openModal(allSelectors.statusesModalOverlay); });
-        allSelectors.closeStatusesModalBtn.addEventListener('click', () => closeModal(allSelectors.statusesModalOverlay));
-        allSelectors.addStatusForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const label = allSelectors.newStatusLabelInput.value.trim();
-            const symbol = allSelectors.newStatusSymbolInput.value.trim();
-            const color = allSelectors.newStatusColorInput.value;
-            const key = `custom_${Date.now()}`;
-            if (label && symbol) {
-                ATTENDANCE_OPTIONS.push({ key, label, symbol, color, notification: { enabled: false, days: 2 } });
-                saveState();
-                renderStatusesList();
-                allSelectors.addStatusForm.reset();
-            }
-        });
-        allSelectors.resetStatusesBtn.addEventListener('click', resetStatusesToDefault);
-        allSelectors.closeStudentProfileModalBtn.addEventListener('click', () => closeModal(allSelectors.studentProfileModalOverlay));
-        allSelectors.mainOverlay.addEventListener('click', () => {
-            closeModal(allSelectors.studentModalOverlay);
-            closeModal(allSelectors.statusesModalOverlay);
-            closeModal(allSelectors.studentProfileModalOverlay);
-            allSelectors.notificationsSidebar.classList.remove('open');
-        });
-
-        allSelectors.refreshDataBtn.addEventListener('click', () => {
-            if (confirm('هل أنت متأكد من أنك تريد إعادة مزامنة البيانات من ذاكرة المتصفح؟')) {
-                loadState();
-                setCurrentDate(currentDate);
-                alert('تم تحديث البيانات بنجاح!');
-            }
-        });
-
-        allSelectors.factoryResetBtn.addEventListener('click', () => {
-            if (confirm('تحذير: سيتم حذف جميع الطلاب والسجلات والإعدادات بشكل نهائي. هل أنت متأكد؟')) {
-                if (confirm('هذا هو التأكيد النهائي. لا يمكن التراجع عن هذا الإجراء. متابعة؟')) {
-                    Object.keys(STORAGE_KEYS).forEach(key => localStorage.removeItem(STORAGE_KEYS[key]));
-                    alert('تمت إعادة ضبط التطبيق. سيتم الآن إعادة تحميل الصفحة.');
-                    location.reload();
-                }
-            }
-        });
-
-        allSelectors.generateStatsBtn.addEventListener('click', generateStatisticsReport);
-
-        allSelectors.copyWhatsappMsgBtn.addEventListener('click', () => {
+        
+                function generateWhatsappMessage() {
+                    const templates = {
+                        standard: (data) => {
+                            let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*تاريخ: ${new Date(data.date).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}*`;
+        
+                            if (data.students.length === 0) {
+                                return header + '\n\nلا يوجد طلاب مسجلون في القائمة.';
+                            }
+        
+                            const absenceKeys = ['absent_unexcused', 'absent_excused'];
+                            const presentCount = data.students.filter(s => s.status.length > 0 && !s.status.some(key => absenceKeys.includes(key))).length;
+        
+                            let msg = header + `\n\n*عدد الحضور: ${presentCount}* من ${data.students.length}\n\n*--- سجل الطلاب ---*\n`; // Added subheading
+        
+                            data.students.forEach((student, i) => {
+                                const statusKey = student.status && student.status[0];
+                                let statusText;
+        
+                                if (statusKey) {
+                                    const option = ATTENDANCE_OPTIONS.find(opt => opt.key === statusKey);
+                                    statusText = option ? `${option.symbol} ${option.label}` : 'حالة غير معروفة';
+                                } else {
+                                    statusText = 'لم يتم التسجيل';
+                                }
+                                
+                                msg += `${i + 1}. ${student.name}\n   ${statusText}\n`;
+                            });
+        
+                            return msg;
+                        },
+                        grouped: (data) => {
+                            let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*تاريخ: ${new Date(data.date).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}*`;
+                    
+                            if (data.students.length === 0) {
+                                return header + '\n\nلا يوجد طلاب مسجلون في القائمة.';
+                            }
+        
+                            // --- ADDED: Attendance Count Logic ---
+                            const absenceKeys = ['absent_unexcused', 'absent_excused'];
+                            const presentCount = data.students.filter(s => s.status.length > 0 && !s.status.some(key => absenceKeys.includes(key))).length;
+                            let msg = header + `\n\n*عدد الحضور: ${presentCount}* من ${data.students.length}\n`;
+                            // --- END ADDED ---
+        
+                            const groupedByStatus = {};
+                            const notRecorded = [];
+        
+                            // Group students
+                            data.students.forEach(student => {
+                                if (student.status && student.status.length > 0) {
+                                    const statusKey = student.status[0];
+                                    if (!groupedByStatus[statusKey]) {
+                                        groupedByStatus[statusKey] = [];
+                                    }
+                                    groupedByStatus[statusKey].push(student.name);
+                                } else {
+                                    notRecorded.push(student.name);
+                                }
+                            });
+        
+                            // Build the message string for students with status
+                            ATTENDANCE_OPTIONS.forEach(option => {
+                                const statusKey = option.key;
+                                if (groupedByStatus[statusKey]) {
+                                    const statusText = `*${option.symbol} ${option.label} (${groupedByStatus[statusKey].length})*`;
+                                    msg += `\n${statusText}\n`;
+                                    groupedByStatus[statusKey].forEach(name => {
+                                        msg += `- ${name}\n`;
+                                    });
+                                }
+                            });
+        
+                            // Add the "Not Recorded" group if there are any
+                            if (notRecorded.length > 0) {
+                                msg += `\n*لم يتم التسجيل (${notRecorded.length})*\n`;
+                                notRecorded.forEach(name => {
+                                    msg += `- ${name}\n`;
+                                });
+                            }
+        
+                            return msg;
+                        },
+                        detailed: (data) => { // This is still the old, likely broken, detailed view
+                            let msg = `*تقرير مفصل ليوم ${new Date(data.date).toLocaleDateString('ar-EG', { weekday: 'long' })}*\n\n`;
+                            const present = data.students.filter(s => s.status.includes('present'));
+                            const absent = data.students.filter(s => s.status.includes('absent'));
+                            if (present.length > 0) {
+                                msg += `✅ *الحضور (${present.length})*\n`;
+                                present.forEach(s => {
+                                    const details = s.status.filter(st => st !== 'present').map(key => ATTENDANCE_OPTIONS.find(opt => opt.key === key)?.label || '').join(', ');
+                                    msg += `- ${s.name}` + (details ? ` (${details})\n` : '\n');
+                                });
+                            }
+                            if (absent.length > 0) msg += `\n❌ *الغياب (${absent.length})*\n` + absent.map(s => `- ${s.name}`).join('\n');
+                            return msg;
+                        },
+                        summary: (data) => {
+                            let msg = `*ملخص اليوم*\n`;
+                            ATTENDANCE_OPTIONS.forEach(option => {
+                                const count = data.students.filter(s => s.status.includes(option.key)).length;
+                                if (count > 0) msg += `${option.symbol} ${option.label}: ${count}\n`;
+                            });
+                            return msg;
+                        }
+                    };
+                    const templateFunction = templates[allSelectors.messageTemplateSelect.value] || templates.standard;
+                    const settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS) || '{}');
+                    const data = { students: students, date: currentDate, settings: settings };
+                    allSelectors.whatsappOutput.value = templateFunction(data);
+                    allSelectors.whatsappOutputSection.classList.remove('hidden');
+                }                        
+                                function exportToCSV() {
+                                    let csvContent = '\uFEFF' + 'التاريخ,اسم الطالب,الحالات\r\n';
+                                    const sortedDates = Object.keys(allDateData).sort((a, b) => new Date(a) - new Date(b));
+                                    for (const date of sortedDates) {
+                                        for (const studentId in allDateData[date]) {
+                                            const student = studentMasterList.find(s => s.id === studentId);
+                                            if (student) {
+                                                const statusLabels = allDateData[date][studentId].status.map(key => ATTENDANCE_OPTIONS.find(opt => opt.key === key)?.label || key).join('; ');
+                                                csvContent += [date, student.name, `"${statusLabels}"`].join(',') + '\r\n';
+                                            }
+                                        }
+                                    }
+                                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                                    const link = document.createElement("a");
+                                    const url = URL.createObjectURL(blob);
+                                    link.setAttribute("href", url);
+                                    link.setAttribute("download", "student_report.csv");
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                }
+                        
+                                function downloadBackup() {
+                                    const settings = { mosqueName: allSelectors.mosqueNameInput.value, teacherName: allSelectors.teacherNameInput.value };
+                                    const backupData = { version: "2.0", timestamp: new Date().toISOString(), settings: settings, masterList: studentMasterList, allData: allDateData, statuses: ATTENDANCE_OPTIONS };
+                                    const dataStr = JSON.stringify(backupData, null, 2);
+                                    const blob = new Blob([dataStr], { type: "application/json" });
+                                    const url = URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = `student-tracker-backup-v2-${new Date().toISOString().split('T')[0]}.json`;
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    document.body.removeChild(a);
+                                }
+                        
+                                function handleRestore(event) {
+                                    const file = event.target.files[0];
+                                    if (!file) return;
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        try {
+                                            const backupData = JSON.parse(e.target.result);
+                                            if (backupData.version !== "2.0" || !backupData.masterList || !backupData.allData) throw new Error("ملف نسخة احتياطية غير متوافق.");
+                                            if (confirm("تحذير: سيتم استبدال جميع البيانات الحالية. هل أنت متأكد؟")) {
+                                                studentMasterList = backupData.masterList;
+                                                allDateData = backupData.allData;
+                                                if (backupData.statuses) ATTENDANCE_OPTIONS = backupData.statuses;
+                                                if (backupData.settings) {
+                                                    allSelectors.mosqueNameInput.value = backupData.settings.mosqueName || '';
+                                                    allSelectors.teacherNameInput.value = backupData.settings.teacherName || '';
+                                                    saveSettings();
+                                                }
+                                                saveState();
+                                                setCurrentDate(currentDate || new Date().toISOString().split('T')[0]);
+                                                alert('تم استعادة البيانات بنجاح!');
+                                            }
+                                        } catch (error) { alert('فشل قراءة الملف: ' + error.message); }
+                                        allSelectors.restoreFileInput.value = '';
+                                    };
+                                    reader.readAsText(file);
+                                }
+                        
+                                function generateStatisticsReport() {
+                                    const startDate = allSelectors.statsStartDate.value;
+                                    const endDate = allSelectors.statsEndDate.value;
+                        
+                                    if (!startDate || !endDate) {
+                                        alert("يرجى تحديد تاريخ البداية والنهاية.");
+                                        return;
+                                    }
+                        
+                                    if (new Date(startDate) > new Date(endDate)) {
+                                        alert("تاريخ البداية يجب أن يكون قبل تاريخ النهاية.");
+                                        return;
+                                    }
+                        
+                                    const stats = calculateStatistics(startDate, endDate);
+                                    displayStatistics(stats, startDate, endDate);
+                                }
+                        
+                                function calculateStatistics(startDate, endDate) {
+                                    const statusCounts = {};
+                                    const studentStatusCounts = {};
+                                    let recordedDays = 0;
+                                    const dateSet = new Set();
+                        
+                                    ATTENDANCE_OPTIONS.forEach(opt => statusCounts[opt.key] = 0);
+                                    studentMasterList.forEach(student => {
+                                        studentStatusCounts[student.id] = {};
+                                        ATTENDANCE_OPTIONS.forEach(opt => studentStatusCounts[student.id][opt.key] = 0);
+                                    });
+                        
+                                    for (const date in allDateData) {
+                                        if (date >= startDate && date <= endDate) {
+                                            const dayData = allDateData[date];
+                                            if (Object.keys(dayData).length > 0) {
+                                                dateSet.add(date);
+                                                for (const studentId in dayData) {
+                                                    const studentData = dayData[studentId];
+                                                    if (studentData.status && studentData.status.length > 0) {
+                                                        const statusKey = studentData.status[0];
+                                                        if (statusCounts.hasOwnProperty(statusKey)) {
+                                                            statusCounts[statusKey]++;
+                                                        }
+                                                        if (studentStatusCounts[studentId] && studentStatusCounts[studentId].hasOwnProperty(statusKey)) {
+                                                            studentStatusCounts[studentId][statusKey]++;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    recordedDays = dateSet.size;
+                        
+                                    return { statusCounts, studentStatusCounts, recordedDays };
+                                }
+                        
+                                function displayStatistics(stats, startDate, endDate) {
+                                    const { statusCounts, studentStatusCounts, recordedDays } = stats;
+                                    let output = `*تقرير إحصائي من ${startDate} إلى ${endDate}*\n\n`;
+                                    output += `*إجمالي الأيام المسجلة: ${recordedDays}*\n\n`;
+                        
+                                    output += "*-- نسب الحالات --*\n";
+                                    let totalStatusOccurrences = 0;
+                                    for(const key in statusCounts) {
+                                        totalStatusOccurrences += statusCounts[key];
+                                    }
+                        
+                                    if (totalStatusOccurrences > 0) {
+                                        ATTENDANCE_OPTIONS.forEach(opt => {
+                                            const count = statusCounts[opt.key];
+                                            const percentage = ((count / totalStatusOccurrences) * 100).toFixed(1);
+                                            output += `${opt.symbol} ${opt.label}: ${percentage}% (${count} مرات)\n`;
+                                        });
+                                    } else {
+                                        output += "لا توجد بيانات لعرضها.\n";
+                                    }
+                        
+                        
+                                    output += "\n*-- ترتيب الطلاب حسب الحالات --*\n";
+                                    ATTENDANCE_OPTIONS.forEach(option => {
+                                        const studentsWithStatus = [];
+                                        for (const studentId in studentStatusCounts) {
+                                            const count = studentStatusCounts[studentId][option.key];
+                                            if (count > 0) {
+                                                const student = studentMasterList.find(s => s.id === studentId);
+                                                if (student) {
+                                                    studentsWithStatus.push({ name: student.name, count: count });
+                                                }
+                                            }
+                                        }
+                        
+                                        if (studentsWithStatus.length > 0) {
+                                            output += `\n*${option.symbol} ${option.label}*\n`;
+                                            studentsWithStatus.sort((a, b) => b.count - a.count);
+                                            studentsWithStatus.forEach((s, index) => {
+                                                output += `${index + 1}. ${s.name} (${s.count} مرات)\n`;
+                                            });
+                                        }
+                                    });
+                        
+                                    allSelectors.statisticsOutput.textContent = output;
+                                    allSelectors.statisticsOutput.style.display = 'block';
+                                    if (totalStatusOccurrences > 0) {
+                                        allSelectors.statsActionsContainer.style.display = 'flex';
+                                    } else {
+                                        allSelectors.statsActionsContainer.style.display = 'none';
+                                    }
+                                }
+                        
+                                function generateStatisticsLastDays() {
+                                    const days = parseInt(allSelectors.statsLastDays.value, 10);
+                                    if (isNaN(days) || days <= 0) {
+                                        alert("يرجى إدخال عدد أيام صحيح أكبر من صفر.");
+                                        return;
+                                    }
+                        
+                                    const endDate = new Date();
+                                    const startDate = new Date();
+                                    startDate.setDate(endDate.getDate() - days);
+                        
+                                    const formatDate = (date) => date.toISOString().split('T')[0];
+                        
+                                    const stats = calculateStatistics(formatDate(startDate), formatDate(endDate));
+                                    displayStatistics(stats, formatDate(startDate), formatDate(endDate));
+                                }
+                        
+                                // --- Event Listeners ---
+                                allSelectors.saveSettingsBtn.addEventListener('click', saveSettings);
+                                allSelectors.todayBtn.addEventListener('click', () => setCurrentDate(new Date().toISOString().split('T')[0]));
+                                allSelectors.prevDayBtn.addEventListener('click', () => navigateDate(-1));
+                                allSelectors.nextDayBtn.addEventListener('click', () => navigateDate(1));
+                                allSelectors.currentDateInput.addEventListener('change', () => setCurrentDate(allSelectors.currentDateInput.value));
+                                allSelectors.generateWhatsappBtn.addEventListener('click', generateWhatsappMessage);
+                                allSelectors.exportCsvBtn.addEventListener('click', exportToCSV);
+                                allSelectors.printReportBtn.addEventListener('click', generatePrintView);
+                                allSelectors.backupBtn.addEventListener('click', downloadBackup);
+                                allSelectors.restoreBtn.addEventListener('click', () => allSelectors.restoreFileInput.click());
+                                allSelectors.restoreFileInput.addEventListener('change', handleRestore);
+                                allSelectors.notificationsBtn.addEventListener('click', () => { allSelectors.notificationsSidebar.classList.add('open'); allSelectors.mainOverlay.classList.add('visible'); });
+                                allSelectors.closeNotifications.addEventListener('click', () => { allSelectors.notificationsSidebar.classList.remove('open'); allSelectors.mainOverlay.classList.remove('visible'); });
+                                allSelectors.manageStudentsBtn.addEventListener('click', () => { renderMasterStudentList(); openModal(allSelectors.studentModalOverlay); });
+                                allSelectors.closeStudentModalBtn.addEventListener('click', () => closeModal(allSelectors.studentModalOverlay));
+                                allSelectors.addStudentForm.addEventListener('submit', (e) => {
+                                    e.preventDefault();
+                                    const newName = allSelectors.newStudentNameInput.value.trim();
+                                    if (newName && !studentMasterList.some(s => s.name === newName)) {
+                                        const newStudent = {
+                                            id: `student_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                                            name: newName
+                                        };
+                                        studentMasterList.push(newStudent);
+                                        saveState();
+                                        loadStudentsForDate(currentDate);
+                                        renderStudents();
+                                        renderMasterStudentList();
+                                        allSelectors.newStudentNameInput.value = '';
+                                    } else if (studentMasterList.some(s => s.name === newName)) {
+                                        alert('الطالب موجود بالفعل');
+                                    }
+                                });
+                                allSelectors.manageStatusesBtn.addEventListener('click', () => { renderStatusesList(); openModal(allSelectors.statusesModalOverlay); });
+                                allSelectors.closeStatusesModalBtn.addEventListener('click', () => closeModal(allSelectors.statusesModalOverlay));
+                                allSelectors.addStatusForm.addEventListener('submit', (e) => {
+                                    e.preventDefault();
+                                    const label = allSelectors.newStatusLabelInput.value.trim();
+                                    const symbol = allSelectors.newStatusSymbolInput.value.trim();
+                                    const color = allSelectors.newStatusColorInput.value;
+                                    const key = `custom_${Date.now()}`;
+                                    if (label && symbol) {
+                                        ATTENDANCE_OPTIONS.push({ key, label, symbol, color, notification: { enabled: false, days: 2 } });
+                                        saveState();
+                                        renderStatusesList();
+                                        allSelectors.addStatusForm.reset();
+                                    }
+                                });
+                                allSelectors.resetStatusesBtn.addEventListener('click', resetStatusesToDefault);
+                                allSelectors.closeStudentProfileModalBtn.addEventListener('click', () => closeModal(allSelectors.studentProfileModalOverlay));
+                                allSelectors.mainOverlay.addEventListener('click', () => {
+                                    closeModal(allSelectors.studentModalOverlay);
+                                    closeModal(allSelectors.statusesModalOverlay);
+                                    closeModal(allSelectors.studentProfileModalOverlay);
+                                    allSelectors.notificationsSidebar.classList.remove('open');
+                                });
+                        
+                                allSelectors.refreshDataBtn.addEventListener('click', () => {
+                                    if (confirm('هل أنت متأكد من أنك تريد إعادة مزامنة البيانات من ذاكرة المتصفح؟')) {
+                                        loadState();
+                                        setCurrentDate(currentDate);
+                                        alert('تم تحديث البيانات بنجاح!');
+                                    }
+                                });
+                        
+                                allSelectors.factoryResetBtn.addEventListener('click', () => {
+                                    if (confirm('تحذير: سيتم حذف جميع الطلاب والسجلات والإعدادات بشكل نهائي. هل أنت متأكد؟')) {
+                                        if (confirm('هذا هو التأكيد النهائي. لا يمكن التراجع عن هذا الإجراء. متابعة؟')) {
+                                            Object.keys(STORAGE_KEYS).forEach(key => localStorage.removeItem(STORAGE_KEYS[key]));
+                                            alert('تمت إعادة ضبط التطبيق. سيتم الآن إعادة تحميل الصفحة.');
+                                            location.reload();
+                                        }
+                                    }
+                                });
+                        
+                                allSelectors.generateStatsBtn.addEventListener('click', generateStatisticsReport);
+                        
+                                allSelectors.generateStatsLastDaysBtn.addEventListener('click', generateStatisticsLastDays);
+                        
+                                allSelectors.copyStatsBtn.addEventListener('click', () => {
+                                    const textToCopy = allSelectors.statisticsOutput.textContent;
+                                    if (!textToCopy) return;
+                                    navigator.clipboard.writeText(textToCopy).then(() => {
+                                        allSelectors.copyStatsBtn.innerHTML = '<i class="fas fa-check"></i> تم النسخ!';
+                                        setTimeout(() => {
+                                            allSelectors.copyStatsBtn.innerHTML = '<i class="fas fa-copy"></i> نسخ التقرير';
+                                        }, 2000);
+                                    }).catch(err => {
+                                        console.error('Failed to copy stats: ', err);
+                                        alert('فشل النسخ إلى الحافظة.');
+                                    });
+                                });
+                        
+                                allSelectors.shareStatsBtn.addEventListener('click', () => {
+                                    const message = allSelectors.statisticsOutput.textContent;
+                                    if (!message) return;
+                                    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+                                    window.open(whatsappUrl, '_blank');
+                                });        allSelectors.copyWhatsappMsgBtn.addEventListener('click', () => {
             const textToCopy = allSelectors.whatsappOutput.value;
             if (!textToCopy) return;
             if (navigator.clipboard && window.isSecureContext) {
