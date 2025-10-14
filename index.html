@@ -29,6 +29,16 @@
         section { background-color: var(--surface-color); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         h2 { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; margin-top: 0; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem; }
         h2 i { font-size: 1.4rem; }
+        @keyframes shake {
+          10%, 90% { transform: translate3d(-1px, 0, 0); }
+          20%, 80% { transform: translate3d(2px, 0, 0); }
+          30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+          40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        .call-to-action {
+          animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+          border-color: var(--warning-color) !important;
+        }
         button, .btn { background-color: var(--primary-color); color: white; border: none; padding: 0.75rem 1rem; border-radius: 5px; cursor: pointer; font-family: var(--font-family); font-size: 1rem; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border: 2px solid transparent; text-decoration: none; }
         .btn-success { background-color: var(--success-color); }
         .btn-danger { background-color: var(--danger-color); }
@@ -276,6 +286,7 @@
                                     genderTemplate: genderTemplate
                                 };
                                 localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+                                allSelectors.saveSettingsBtn.classList.remove('call-to-action');
                                 alert('تم حفظ الإعدادات!');
                             }
                     
@@ -806,6 +817,7 @@
                     const data = { students: students, date: currentDate, settings: settings };
                     allSelectors.whatsappOutput.value = templateFunction(data);
                     allSelectors.whatsappOutputSection.classList.remove('hidden');
+                    allSelectors.whatsappOutputSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }                        
                                 function exportToCSV() {
                                     let csvContent = '\uFEFF' + 'التاريخ,اسم الطالب,الحالات\r\n';
@@ -1009,6 +1021,15 @@
                                 }
                         
                                 // --- Event Listeners ---
+                                const settingsInputs = [allSelectors.institutionTypeInput, allSelectors.institutionNameInput, allSelectors.teacherNameInput, allSelectors.genderTemplateSelect];
+                                settingsInputs.forEach(input => {
+                                    const eventType = input.tagName === 'SELECT' ? 'change' : 'input';
+                                    input.addEventListener(eventType, () => {
+                                        if (!allSelectors.saveSettingsBtn.classList.contains('call-to-action')) {
+                                            allSelectors.saveSettingsBtn.classList.add('call-to-action');
+                                        }
+                                    });
+                                });
                                 allSelectors.saveSettingsBtn.addEventListener('click', saveSettings);
                                 allSelectors.todayBtn.addEventListener('click', () => setCurrentDate(new Date().toISOString().split('T')[0]));
                                 allSelectors.prevDayBtn.addEventListener('click', () => navigateDate(-1));
