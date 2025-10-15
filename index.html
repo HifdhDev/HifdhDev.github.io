@@ -410,30 +410,22 @@
                                     updateUIText(gender);
 
                                     // Statuses are special, they can be reset from settings
-                                    try {
-                                        const storedStatuses = localStorage.getItem(STORAGE_KEYS.STATUSES);
-                                        if (storedStatuses) {
-                                            ATTENDANCE_OPTIONS = JSON.parse(storedStatuses);
-                                        } else {
-                                            const template = settings.genderTemplate || 'male';
-                                            ATTENDANCE_OPTIONS = template === 'female'
-                                                ? JSON.parse(JSON.stringify(DEFAULT_STATUSES_FEMALE))
-                                                : JSON.parse(JSON.stringify(DEFAULT_STATUSES));
-                                        }
-                                    } catch (e) {
-                                        showRecoveryModal(STORAGE_KEYS.STATUSES, 'قائمة الحالات الدراسية', localStorage.getItem(STORAGE_KEYS.STATUSES));
-                                        throw new Error(`Data corruption found for قائمة الحالات الدراسية. Halting execution.`);
-                                    }
+                                    const defaultStatuses = gender === 'female'
+                                        ? JSON.parse(JSON.stringify(DEFAULT_STATUSES_FEMALE))
+                                        : JSON.parse(JSON.stringify(DEFAULT_STATUSES));
+                                    
+                                    ATTENDANCE_OPTIONS = processLocalStorageKey(STORAGE_KEYS.STATUSES, 'قائمة الحالات الدراسية', defaultStatuses);
 
                                     ATTENDANCE_OPTIONS.forEach(opt => { 
                                         if (typeof opt.notification !== 'object') opt.notification = { enabled: false, days: 2 }; 
                                     });
 
+                                    return true; // Indicate success
                                 } catch (e) {
                                     // This catch block will now only catch the "Data corruption found" error
                                     // and prevent the rest of the app from loading.
                                     console.error(e.message);
-                                    return; // Stop execution
+                                    return false; // Indicate failure
                                 }
                             }
                     
@@ -1528,8 +1520,11 @@
         });
 
         // --- Initialization ---
-        loadState();
-        setCurrentDate(new Date().toISOString().split('T')[0]);
+        const isDataLoaded = loadState();
+        if (isDataLoaded) {
+            setCurrentDate(new Date().toISOString().split('T')[0]);
+        }
+        // If data is not loaded, the recovery modal is active and we halt execution.
     });
     </script>
 </body>
