@@ -110,7 +110,7 @@
     <p style="font-size: 0.8rem; color: var(--secondary-color); margin-top: 0.25rem;">ملاحظة: بعد تغيير القالب، اذهب إلى "إدارة الحالات" ثم اضغط على "استعادة الحالات الافتراضية" لتطبيق القالب الجديد.</p>
 </div><button id="save-settings-btn" class="btn-success" style="width: 100%; margin-top: 0.5rem;"><i class="fas fa-save"></i> حفظ الإعدادات</button><div style="margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;"><button id="manage-statuses-btn" class="btn"><i class="fas fa-tags"></i> إدارة الحالات</button><button id="refresh-data-btn" class="btn-secondary"><i class="fas fa-sync-alt"></i> تحديث البيانات</button><button id="factory-reset-btn" class="btn-danger"><i class="fas fa-trash-alt"></i> إعادة ضبط</button></div></section>
         <section id="date-management"><h2><i class="fas fa-calendar-alt"></i> إدارة التاريخ</h2><div style="display: flex; gap: 0.5rem; align-items: center;"><input type="date" id="current-date" style="flex-grow: 1;"><button id="today-btn"><i class="fas fa-calendar-day"></i></button></div><div id="date-display" style="text-align: center; margin: 1rem 0; font-weight: bold; color: var(--primary-color);"></div><div style="display: flex; gap: 0.5rem;"><button id="prev-day-btn" style="flex: 1;"><i class="fas fa-arrow-right"></i> السابق</button><button id="next-day-btn" style="flex: 1;">التالي <i class="fas fa-arrow-left"></i></button></div></section>
-        <section id="student-management"><h2 id="students-section-title"><i class="fas fa-users"></i> الطلاب (<span id="registered-count">0</span>)</h2><div id="student-list-container"></div><div style="margin-top: 1rem;"><button id="manage-students-btn" class="btn"><i class="fas fa-user-edit"></i> إدارة قائمة الطلاب</button></div></section>
+        <section id="student-management"><h2><i class="fas fa-users"></i> <span id="students-section-title-text">الطلاب</span> (<span id="registered-count">0</span>)</h2><div id="student-list-container"></div><div style="margin-top: 1rem;"><button id="manage-students-btn" class="btn"><i class="fas fa-user-edit"></i> إدارة قائمة الطلاب</button></div></section>
         <section id="actions"><h2><i class="fas fa-cogs"></i> الإجراءات والتقارير</h2><label for="message-template-select">قالب الرسالة:</label><select id="message-template-select"><option value="grouped" selected>حسب الحالة</option><option value="detailed">مفصل</option><option value="summary">ملخص</option></select><button id="generate-whatsapp-btn" class="btn-success" style="width: 100%; margin-top: 1rem;"><i class="fab fa-whatsapp"></i> إنشاء رسالة واتساب</button><div style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="print-report-btn" class="btn"><i class="fas fa-print"></i> طباعة تقرير</button><button id="export-csv-btn" class="btn"><i class="fas fa-file-csv"></i> تصدير Excel</button></div><div id="backup-restore-controls" style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="backup-btn" class="btn-secondary"><i class="fas fa-download"></i> تنزيل نسخة احتياطية</button><button id="restore-btn" class="btn-secondary"><i class="fas fa-upload"></i> استعادة نسخة</button><input type="file" id="restore-file-input" class="hidden" accept=".json">
 </div></section>
         <section id="whatsapp-output-section" class="hidden"><h2>الرسالة المنسقة</h2><textarea id="whatsapp-output" readonly style="width: 100%; min-height: 150px; border: 1px solid #ccc; border-radius: 5px; padding: 0.5rem; font-family: monospace; font-size: 0.9rem; white-space: pre; background-color: #e9ecef; direction: ltr; text-align: left; margin-top: 1rem;"></textarea><div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;"><button id="copy-whatsapp-msg-btn" class="btn-info"><i class="fas fa-copy"></i> نسخ</button><button id="share-whatsapp-btn" style="background-color: #25d366; color: white;"><i class="fab fa-whatsapp"></i> مشاركة</button></div></section>
@@ -160,6 +160,27 @@
         <button id="close-statuses-modal" class="btn-secondary" style="width: 100%; margin-top: 0.5rem;">إغلاق</button>
     </div></div>
     <div class="overlay" id="student-profile-modal-overlay"><div class="modal-content"><h2 id="student-profile-title"></h2><div id="student-profile-content"></div><button id="close-student-profile-modal" class="btn-secondary" style="width: 100%; margin-top: 1rem;">إغلاق</button></div></div>
+
+    <div class="overlay" id="recovery-modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="color: var(--danger-color);"><i class="fas fa-shield-alt"></i> وضع استرداد البيانات</h2>
+            </div>
+            <p>حدث خطأ أثناء قراءة جزء من بياناتك المحفوظة. هذا يعني غالبًا أن البيانات قد تلفت.</p>
+            <p><strong>الجزء المتأثر:</strong> <code id="recovery-data-key" style="background-color: #eee; padding: 2px 5px; border-radius: 3px;"></code></p>
+            <hr>
+            <h4>البيانات الخام التالفة:</h4>
+            <textarea id="recovery-data-textarea" style="width: 100%; min-height: 150px; border: 1px solid #ccc; border-radius: 5px; padding: 0.5rem; font-family: monospace; font-size: 0.9rem; direction: ltr; text-align: left;"></textarea>
+            <p id="recovery-error-message" style="color: var(--danger-color); font-weight: bold; display: none;"></p>
+            <hr>
+            <h4>الخيارات:</h4>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 0.5rem;">
+                <button id="recovery-download-btn" class="btn-info"><i class="fas fa-download"></i> 1. تنزيل نسخة من البيانات التالفة (مستحسن)</button>
+                <button id="recovery-fix-btn" class="btn-success"><i class="fas fa-wrench"></i> 2. محاولة إصلاح وحفظ التعديلات اليدوية</button>
+                <button id="recovery-reset-btn" class="btn-danger"><i class="fas fa-trash-alt"></i> 3. إعادة تعيين هذا الجزء (سيتم فقدان بياناته)</button>
+            </div>
+        </div>
+    </div>
 
     <footer><p>صنع بواسطة ترس الشفرة-1</p></footer>
 
@@ -226,7 +247,15 @@
                                 generateStatsLastDaysBtn: $("generate-stats-last-days-btn"),
                                 statsActionsContainer: $("stats-actions-container"),
                                 copyStatsBtn: $("copy-stats-btn"),
-                                shareStatsBtn: $("share-stats-btn")
+                                shareStatsBtn: $("share-stats-btn"),
+                                // Recovery Modal Selectors
+                                recoveryModalOverlay: $("recovery-modal-overlay"),
+                                recoveryDataKey: $("recovery-data-key"),
+                                recoveryDataTextarea: $("recovery-data-textarea"),
+                                recoveryErrorMessage: $("recovery-error-message"),
+                                recoveryDownloadBtn: $("recovery-download-btn"),
+                                recoveryFixBtn: $("recovery-fix-btn"),
+                                recoveryResetBtn: $("recovery-reset-btn")
                             };
                     
                             const STORAGE_KEYS = {
@@ -283,11 +312,21 @@
 
                                 document.getElementById('app-page-title').textContent = texts.appPageTitle;
                                 document.getElementById('app-title').textContent = texts.appTitle;
-                                document.getElementById('students-section-title').innerHTML = `<i class="fas fa-users"></i> ${texts.students} (<span id="registered-count">0</span>)`;
+                                document.getElementById('students-section-title-text').textContent = texts.students;
                                 document.getElementById('manage-students-btn').innerHTML = `<i class="fas fa-user-edit"></i> ${texts.manageStudentsBtn}`;
                                 document.getElementById('manage-students-modal-title').textContent = texts.manageStudentsModalTitle;
                                 document.getElementById('new-student-name').placeholder = texts.newStudentPlaceholder;
                                 document.getElementById('add-student-btn').innerHTML = `<i class="fas fa-plus"></i> ${texts.addStudentBtn}`;
+                            }
+
+                            function getDualDateFormatted(dateString) {
+                                const dateObj = new Date(dateString + 'T00:00:00');
+                                if (isNaN(dateObj)) return { hijri: '', gregorian: '' }; // Basic validation
+
+                                const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'}).format(dateObj);
+                                const gregorian = new Intl.DateTimeFormat('ar-EG', {day: 'numeric', month: 'long', year: 'numeric'}).format(dateObj);
+
+                                return { hijri, gregorian };
                             }
                     
                             const DEFAULT_STATUSES = [
@@ -334,46 +373,67 @@
                             }
                     
                             function loadState() {
+                                // Helper to process each key
+                                function processLocalStorageKey(storageKey, keyLabel, defaultValue) {
+                                    const rawData = localStorage.getItem(storageKey);
+                                    if (rawData) {
+                                        try {
+                                            return JSON.parse(rawData);
+                                        } catch (e) {
+                                            // Show the recovery modal and stop execution
+                                            showRecoveryModal(storageKey, keyLabel, rawData);
+                                            throw new Error(`Data corruption found for ${keyLabel}. Halting execution.`);
+                                        }
+                                    }
+                                    return defaultValue;
+                                }
+
                                 try {
-                                    const storedAllData = localStorage.getItem(STORAGE_KEYS.ALL_DATA);
-                                    const storedMasterList = localStorage.getItem(STORAGE_KEYS.MASTER_LIST);
-                                    const storedStatuses = localStorage.getItem(STORAGE_KEYS.STATUSES);
-                                    const storedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-                    
-                                    allDateData = storedAllData ? JSON.parse(storedAllData) : {};
-                                    studentMasterList = storedMasterList ? JSON.parse(storedMasterList) : [];
+                                    studentMasterList = processLocalStorageKey(STORAGE_KEYS.MASTER_LIST, 'قائمة الطلاب الرئيسية', []);
+                                    allDateData = processLocalStorageKey(STORAGE_KEYS.ALL_DATA, 'سجلات الحضور اليومية', {});
+                                    let settings = processLocalStorageKey(STORAGE_KEYS.SETTINGS, 'الإعدادات العامة', {});
                                     
-                                    let settings = storedSettings ? JSON.parse(storedSettings) : {};
-                                    // Migration from old settings format
+                                    // Settings migration logic
                                     if (settings.mosqueName && !settings.institutionName) {
                                         settings.institutionName = settings.mosqueName;
-                                        settings.institutionType = 'مسجد'; // Default type for migration
+                                        settings.institutionType = 'مسجد';
                                         delete settings.mosqueName;
-                                        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings)); // Re-save in new format
+                                        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
                                     }
+                                    
+                                    // Apply settings to UI
                                     allSelectors.institutionTypeInput.value = settings.institutionType || '';
                                     allSelectors.institutionNameInput.value = settings.institutionName || '';
                                     allSelectors.teacherNameInput.value = settings.teacherName || '';
                                     const gender = settings.genderTemplate || 'male';
                                     allSelectors.genderTemplateSelect.value = gender;
                                     updateUIText(gender);
-                    
-                                    if (storedStatuses) {
-                                        ATTENDANCE_OPTIONS = JSON.parse(storedStatuses);
-                                    } else {
-                                        const template = settings.genderTemplate || 'male';
-                                        ATTENDANCE_OPTIONS = template === 'female'
-                                            ? JSON.parse(JSON.stringify(DEFAULT_STATUSES_FEMALE))
-                                            : JSON.parse(JSON.stringify(DEFAULT_STATUSES));
+
+                                    // Statuses are special, they can be reset from settings
+                                    try {
+                                        const storedStatuses = localStorage.getItem(STORAGE_KEYS.STATUSES);
+                                        if (storedStatuses) {
+                                            ATTENDANCE_OPTIONS = JSON.parse(storedStatuses);
+                                        } else {
+                                            const template = settings.genderTemplate || 'male';
+                                            ATTENDANCE_OPTIONS = template === 'female'
+                                                ? JSON.parse(JSON.stringify(DEFAULT_STATUSES_FEMALE))
+                                                : JSON.parse(JSON.stringify(DEFAULT_STATUSES));
+                                        }
+                                    } catch (e) {
+                                        showRecoveryModal(STORAGE_KEYS.STATUSES, 'قائمة الحالات الدراسية', localStorage.getItem(STORAGE_KEYS.STATUSES));
+                                        throw new Error(`Data corruption found for قائمة الحالات الدراسية. Halting execution.`);
                                     }
-                    
+
                                     ATTENDANCE_OPTIONS.forEach(opt => { 
                                         if (typeof opt.notification !== 'object') opt.notification = { enabled: false, days: 2 }; 
                                     });
-                    
+
                                 } catch (e) {
-                                    console.error("Failed to load state from localStorage", e);
-                                    alert("فشل في تحميل البيانات المحفوظة. قد تكون تالفة.");
+                                    // This catch block will now only catch the "Data corruption found" error
+                                    // and prevent the rest of the app from loading.
+                                    console.error(e.message);
+                                    return; // Stop execution
                                 }
                             }
                     
@@ -423,11 +483,17 @@
                             }
                     
                             function updateDateDisplay() {
-                                const dateObj = new Date(currentDate + 'T00:00:00');
                                 const today = new Date().toISOString().split('T')[0];
-                                let formattedDate = dateObj.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                                if (currentDate === today) formattedDate = `<span class="today-indicator">اليوم</span> ${formattedDate}`;
-                                allSelectors.dateDisplay.innerHTML = formattedDate;
+                                const { hijri, gregorian } = getDualDateFormatted(currentDate);
+
+                                let primaryDateHTML = hijri;
+                                if (currentDate === today) primaryDateHTML = `<span class="today-indicator">اليوم</span> ${hijri}`;
+
+                                const combinedDateHTML = `
+                                    <div>${primaryDateHTML}</div>
+                                    <div style="font-size: 0.9rem; color: var(--secondary-color);">الموافق ${gregorian}</div>
+                                `;
+                                allSelectors.dateDisplay.innerHTML = combinedDateHTML;
                             }
                     
                             function navigateDate(direction) {
@@ -709,17 +775,19 @@
                     });
                 }
         
-                                function generatePrintView() {
+                                                function generatePrintView() {
         
-                                    const settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS) || '{}');
+                                                    const settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS) || '{}');
         
-                                    const gender = settings.genderTemplate || 'male';
+                                                    const gender = settings.genderTemplate || 'male';
         
-                                    const texts = I18N[gender];
+                                                    const texts = I18N[gender];
         
-                                    const dateObj = new Date(currentDate + 'T00:00:00');
+                                                    const { hijri, gregorian } = getDualDateFormatted(currentDate);
         
-                                    const formattedDate = dateObj.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                                                    const dateForReport = `${hijri}<br>الموافق ${gregorian}`;
+        
+                                
         
                         
         
@@ -845,7 +913,7 @@
         
                                             <h2>${(settings.institutionType || '')} ${(settings.institutionName || 'غير محدد')} | الأستاذ: ${settings.teacherName || 'غير محدد'}</h2>
         
-                                            <h3>تاريخ: ${formattedDate}</h3>
+                                            <h3>تاريخ: ${dateForReport}</h3>
         
                                             ${summaryHtml}
         
@@ -909,7 +977,9 @@
                 function generateWhatsappMessage() {
                     const templates = {
                         standard: (data) => {
-                            let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*تاريخ: ${new Date(data.date).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}*`;
+                            const { hijri, gregorian } = getDualDateFormatted(data.date);
+                            const dateForWhatsapp = `${hijri}\nالموافق ${gregorian}`;
+                            let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*تاريخ: ${dateForWhatsapp}*`;
         
                             if (data.students.length === 0) {
                                 return header + '\n\nلا يوجد طلاب مسجلون في القائمة.';
@@ -937,7 +1007,9 @@
                             return msg;
                         },
                         grouped: (data) => {
-                            let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*تاريخ: ${new Date(data.date).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}*`;
+                            const { hijri, gregorian } = getDualDateFormatted(data.date);
+                            const dateForWhatsapp = `${hijri}\nالموافق ${gregorian}`;
+                            let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*تاريخ: ${dateForWhatsapp}*`;
                     
                             if (data.students.length === 0) {
                                 return header + '\n\nلا يوجد طلاب مسجلون في القائمة.';
@@ -1150,7 +1222,9 @@
                         
                                 function displayStatistics(stats, startDate, endDate) {
                                     const { statusCounts, studentStatusCounts, recordedDays } = stats;
-                                    let output = `*تقرير إحصائي من ${startDate} إلى ${endDate}*\n\n`;
+                                    const startHijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(startDate + 'T00:00:00'));
+                                    const endHijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(endDate + 'T00:00:00'));
+                                    let output = `*تقرير إحصائي*\n*من: ${startHijri}*\n*إلى: ${endHijri}*\n\n`;
                                     output += `*إجمالي الأيام المسجلة: ${recordedDays}*\n\n`;
                         
                                     output += "*-- نسب الحالات --*\n";
@@ -1406,6 +1480,51 @@
             if (!message) return;
             const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
+        });
+
+        // --- Recovery Modal Logic ---
+        let recoveryContext = {};
+
+        function showRecoveryModal(key, keyLabel, corruptedData) {
+            recoveryContext = { key, keyLabel, corruptedData };
+            allSelectors.recoveryDataKey.textContent = keyLabel;
+            allSelectors.recoveryDataTextarea.value = corruptedData;
+            allSelectors.recoveryErrorMessage.style.display = 'none';
+            allSelectors.recoveryModalOverlay.classList.add('visible');
+        }
+
+        allSelectors.recoveryDownloadBtn.addEventListener('click', () => {
+            const dataToDownload = allSelectors.recoveryDataTextarea.value;
+            const blob = new Blob([dataToDownload], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `corrupted-data-${recoveryContext.key}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        allSelectors.recoveryFixBtn.addEventListener('click', () => {
+            const fixedDataString = allSelectors.recoveryDataTextarea.value;
+            try {
+                JSON.parse(fixedDataString); // Test if it's valid JSON
+                localStorage.setItem(recoveryContext.key, fixedDataString);
+                alert('تم حفظ البيانات التي تم إصلاحها بنجاح! سيتم الآن إعادة تحميل التطبيق.');
+                location.reload();
+            } catch (e) {
+                allSelectors.recoveryErrorMessage.textContent = 'خطأ: النص الذي أدخلته لا يزال غير صالح. يرجى التصحيح مرة أخرى أو تنزيل نسخة احتياطية.';
+                allSelectors.recoveryErrorMessage.style.display = 'block';
+            }
+        });
+
+        allSelectors.recoveryResetBtn.addEventListener('click', () => {
+            if (confirm(`هل أنت متأكد من أنك تريد إعادة تعيين بيانات "${recoveryContext.keyLabel}"؟ لا يمكن التراجع عن هذا الإجراء.`)) {
+                localStorage.removeItem(recoveryContext.key);
+                alert(`تمت إعادة تعيين بيانات "${recoveryContext.keyLabel}". سيتم الآن إعادة تحميل التطبيق.`);
+                location.reload();
+            }
         });
 
         // --- Initialization ---
