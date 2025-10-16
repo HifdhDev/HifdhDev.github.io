@@ -6,6 +6,7 @@
     <title id="app-page-title">متابع إنجاز الطلاب (النهائي)</title>
     <meta name="theme-color" content="#007bff"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary-color: #2c5f4d;
@@ -159,7 +160,34 @@
         <button id="reset-statuses-btn" class="btn-warning" style="width:100%; margin-top: 1rem; margin-bottom: 1rem;"><i class="fas fa-sync"></i> استعادة الحالات الافتراضية</button>
         <button id="close-statuses-modal" class="btn-secondary" style="width: 100%; margin-top: 0.5rem;">إغلاق</button>
     </div></div>
-    <div class="overlay" id="student-profile-modal-overlay"><div class="modal-content"><h2 id="student-profile-title"></h2><div id="student-profile-content"></div><button id="close-student-profile-modal" class="btn-secondary" style="width: 100%; margin-top: 1rem;">إغلاق</button></div></div>
+    <div class="overlay" id="student-profile-modal-overlay">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 id="student-profile-title" style="margin: 0; border-bottom: none;"></h2>
+                <button id="close-student-profile-modal-x" class="close-modal-btn">&times;</button>
+            </div>
+
+            <div id="student-profile-kpis" style="display: flex; gap: 1rem; justify-content: space-around; text-align: center; padding: 1rem 0; border-bottom: 1px solid #eee;">
+                <!-- KPIs will be injected here -->
+            </div>
+
+            <div style="padding: 1rem 0;">
+                <canvas id="student-stats-chart"></canvas>
+            </div>
+
+            <div style="border-top: 1px solid #eee; padding-top: 1rem;">
+                <h4 style="margin-top: 0; margin-bottom: 0.5rem; color: var(--primary-color);">سجل الحالات اليومي</h4>
+                <div id="student-profile-history" style="max-height: 20vh; overflow-y: auto;">
+                    <!-- History will be injected here -->
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; border-top: 1px solid #eee; padding-top: 1rem; display: flex; gap: 0.5rem;">
+                <button id="reset-student-history-btn" class="btn-danger"><i class="fas fa-trash-alt"></i> تصفير السجل</button>
+                <button id="close-student-profile-modal" class="btn-secondary" style="margin-left: auto;">إغلاق</button>
+            </div>
+        </div>
+    </div>
 
     <div class="overlay" id="recovery-modal-overlay">
         <div class="modal-content">
@@ -230,11 +258,14 @@
                     closeStatusesModalBtn: $("close-statuses-modal"),
                     closeStatusesModalXBtn: $("close-statuses-modal-x"),
                     resetStatusesBtn: $("reset-statuses-btn"),
-                    studentProfileModalOverlay: $("student-profile-modal-overlay"),
-                    studentProfileTitle: $("student-profile-title"),
-                    studentProfileContent: $("student-profile-content"),
-                                closeStudentProfileModalBtn: $("close-student-profile-modal"),
-                                printReportBtn: $("print-report-btn"),
+                                                    studentProfileModalOverlay: $("student-profile-modal-overlay"),
+                                                    studentProfileTitle: $("student-profile-title"),
+                                                    studentProfileKpis: $("student-profile-kpis"),
+                                                    studentStatsChart: $("student-stats-chart"),
+                                                    studentProfileHistory: $("student-profile-history"),
+                                                    resetStudentHistoryBtn: $("reset-student-history-btn"),
+                                                    closeStudentProfileModalBtn: $("close-student-profile-modal"),
+                                                    closeStudentProfileModalXBtn: $("close-student-profile-modal-x"),                                printReportBtn: $("print-report-btn"),
                                 exportCsvBtn: $("export-csv-btn"),
                                 refreshDataBtn: $("refresh-data-btn"),
                                 factoryResetBtn: $("factory-reset-btn"),
@@ -352,6 +383,7 @@
                             let studentMasterList = []; // Array of {id, name}
                             let allDateData = {}; // Object of { date: { studentId: { status: [] } } }
                             let currentDate = '';
+                            let studentChartInstance = null;
                     
                             function saveState() {
                                 if (currentDate) {
@@ -697,19 +729,143 @@
                 function openStudentProfile(studentId) {
                     const student = studentMasterList.find(s => s.id === studentId);
                     if (!student) return;
+
                     const gender = allSelectors.genderTemplateSelect.value;
                     const texts = I18N[gender];
                     allSelectors.studentProfileTitle.innerHTML = `<i class="fas fa-user-circle"></i> ${texts.studentProfileTitle}: ${student.name}`;
+
                     const history = getStudentHistory(studentId);
-                    let contentHTML = '<div style="max-height: 40vh; overflow-y: auto;">';
+
+                    // --- 1. Calculate KPIs & Stats ---
+                    const stats = {
+                        totalRecordedDays: history.length,
+                        attendedDays: 0,
+                        completedDays: 0,
+                        statusCounts: {}
+                    };
+                    ATTENDANCE_OPTIONS.forEach(opt => stats.statusCounts[opt.key] = 0);
+
+                    const absenceKeys = ['absent_unexcused', 'absent_excused'];
+                    const completionKeys = ['excellent', 'completed_full'];
+
+                    history.forEach(record => {
+                        const statusKey = record.statuses[0];
+                        if (statusKey) {
+                            // Increment status count
+                            if (stats.statusCounts.hasOwnProperty(statusKey)) {
+                                stats.statusCounts[statusKey]++;
+                            }
+                            // Check for attendance
+                            if (!absenceKeys.includes(statusKey)) {
+                                stats.attendedDays++;
+                                // Check for completion only if attended
+                                if (completionKeys.includes(statusKey)) {
+                                    stats.completedDays++;
+                                }
+                            }
+                        }
+                    });
+
+                    const attendancePercentage = stats.totalRecordedDays > 0 ? ((stats.attendedDays / stats.totalRecordedDays) * 100).toFixed(0) : 0;
+                    const completionPercentage = stats.attendedDays > 0 ? ((stats.completedDays / stats.attendedDays) * 100).toFixed(0) : 0;
+
+                    // --- 2. Render KPIs ---
+                    let kpiHTML = `
+                        <div>
+                            <div style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">${attendancePercentage}%</div>
+                            <div style="font-size: 0.9rem; color: var(--secondary-color);">نسبة الحضور</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.8rem; font-weight: bold; color: var(--success-color);">${completionPercentage}%</div>
+                            <div style="font-size: 0.9rem; color: var(--secondary-color);">نسبة الإنجاز</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.8rem; font-weight: bold;">${stats.totalRecordedDays}</div>
+                            <div style="font-size: 0.9rem; color: var(--secondary-color);">يوم مسجل</div>
+                        </div>
+                    `;
+                    allSelectors.studentProfileKpis.innerHTML = kpiHTML;
+
+                    // --- 3. Render History ---
+                    let historyHTML = '';
                     if (history.length > 0) {
                         history.forEach(record => {
-                            const symbols = record.statuses.map(key => ATTENDANCE_OPTIONS.find(opt => opt.key === key)?.symbol || '').join(' ');
-                            contentHTML += `<div style="padding: 0.5rem; border-bottom: 1px solid #eee;"><strong>${new Date(record.date + 'T00:00:00').toLocaleDateString('ar-EG')}</strong>: ${symbols}</div>`;
+                            const option = ATTENDANCE_OPTIONS.find(opt => opt.key === record.statuses[0]);
+                            const symbol = option ? option.symbol : '❓';
+                            const label = option ? option.label : 'غير معروف';
+                            historyHTML += `<div style="padding: 0.5rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                                <span><strong>${new Date(record.date + 'T00:00:00').toLocaleDateString('ar-EG')}</strong></span>
+                                <span style="font-size: 0.9rem;">${symbol} ${label}</span>
+                            </div>`;
                         });
-                    } else { contentHTML += `<p>${texts.noRecordsForStudent}</p>`; }
-                    contentHTML += '</div>';
-                    allSelectors.studentProfileContent.innerHTML = contentHTML;
+                    } else {
+                        historyHTML = `<p style="text-align: center; color: #6c757d;">${texts.noRecordsForStudent}</p>`;
+                    }
+                    allSelectors.studentProfileHistory.innerHTML = historyHTML;
+
+                    // --- 4. Render Chart ---
+                    const chartData = {
+                        labels: [],
+                        datasets: [{
+                            data: [],
+                            backgroundColor: [],
+                            borderColor: [],
+                            borderWidth: 1
+                        }]
+                    };
+
+                    ATTENDANCE_OPTIONS.forEach(opt => {
+                        if (stats.statusCounts[opt.key] > 0) {
+                            chartData.labels.push(`${opt.symbol} ${opt.label}`);
+                            chartData.datasets[0].data.push(stats.statusCounts[opt.key]);
+                            chartData.datasets[0].backgroundColor.push(opt.color);
+                            chartData.datasets[0].borderColor.push(opt.color);
+                        }
+                    });
+
+                    if (studentChartInstance) {
+                        studentChartInstance.destroy();
+                    }
+
+                    if (chartData.datasets[0].data.length > 0) {
+                        allSelectors.studentStatsChart.style.display = 'block';
+                        const ctx = allSelectors.studentStatsChart.getContext('2d');
+                        studentChartInstance = new Chart(ctx, {
+                            type: 'bar',
+                            data: chartData,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                let label = context.dataset.label || '';
+                                                if (label) { label += ': '; }
+                                                if (context.parsed.y !== null) {
+                                                    label += `${context.parsed.y} مرات`;
+                                                }
+                                                return label;
+                                            }
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: { stepSize: 1 }
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        allSelectors.studentStatsChart.style.display = 'none';
+                    }
+                    
+                    // Pass studentId to the reset button
+                    allSelectors.resetStudentHistoryBtn.dataset.studentId = studentId;
+
                     openModal(allSelectors.studentProfileModalOverlay);
                 }
         
@@ -722,6 +878,32 @@
                         }
                     });
                     return history;
+                }
+        
+                function resetStudentHistory(studentId) {
+                    const student = studentMasterList.find(s => s.id === studentId);
+                    if (!student) return;
+
+                    const gender = allSelectors.genderTemplateSelect.value;
+                    const confirmationMessage = `هل أنت متأكد من أنك تريد تصفير سجل ${gender === 'female' ? 'الطالبة' : 'الطالب'} "${student.name}"؟ سيتم حذف جميع بياناته التاريخية بشكل نهائي.`;
+
+                    if (confirm(confirmationMessage)) {
+                        // Iterate over all dates and delete the student's record
+                        Object.keys(allDateData).forEach(date => {
+                            if (allDateData[date][studentId]) {
+                                delete allDateData[date][studentId];
+                            }
+                        });
+
+                        // Save the changes to localStorage
+                        saveState();
+
+                        // Close the modal
+                        closeModal(allSelectors.studentProfileModalOverlay);
+
+                        // Show a confirmation message
+                        alert(`تم تصفير سجل ${gender === 'female' ? 'الطالبة' : 'الطالب'} بنجاح.`);
+                    }
                 }
         
                 function checkAndDisplayNotifications() {
@@ -1390,7 +1572,14 @@
                                     }
                                 });
                                 allSelectors.resetStatusesBtn.addEventListener('click', resetStatusesToDefault);
+                                allSelectors.resetStudentHistoryBtn.addEventListener('click', (e) => {
+                                    const studentId = e.currentTarget.dataset.studentId;
+                                    if (studentId) {
+                                        resetStudentHistory(studentId);
+                                    }
+                                });
                                 allSelectors.closeStudentProfileModalBtn.addEventListener('click', () => closeModal(allSelectors.studentProfileModalOverlay));
+                                allSelectors.closeStudentProfileModalXBtn.addEventListener('click', () => closeModal(allSelectors.studentProfileModalOverlay));
                                 allSelectors.mainOverlay.addEventListener('click', () => {
                                     closeModal(allSelectors.studentModalOverlay);
                                     closeModal(allSelectors.statusesModalOverlay);
