@@ -97,7 +97,7 @@
 </head>
 <body>
     <header>
-        <div class="header-actions"><button class="header-btn" id="notifications-btn"><i class="fas fa-bell"></i><span class="notification-badge" id="notification-count">0</span></button></div>
+        <div class="header-actions"><button class="header-btn" id="help-btn" title="المساعدة"><i class="fas fa-question-circle"></i></button><button class="header-btn" id="notifications-btn"><i class="fas fa-bell"></i><span class="notification-badge" id="notification-count">0</span></button></div>
         <h1 id="app-title">متابع إنجاز الطلاب</h1>
     </header>
     <main>
@@ -112,7 +112,7 @@
 </div><button id="save-settings-btn" class="btn-success" style="width: 100%; margin-top: 0.5rem;"><i class="fas fa-save"></i> حفظ الإعدادات</button><div style="margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;"><button id="manage-statuses-btn" class="btn"><i class="fas fa-tags"></i> إدارة الحالات</button><button id="refresh-data-btn" class="btn-secondary"><i class="fas fa-sync-alt"></i> تحديث البيانات</button><button id="factory-reset-btn" class="btn-danger"><i class="fas fa-trash-alt"></i> إعادة ضبط</button></div></section>
         <section id="date-management"><h2><i class="fas fa-calendar-alt"></i> إدارة التاريخ</h2><div style="display: flex; gap: 0.5rem; align-items: center;"><input type="date" id="current-date" style="flex-grow: 1;"><button id="today-btn"><i class="fas fa-calendar-day"></i></button></div><div id="date-display" style="text-align: center; margin: 1rem 0; font-weight: bold; color: var(--primary-color);"></div><div style="display: flex; gap: 0.5rem;"><button id="prev-day-btn" style="flex: 1;"><i class="fas fa-arrow-right"></i> السابق</button><button id="next-day-btn" style="flex: 1;">التالي <i class="fas fa-arrow-left"></i></button></div></section>
         <section id="student-management"><h2><i class="fas fa-users"></i> <span id="students-section-title-text">الطلاب</span> (<span id="registered-count">0</span>)</h2><div id="student-list-container"></div><div style="margin-top: 1rem;"><button id="manage-students-btn" class="btn"><i class="fas fa-user-edit"></i> إدارة قائمة الطلاب</button></div></section>
-        <section id="actions"><h2><i class="fas fa-cogs"></i> الإجراءات والتقارير</h2><label for="message-template-select">قالب الرسالة:</label><select id="message-template-select"><option value="grouped" selected>حسب الحالة</option><option value="detailed">مفصل</option><option value="summary">ملخص</option></select><button id="generate-whatsapp-btn" class="btn-success" style="width: 100%; margin-top: 1rem;"><i class="fab fa-whatsapp"></i> إنشاء رسالة واتساب</button><div style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="print-report-btn" class="btn"><i class="fas fa-print"></i> طباعة تقرير</button><button id="export-csv-btn" class="btn"><i class="fas fa-file-csv"></i> تصدير Excel</button></div><div id="backup-restore-controls" style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="backup-btn" class="btn-secondary"><i class="fas fa-download"></i> تنزيل نسخة احتياطية</button><button id="restore-btn" class="btn-secondary"><i class="fas fa-upload"></i> استعادة نسخة</button><input type="file" id="restore-file-input" class="hidden" accept=".json">
+        <section id="actions"><h2><i class="fas fa-cogs"></i> الإجراءات والتقارير</h2><label for="message-template-select">قالب الرسالة:</label><select id="message-template-select"><option value="grouped" selected>حسب الحالة</option><option value="detailed">مفصل</option><option value="summary">ملخص</option><option value="absentees">الغياب فقط</option></select><button id="generate-whatsapp-btn" class="btn-success" style="width: 100%; margin-top: 1rem;"><i class="fab fa-whatsapp"></i> إنشاء رسالة واتساب</button><div style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="print-report-btn" class="btn"><i class="fas fa-print"></i> طباعة تقرير</button><button id="export-csv-btn" class="btn"><i class="fas fa-file-csv"></i> تصدير Excel</button></div><div id="backup-restore-controls" style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="backup-btn" class="btn-secondary"><i class="fas fa-download"></i> تنزيل نسخة احتياطية</button><button id="restore-btn" class="btn-secondary"><i class="fas fa-upload"></i> استعادة نسخة</button><input type="file" id="restore-file-input" class="hidden" accept=".json">
 </div></section>
         <section id="whatsapp-output-section" class="hidden"><h2>الرسالة المنسقة</h2><textarea id="whatsapp-output" readonly style="width: 100%; min-height: 150px; border: 1px solid #ccc; border-radius: 5px; padding: 0.5rem; font-family: monospace; font-size: 0.9rem; white-space: pre; background-color: #e9ecef; direction: ltr; text-align: left; margin-top: 1rem;"></textarea><div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;"><button id="copy-whatsapp-msg-btn" class="btn-info"><i class="fas fa-copy"></i> نسخ</button><button id="share-whatsapp-btn" style="background-color: #25d366; color: white;"><i class="fab fa-whatsapp"></i> مشاركة</button></div></section>
         <section id="statistics-section">
@@ -210,6 +210,60 @@
         </div>
     </div>
 
+    <div class="overlay" id="help-modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-info-circle"></i> إرشادات الاستخدام</h2>
+                <button id="close-help-modal-x" class="close-modal-btn">&times;</button>
+            </div>
+            <div id="help-content" style="max-height: 60vh; overflow-y: auto; padding-left: 1rem; text-align: right;">
+                <h4><i class="fas fa-rocket"></i> البداية السريعة</h4>
+                <ol>
+                    <li>اذهب إلى <strong>الإعدادات العامة</strong> لضبط اسم المؤسسة والأستاذ، واختيار قالب الحالات (طلاب أو طالبات).</li>
+                    <li>اذهب إلى <strong>إدارة قائمة الطلاب</strong> وأضف طلابك.</li>
+                    <li>من الشاشة الرئيسية، يمكنك الآن تسجيل حالة كل طالب لكل يوم.</li>
+                    <li>استخدم قسم <strong>الإجراءات والتقارير</strong> لإنشاء رسائل واتساب أو تصدير البيانات.</li>
+                </ol>
+                <hr>
+                <h4><i class="fas fa-cogs"></i> الإعدادات التفصيلية</h4>
+                <ul>
+                    <li><strong>قالب الحالات:</strong> يغير الضمائر والنصوص لتناسب الطلاب (مذكر) أو الطالبات (مؤنث). بعد التغيير، يجب الذهاب إلى "إدارة الحالات" والضغط على "استعادة الحالات الافتراضية" لتطبيق القالب.</li>
+                    <li><strong>إدارة الحالات:</strong> تتيح لك إضافة حالات جديدة وحذف الحالات المضافة. الحالات الأساسية مثل "غائب بدون عذر" و "مستأذن" لا يمكن حذفها لضمان عمل الإحصائيات بشكل صحيح.</li>
+                    <li><strong>إعادة ضبط:</strong> يقوم بحذف جميع البيانات بشكل نهائي والعودة إلى حالة المصنع.</li>
+                </ul>
+                <hr>
+                <h4><i class="fas fa-calendar-alt"></i> التعامل مع التاريخ</h4>
+                <ul>
+                    <li>التطبيق يعرض تلقائياً تاريخ اليوم.</li>
+                    <li>يمكنك التنقل بين الأيام باستخدام أزرار <strong>السابق</strong> و<strong>التالي</strong> أو اختيار تاريخ محدد من التقويم.</li>
+                    <li>يتم حفظ بيانات كل يوم بشكل مستقل.</li>
+                </ul>
+                <hr>
+                <h4><i class="fas fa-user-chart"></i> متابعة الطالب الفردي</h4>
+                <ul>
+                    <li>اضغط على اسم أي طالب في القائمة الرئيسية لفتح <strong>ملفه الشخصي</strong>.</li>
+                    <li>ستجد تحليلاً كاملاً لسجله، بما في ذلك نسبة الحضور والإنجاز، ورسم بياني يوضح توزيع حالاته.</li>
+                    <li>يوجد زر <strong>"تصفير السجل"</strong> داخل الملف الشخصي لحذف جميع البيانات التاريخية لهذا الطالب فقط وبدء سجل جديد له.</li>
+                </ul>
+                <hr>
+                <h4><i class="fas fa-chart-pie"></i> التقارير الإحصائية</h4>
+                <ul>
+                    <li>حدد فترة زمنية واضغط على <strong>"إنشاء التقرير الإحصائي"</strong> للحصول على تحليل شامل.</li>
+                    <li>يعرض التقرير نسب كل حالة، بالإضافة إلى ترتيب الطلاب الأكثر حصولاً على كل حالة.</li>
+                    <li>يمكنك نسخ التقرير أو مشاركته مباشرة عبر واتساب.</li>
+                </ul>
+                <hr>
+                <h4><i class="fas fa-shield-alt"></i> النسخ الاحتياطي والاستعادة</h4>
+                <ul>
+                    <li><strong>هام جداً:</strong> بياناتك تُحفظ في متصفحك فقط. إذا قمت بمسح بيانات المتصفح، ستفقد كل شيء.</li>
+                    <li>استخدم زر <strong>"تنزيل نسخة احتياطية"</strong> بانتظام لحفظ ملف بياناتك على جهازك.</li>
+                    <li>يمكنك استعادة بياناتك في أي وقت (أو على جهاز آخر) باستخدام زر <strong>"استعادة نسخة"</strong> واختيار ملف النسخة الاحتياطية.</li>
+                </ul>
+            </div>
+            <button id="close-help-modal" class="btn-secondary" style="width: 100%; margin-top: 1rem;">فهمت، إغلاق</button>
+        </div>
+    </div>
+
     <footer><p>صنع بواسطة ترس الشفرة-1</p></footer>
 
     <script>
@@ -286,7 +340,12 @@
                                 recoveryErrorMessage: $("recovery-error-message"),
                                 recoveryDownloadBtn: $("recovery-download-btn"),
                                 recoveryFixBtn: $("recovery-fix-btn"),
-                                recoveryResetBtn: $("recovery-reset-btn")
+                                recoveryResetBtn: $("recovery-reset-btn"),
+                                // Help Modal
+                                helpBtn: $("help-btn"),
+                                helpModalOverlay: $("help-modal-overlay"),
+                                closeHelpModalBtn: $("close-help-modal"),
+                                closeHelpModalXBtn: $("close-help-modal-x")
                             };
                     
                             const STORAGE_KEYS = {
@@ -1254,6 +1313,29 @@
                                 if (count > 0) msg += `${option.symbol} ${option.label}: ${count}\n`;
                             });
                             return msg;
+                        },
+                        absentees: (data) => {
+                            const { hijri, gregorian } = getDualDateFormatted(data.date);
+                            const dateForWhatsapp = `${hijri}\nالموافق ${gregorian}`;
+                            let header = `*تقرير الغياب لحلقة ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*تاريخ: ${dateForWhatsapp}*`;
+
+                            const absenceKeys = ['absent_unexcused', 'absent_excused'];
+                            const absentees = data.students.filter(s => s.status.length > 0 && absenceKeys.includes(s.status[0]));
+
+                            if (absentees.length === 0) {
+                                return header + '\n\nلا يوجد غياب اليوم. ✅';
+                            }
+
+                            let msg = header + `\n\n*قائمة الغياب (${absentees.length}):*\n`;
+                            
+                            absentees.forEach(student => {
+                                const statusKey = student.status[0];
+                                const option = ATTENDANCE_OPTIONS.find(opt => opt.key === statusKey);
+                                const statusText = option ? `${option.symbol} ${option.label}` : 'غائب';
+                                msg += `- ${student.name} (${statusText})\n`;
+                            });
+
+                            return msg;
                         }
                     };
                     const templateFunction = templates[allSelectors.messageTemplateSelect.value] || templates.standard;
@@ -1580,10 +1662,17 @@
                                 });
                                 allSelectors.closeStudentProfileModalBtn.addEventListener('click', () => closeModal(allSelectors.studentProfileModalOverlay));
                                 allSelectors.closeStudentProfileModalXBtn.addEventListener('click', () => closeModal(allSelectors.studentProfileModalOverlay));
+                                
+                                // Help Modal Listeners
+                                allSelectors.helpBtn.addEventListener('click', () => openModal(allSelectors.helpModalOverlay));
+                                allSelectors.closeHelpModalBtn.addEventListener('click', () => closeModal(allSelectors.helpModalOverlay));
+                                allSelectors.closeHelpModalXBtn.addEventListener('click', () => closeModal(allSelectors.helpModalOverlay));
+
                                 allSelectors.mainOverlay.addEventListener('click', () => {
                                     closeModal(allSelectors.studentModalOverlay);
                                     closeModal(allSelectors.statusesModalOverlay);
                                     closeModal(allSelectors.studentProfileModalOverlay);
+                                    closeModal(allSelectors.helpModalOverlay);
                                     allSelectors.notificationsSidebar.classList.remove('open');
                                 });
                         
