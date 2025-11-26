@@ -24,7 +24,7 @@
         body { font-family: var(--font-family); margin: 0; background-color: var(--background-color); color: var(--text-color); line-height: 1.6; }
         header { background-color: var(--primary-color); color: white; padding: 1rem; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative; }
         .header-actions { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); display: flex; gap: 0.5rem; }
-        .header-btn { background: rgba(255, 255, 255, 0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; }
+        .header-btn { background: rgba(255, 255, 255, 0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; position: relative; }
         .notification-badge { position: absolute; top: -5px; right: -5px; background-color: var(--danger-color); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.8rem; display: none; align-items: center; justify-content: center; }
         main { padding: 1rem; max-width: 800px; margin: 0 auto; padding-bottom: 80px; }
         section { background-color: var(--surface-color); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -101,7 +101,7 @@
         <h1 id="app-title">متابع إنجاز الطلاب</h1>
     </header>
     <main>
-        <section id="settings"><h2><i class="fas fa-cogs"></i> الإعدادات العامة</h2><div style="display: grid; grid-template-columns: 1fr 2fr; gap: 0.5rem; margin-bottom: 0.5rem;"><input type="text" id="institution-type" placeholder="نوع المؤسسة (مسجد، دار...)"><input type="text" id="institution-name" placeholder="اسم المؤسسة (الصحابة...)"></div><input type="text" id="teacher-name" placeholder="اسم الأستاذ...">
+        <section id="settings"><h2><i class="fas fa-cogs"></i> الإعدادات العامة</h2><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;"><input type="text" id="institution-type" placeholder="نوع المؤسسة (مسجد، دار...)"><input type="text" id="institution-name" placeholder="اسم المؤسسة (الصحابة...)"></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;"><input type="text" id="teacher-name" placeholder="اسم الأستاذ..."><input type="text" id="activity-name" placeholder="اسم النشاط (حلقة، درس...)" value="حلقة"></div>
 <div style="margin-top: 0.5rem;">
     <label for="gender-template-select">قالب الحالات:</label>
     <select id="gender-template-select" style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 5px; font-family: var(--font-family); font-size: 1rem;">
@@ -219,7 +219,7 @@
             <div id="help-content" style="max-height: 60vh; overflow-y: auto; padding-left: 1rem; text-align: right;">
                 <h4><i class="fas fa-rocket"></i> البداية السريعة</h4>
                 <ol>
-                    <li>اذهب إلى <strong>الإعدادات العامة</strong> لضبط اسم المؤسسة والأستاذ، واختيار قالب الحالات (طلاب أو طالبات).</li>
+                    <li>اذهب إلى <strong>الإعدادات العامة</strong> لضبط اسم المؤسسة، واسم الأستاذ، و<strong>اسم النشاط</strong> (مثل حلقة، درس)، واختيار قالب الحالات (طلاب أو طالبات).</li>
                     <li>اذهب إلى <strong>إدارة قائمة الطلاب</strong> وأضف طلابك.</li>
                     <li>من الشاشة الرئيسية، يمكنك الآن تسجيل حالة كل طالب لكل يوم.</li>
                     <li>استخدم قسم <strong>الإجراءات والتقارير</strong> لإنشاء رسائل واتساب أو تصدير البيانات.</li>
@@ -280,6 +280,7 @@
                     institutionTypeInput: $("institution-type"),
                     institutionNameInput: $("institution-name"),
                     teacherNameInput: $("teacher-name"),
+                    activityNameInput: $("activity-name"),
                     saveSettingsBtn: $("save-settings-btn"),
                     currentDateInput: $("current-date"),
                     dateDisplay: $("date-display"),
@@ -496,6 +497,7 @@
                                     allSelectors.institutionTypeInput.value = settings.institutionType || '';
                                     allSelectors.institutionNameInput.value = settings.institutionName || '';
                                     allSelectors.teacherNameInput.value = settings.teacherName || '';
+                                    allSelectors.activityNameInput.value = settings.activityName || 'حلقة';
                                     const gender = settings.genderTemplate || 'male';
                                     allSelectors.genderTemplateSelect.value = gender;
                                     updateUIText(gender);
@@ -524,16 +526,19 @@
                                 const institutionType = allSelectors.institutionTypeInput.value.trim();
                                 const institutionName = allSelectors.institutionNameInput.value.trim();
                                 const teacherName = allSelectors.teacherNameInput.value.trim();
+                                const activityName = allSelectors.activityNameInput.value.trim();
                                 const genderTemplate = allSelectors.genderTemplateSelect.value;
                     
                                 allSelectors.institutionTypeInput.value = institutionType;
                                 allSelectors.institutionNameInput.value = institutionName;
                                 allSelectors.teacherNameInput.value = teacherName;
+                                allSelectors.activityNameInput.value = activityName;
                     
                                 const settings = { 
                                     institutionType: institutionType,
                                     institutionName: institutionName, 
                                     teacherName: teacherName,
+                                    activityName: activityName,
                                     genderTemplate: genderTemplate
                                 };
                                 localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
@@ -1211,8 +1216,8 @@
                     const templates = {
                         standard: (data) => {
                             const { hijri, gregorian } = getDualDateFormatted(data.date);
-                            const dateForWhatsapp = `${hijri}\nالموافق ${gregorian}`;
-                            let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*تاريخ: ${dateForWhatsapp}*`;
+                            const dateForWhatsapp = `${hijri} الموافق ${gregorian}`;
+                            let header = `*تقرير ${data.settings.activityName || 'حلقة'} ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*اليوم: ${dateForWhatsapp}*`;
         
                             if (data.students.length === 0) {
                                 return header + '\n\nلا يوجد طلاب مسجلون في القائمة.';
@@ -1241,8 +1246,8 @@
                         },
                         grouped: (data) => {
                             const { hijri, gregorian } = getDualDateFormatted(data.date);
-                            const dateForWhatsapp = `${hijri}\nالموافق ${gregorian}`;
-                            let header = `*تقرير حلقة ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*تاريخ: ${dateForWhatsapp}*`;
+                            const dateForWhatsapp = `${hijri} الموافق ${gregorian}`;
+                            let header = `*تقرير ${data.settings.activityName || 'حلقة'} ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*اليوم: ${dateForWhatsapp}*`;
                     
                             if (data.students.length === 0) {
                                 return header + '\n\nلا يوجد طلاب مسجلون في القائمة.';
@@ -1316,8 +1321,8 @@
                         },
                         absentees: (data) => {
                             const { hijri, gregorian } = getDualDateFormatted(data.date);
-                            const dateForWhatsapp = `${hijri}\nالموافق ${gregorian}`;
-                            let header = `*تقرير الغياب لحلقة ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*تاريخ: ${dateForWhatsapp}*`;
+                            const dateForWhatsapp = `${hijri} الموافق ${gregorian}`;
+                            let header = `*تقرير الغياب لـ${data.settings.activityName || 'حلقة'} ${data.settings.teacherName || ''}*\n*${(data.settings.institutionType || '')} ${(data.settings.institutionName || '')}*\n*اليوم: ${dateForWhatsapp}*`;
 
                             const absenceKeys = ['absent_unexcused', 'absent_excused'];
                             const absentees = data.students.filter(s => s.status.length > 0 && absenceKeys.includes(s.status[0]));
