@@ -1,0 +1,21 @@
+{
+  "name": "متابع إنجاز الطلاب",
+  "short_name": "المتابع",
+  "description": "تطبيق لمتابعة إنجاز الطلاب وحالاتهم الدراسية.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#cde8d9",
+  "theme_color": "#2c5f4d",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "icons/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

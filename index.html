@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="app-page-title">متابع إنجاز الطلاب (النهائي)</title>
-    <meta name="theme-color" content="#007bff"/>
+    <meta name="theme-color" content="#2c5f4d"/>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -1808,6 +1809,19 @@
             setCurrentDate(new Date().toISOString().split('T')[0]);
         }
         // If data is not loaded, the recovery modal is active and we halt execution.
+
+        // --- PWA Service Worker Registration ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
     });
     </script>
 </body>
