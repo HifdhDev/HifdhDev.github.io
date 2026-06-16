@@ -1,0 +1,2144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أدوات التعديل المطور | متابع إنجاز الطلاب</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c5f4d;
+            --primary-hover: #1f4537;
+            --secondary-color: #6c757d;
+            --background-color: #edf6f0;
+            --surface-color: #ffffff;
+            --text-color: #212529;
+            --text-light: #5a626a;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --font-family: 'Tajawal', sans-serif;
+            --border-radius: 12px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        [data-theme="dark"] {
+            --background-color: #121815;
+            --surface-color: #1e2622;
+            --text-color: #f8f9fa;
+            --text-light: #a5b0aa;
+            --secondary-color: #839089;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: 2px solid transparent;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-family: var(--font-family);
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: #212529;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border-color: rgba(255, 255, 255, 0.4);
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 50%;
+        }
+
+        main {
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Stats & File Status Container */
+        .status-container {
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .file-upload-zone {
+            border: 2px dashed rgba(44, 95, 77, 0.3);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            background-color: rgba(44, 95, 77, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        .file-upload-zone:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(44, 95, 77, 0.05);
+        }
+
+        .file-upload-zone i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-card {
+            background-color: rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.2;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-lbl {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* Tab Navigation */
+        .tabs-header {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid rgba(0,0,0,0.05);
+            padding-bottom: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-family: var(--font-family);
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-color);
+            background-color: rgba(44, 95, 77, 0.04);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            background-color: rgba(44, 95, 77, 0.08);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        .tab-content {
+            display: none;
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Shared Card / Panel styles */
+        .card {
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-info {
+            background-color: rgba(23, 162, 184, 0.08);
+            border-right: 4px solid var(--info-color);
+            padding: 1rem;
+            border-radius: 4px var(--border-radius) var(--border-radius) 4px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .alert-info i {
+            color: var(--info-color);
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.08);
+            border-right: 4px solid var(--warning-color);
+            padding: 1rem;
+            border-radius: 4px var(--border-radius) var(--border-radius) 4px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .alert-warning i {
+            color: #d39e00;
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        /* Tool 1: Status Remapper UI */
+        .orphan-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 2fr;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .orphan-row:last-child {
+            border-bottom: none;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(0,0,0,0.12);
+            border-radius: 8px;
+            font-family: var(--font-family);
+            font-size: 0.95rem;
+            background-color: var(--surface-color);
+            color: var(--text-color);
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(44, 95, 77, 0.15);
+        }
+
+        /* Custom Status Dialog */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Tool 2: Backup Merger UI */
+        .secondary-files-list {
+            margin-top: 1rem;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .sec-file-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            background-color: rgba(0,0,0,0.01);
+        }
+
+        .sec-file-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Resolvers */
+        .resolver-section {
+            border: 1px solid rgba(44, 95, 77, 0.2);
+            background-color: rgba(44, 95, 77, 0.01);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .conflict-card {
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: var(--surface-color);
+        }
+
+        .conflict-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.75rem;
+        }
+
+        .conflict-option {
+            border: 2px solid rgba(0,0,0,0.05);
+            border-radius: 8px;
+            padding: 0.75rem;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .conflict-option:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(44, 95, 77, 0.02);
+        }
+
+        .conflict-option.selected {
+            border-color: var(--success-color);
+            background-color: rgba(40, 167, 69, 0.05);
+        }
+
+        .conflict-option-header {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.25rem;
+        }
+
+        .conflict-option-val {
+            font-weight: bold;
+        }
+
+        /* Tool 3: WhatsApp Importer UI */
+        .whatsapp-input-area {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .whatsapp-input-area textarea {
+            height: 200px;
+            resize: vertical;
+        }
+
+        .wizard-step {
+            display: none;
+        }
+
+        .wizard-step.active {
+            display: block;
+        }
+
+        .parsed-report-card {
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            background-color: var(--surface-color);
+        }
+
+        .parsed-report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .parsed-report-title {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .unresolved-student-row {
+            background-color: rgba(255, 193, 7, 0.04);
+            border: 1px dashed rgba(255, 193, 7, 0.4);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .unresolved-student-name {
+            font-weight: bold;
+            color: #856404;
+        }
+
+        .unresolved-checkbox-group {
+            grid-column: 2;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .unresolved-checkbox-group input {
+            width: auto;
+            margin: 0;
+        }
+
+        /* Persistent Export Bar */
+        .export-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--surface-color);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid var(--primary-color);
+            z-index: 90;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+
+        .export-bar.visible {
+            transform: translateY(0);
+        }
+
+        .export-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .export-info i {
+            color: var(--success-color);
+            font-size: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .export-text h4 {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .export-text p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            main { padding: 1rem; }
+            .orphan-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            .unresolved-student-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            .unresolved-checkbox-group {
+                grid-column: 1;
+            }
+            .conflict-grid {
+                grid-template-columns: 1fr;
+            }
+            .export-bar {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+                padding: 1rem;
+            }
+            .export-info {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>
+            <i class="fas fa-toolbox"></i>
+            أدوات التعديل المطور
+        </h1>
+        <div class="header-actions">
+            <button class="btn btn-outline" id="theme-toggle" title="تبديل المظهر">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="../index.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                العودة للتطبيق الرئيسي
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <!-- STEP 1: Upload Primary Backup -->
+        <div class="status-container" id="primary-upload-section">
+            <div class="card-title">
+                <i class="fas fa-file-import"></i>
+                تحميل ملف النسخة الاحتياطية الأساسية
+            </div>
+            <div class="file-upload-zone" id="primary-dropzone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>اسحب وأفلت ملف النسخة الاحتياطية (.json) هنا</h3>
+                <p>أو انقر لاختيار الملف من جهازك</p>
+                <input type="file" id="primary-file-input" accept=".json" style="display: none;">
+            </div>
+            
+            <div id="primary-stats-box" style="display: none;">
+                <div style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 1rem;">
+                    <strong>بيانات الملف المحمل:</strong> <span id="loaded-file-name" style="color: var(--primary-color); font-weight: bold;">-</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-val" id="stat-students">0</div>
+                        <div class="stat-lbl">الطلاب النشطين</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="stat-archived">0</div>
+                        <div class="stat-lbl">الطلاب المؤرشفين</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="stat-records">0</div>
+                        <div class="stat-lbl">السجلات التاريخية</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="stat-statuses">0</div>
+                        <div class="stat-lbl">حالات الحضور الحالية</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN TOOLS PANEL (Hidden until backup loaded) -->
+        <div id="tools-panel" style="display: none;">
+            
+            <div class="tabs-header">
+                <button class="tab-btn active" data-tab="tab-remapper">
+                    <i class="fas fa-sync-alt"></i>
+                    ⚙️ إعادة تعيين الحالات
+                </button>
+                <button class="tab-btn" data-tab="tab-merger">
+                    <i class="fas fa-compress-arrows-alt"></i>
+                    🔀 دمج النسخ الاحتياطية
+                </button>
+                <button class="tab-btn" data-tab="tab-importer">
+                    <i class="fab fa-whatsapp"></i>
+                    💬 استيراد من واتساب
+                </button>
+            </div>
+
+            <!-- TAB 1: Status Remapper -->
+            <div class="tab-content active" id="tab-remapper">
+                <div class="card-title">إعادة تعيين الحالات اليتيمة (القديمة)</div>
+                <p class="stat-lbl" style="margin-top:-0.5rem; margin-bottom: 1.5rem;">
+                    تقوم هذه الأداة بفحص سجلاتك التاريخية والبحث عن الحالات التي تم حذفها من قائمة الإعدادات ولكنها لا تزال مرتبطة ببعض الطلاب في الأيام السابقة.
+                </p>
+
+                <div class="alert-info" id="remapper-loading-alert" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>جاري فحص السجلات والبحث عن حالات يتيمة...</span>
+                </div>
+
+                <div id="remapper-clean-state" class="empty-state">
+                    <i class="fas fa-check-circle" style="color: var(--success-color); opacity: 1;"></i>
+                    <h3>رائع! لا توجد حالات يتيمة</h3>
+                    <p>جميع السجلات التاريخية مطابقة لقائمة الحالات الحالية.</p>
+                </div>
+
+                <div id="remapper-work-state" style="display: none;">
+                    <div class="alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>تم العثور على حالات يتيمة غير معرّفة في إعداداتك الحالية. يرجى تحديد الإجراء المناسب لكل منها:</span>
+                    </div>
+
+                    <div style="border: 1px solid rgba(0,0,0,0.05); border-radius: var(--border-radius); overflow: hidden; margin-bottom: 1.5rem;">
+                        <div style="background-color: rgba(0,0,0,0.02); padding: 0.75rem 1rem; font-weight: bold; display: grid; grid-template-columns: 2fr 1fr 2fr; gap: 1rem; border-bottom: 2px solid rgba(0,0,0,0.05);">
+                            <div>الحالة اليتيمة بالسجلات القديمة</div>
+                            <div>عدد التكرارات</div>
+                            <div>الإجراء المطلوب</div>
+                        </div>
+                        <div id="orphan-statuses-list">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" id="apply-remap-btn">
+                        <i class="fas fa-check"></i>
+                        تطبيق التغييرات وإصلاح الحالات
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 2: Backup Merger -->
+            <div class="tab-content" id="tab-merger">
+                <div class="card-title">دمج النسخ الاحتياطية الإضافية</div>
+                <p class="stat-lbl" style="margin-top:-0.5rem; margin-bottom: 1.5rem;">
+                    تتيح لك هذه الأداة رفع ملف نسخة احتياطية إضافية أو أكثر (سواء لطلاب محذوفين أو فترات زمنية سابقة) ودمجها مع النسخة الأساسية لإنتاج ملف موحد متكامل.
+                </p>
+
+                <div class="card" style="background-color: rgba(0,0,0,0.01);">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">اختر ملفات النسخ الاحتياطية التي تود دمجها:</label>
+                    <input type="file" id="merger-file-input" accept=".json" multiple>
+                    <div class="secondary-files-list" id="merger-files-preview" style="display: none;">
+                        <!-- File items populated dynamically -->
+                    </div>
+                </div>
+
+                <div id="merger-process-settings" style="display: none;">
+                    <div class="form-group">
+                        <label>إستراتيجية حل تعارض السجلات (نفس اليوم ونفس الطالب):</label>
+                        <select id="merge-conflict-strategy">
+                            <option value="newer" selected>أولوية للنسخة الأحدث (المدخلة ثانياً)</option>
+                            <option value="primary">أولوية للنسخة الأساسية الأولى</option>
+                            <option value="manual">حل التعارضات يدوياً لكل سجل</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-success" id="start-merge-btn">
+                        <i class="fas fa-compress-arrows-alt"></i>
+                        بدء دمج البيانات
+                    </button>
+                </div>
+
+                <!-- Interactive Merger Resolver -->
+                <div class="resolver-section" id="merger-resolver-section" style="display: none;">
+                    <h3 style="margin-top: 0; color: var(--primary-color); display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-user-check"></i>
+                        مراجعة ومطابقة الطلاب المتشابهين بالاسم
+                    </h3>
+                    <p class="stat-lbl" style="margin-bottom: 1.5rem;">
+                        وجدنا أسماء متطابقة أو قريبة جداً في الملفات المدمجة ولكن بمعرفات (IDs) مختلفة. يرجى تأكيد ما إذا كان هؤلاء يمثلون نفس الطالب لدمج سجلاتهم التاريخية معاً:
+                    </p>
+
+                    <div id="student-matches-container">
+                        <!-- Populated dynamically -->
+                    </div>
+
+                    <!-- Interactive Records Conflicts Container -->
+                    <div id="record-conflicts-container-section" style="display: none; margin-top: 2rem; border-top: 2px dashed rgba(0,0,0,0.1); padding-top: 1.5rem;">
+                        <h3 style="margin-top: 0; color: var(--primary-color);">
+                            <i class="fas fa-calendar-alt"></i>
+                            حل تعارضات سجلات الأيام المتطابقة
+                        </h3>
+                        <p class="stat-lbl" style="margin-bottom: 1rem;">
+                            الرجاء اختيار الحالة الصحيحة للأيام المتعارضة التالية:
+                        </p>
+                        <div id="record-conflicts-list">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" id="finalize-merge-btn" style="margin-top: 1.5rem;">
+                        <i class="fas fa-save"></i>
+                        اعتماد ودمج البيانات النهائية
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 3: WhatsApp Importer -->
+            <div class="tab-content" id="tab-importer">
+                <div class="card-title">استيراد السجلات من رسائل الواتساب</div>
+                <p class="stat-lbl" style="margin-top:-0.5rem; margin-bottom: 1.5rem;">
+                    قم بلصق النصوص المنسوخة من مجموعة حلقة الواتساب الخاصة بالتطبيق. ستقوم هذه الأداة بتنظيف ترويسات الرسائل المتعددة تلقائياً، واستخلاص التواريخ، ومطابقة الطلاب والحالات وتضمينها بالسجل.
+                </p>
+
+                <!-- Step 1: Input text -->
+                <div id="importer-step-input" class="wizard-step active">
+                    <div class="whatsapp-input-area">
+                        <textarea id="whatsapp-raw-text" placeholder="انسخ والصق رسائل تقرير الواتساب هنا...
+يمكنك لصق عدة تقارير دفعة واحدة."></textarea>
+                    </div>
+                    <button class="btn btn-success" id="parse-whatsapp-btn">
+                        <i class="fas fa-magic"></i>
+                        تحليل وتصفية النصوص المكتوبة
+                    </button>
+                </div>
+
+                <!-- Step 2: Verification and Mapping Wizard -->
+                <div id="importer-step-resolve" class="wizard-step" style="margin-top: 1.5rem;">
+                    <div class="alert-info">
+                        <i class="fas fa-check-double"></i>
+                        <span>تم تحليل التقارير بنجاح. يرجى مراجعة التواريخ ومطابقة الأسماء غير المحددة قبل حفظ البيانات:</span>
+                    </div>
+
+                    <div id="whatsapp-reports-container">
+                        <!-- Individual reports will load here -->
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                        <button class="btn btn-secondary" id="back-to-input-btn">
+                            <i class="fas fa-chevron-right"></i>
+                            تعديل النص المكتوب
+                        </button>
+                        <button class="btn btn-success" id="finalize-whatsapp-import-btn">
+                            <i class="fas fa-file-import"></i>
+                            حفظ وتضمين السجلات المستوردة
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- PERSISTENT EXPORT BAR -->
+    <div class="export-bar" id="bottom-export-bar">
+        <div class="export-info">
+            <i class="fas fa-check-circle"></i>
+            <div class="export-text">
+                <h4>لديك بيانات محدثة جاهزة للتحميل</h4>
+                <p>يمكنك تحميل الملف النهائي وتنزيله الآن واستعادته في تطبيقك الرئيسي.</p>
+            </div>
+        </div>
+        <button class="btn btn-success" id="download-final-btn" style="box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);">
+            <i class="fas fa-download"></i>
+            تنزيل الملف الاحتياطي المحدث (JSON)
+        </button>
+    </div>
+
+    <!-- MODAL: Custom Status Remap Creator -->
+    <div class="modal" id="new-status-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إنشاء حالة جديدة وحفظها</h3>
+                <button class="close-btn" id="close-modal-btn">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>اسم الحالة:</label>
+                <input type="text" id="new-status-label" placeholder="مثال: أنجز الحفظ والمراجعة">
+            </div>
+            <div class="form-group">
+                <label>الرمز التعبيري (Emoji):</label>
+                <input type="text" id="new-status-symbol" placeholder="مثال: 🌟" maxlength="4">
+            </div>
+            <div class="form-group">
+                <label>اللون التوضيحي:</label>
+                <input type="color" id="new-status-color" value="#28a745" style="padding:0; height:40px; cursor:pointer;">
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" id="cancel-status-btn">إلغاء</button>
+                <button class="btn btn-success" id="save-new-status-btn">حفظ وتأكيد</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- GLOBAL STATE ---
+        const state = {
+            primaryBackup: null,
+            primaryFileName: '',
+            modified: false,
+            
+            // Remapper Temp Info
+            orphanStatuses: [], // [{ key: string, count: number }]
+            
+            // Merger Temp Info
+            mergerFiles: [], // [{ filename, data }]
+            studentIDMap: {}, // Maps secondary_id -> primary_id
+            studentMergeConflicts: [], // [{ secStudent, matchedPrimaryStudents: [] }]
+            recordMergeConflicts: [], // [{ date, studentId, priStatus, secStatus, fileIndex }]
+            mergeResolvedConflicts: {}, // id-date -> selectedStatus
+            
+            // WhatsApp Importer Temp Info
+            whatsappReports: [] // [{ date: 'YYYY-MM-DD', parsedRecords: [{ name: '', statusKey: '', rawStatusText: '' }], unmatchedRecords: [] }]
+        };
+
+        // --- SELECTORS ---
+        const selectors = {
+            themeToggle: document.getElementById('theme-toggle'),
+            primaryDropzone: document.getElementById('primary-dropzone'),
+            primaryFileInput: document.getElementById('primary-file-input'),
+            primaryUploadSection: document.getElementById('primary-upload-section'),
+            primaryStatsBox: document.getElementById('primary-stats-box'),
+            loadedFileName: document.getElementById('loaded-file-name'),
+            statStudents: document.getElementById('stat-students'),
+            statArchived: document.getElementById('stat-archived'),
+            statRecords: document.getElementById('stat-records'),
+            statStatuses: document.getElementById('stat-statuses'),
+            toolsPanel: document.getElementById('tools-panel'),
+            tabBtns: document.querySelectorAll('.tab-btn'),
+            tabContents: document.querySelectorAll('.tab-content'),
+            bottomExportBar: document.getElementById('bottom-export-bar'),
+            downloadFinalBtn: document.getElementById('download-final-btn'),
+            
+            // Remapper
+            remapperLoadingAlert: document.getElementById('remapper-loading-alert'),
+            remapperCleanState: document.getElementById('remapper-clean-state'),
+            remapperWorkState: document.getElementById('remapper-work-state'),
+            orphanStatusesList: document.getElementById('orphan-statuses-list'),
+            applyRemapBtn: document.getElementById('apply-remap-btn'),
+            
+            // Modal
+            newStatusModal: document.getElementById('new-status-modal'),
+            closeModalBtn: document.getElementById('close-modal-btn'),
+            cancelStatusBtn: document.getElementById('cancel-status-btn'),
+            saveNewStatusBtn: document.getElementById('save-new-status-btn'),
+            newStatusLabel: document.getElementById('new-status-label'),
+            newStatusSymbol: document.getElementById('new-status-symbol'),
+            newStatusColor: document.getElementById('new-status-color'),
+            
+            // Merger
+            mergerFileInput: document.getElementById('merger-file-input'),
+            mergerFilesPreview: document.getElementById('merger-files-preview'),
+            mergerProcessSettings: document.getElementById('merger-process-settings'),
+            startMergeBtn: document.getElementById('start-merge-btn'),
+            mergerResolverSection: document.getElementById('merger-resolver-section'),
+            studentMatchesContainer: document.getElementById('student-matches-container'),
+            recordConflictsSection: document.getElementById('record-conflicts-container-section'),
+            recordConflictsList: document.getElementById('record-conflicts-list'),
+            finalizeMergeBtn: document.getElementById('finalize-merge-btn'),
+            mergeConflictStrategy: document.getElementById('merge-conflict-strategy'),
+
+            // WhatsApp
+            whatsappRawText: document.getElementById('whatsapp-raw-text'),
+            parseWhatsappBtn: document.getElementById('parse-whatsapp-btn'),
+            importerStepInput: document.getElementById('importer-step-input'),
+            importerStepResolve: document.getElementById('importer-step-resolve'),
+            whatsappReportsContainer: document.getElementById('whatsapp-reports-container'),
+            backToInputBtn: document.getElementById('back-to-input-btn'),
+            finalizeWhatsappImportBtn: document.getElementById('finalize-whatsapp-import-btn')
+        };
+
+        // --- DARK MODE THEME TOGGLE ---
+        function initTheme() {
+            const currentTheme = localStorage.getItem('developer-tools-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            updateThemeIcon(currentTheme);
+        }
+        function updateThemeIcon(theme) {
+            const icon = selectors.themeToggle.querySelector('i');
+            if (theme === 'dark') {
+                icon.className = 'fas fa-sun';
+            } else {
+                icon.className = 'fas fa-moon';
+            }
+        }
+        selectors.themeToggle.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            let nextTheme = theme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', nextTheme);
+            localStorage.setItem('developer-tools-theme', nextTheme);
+            updateThemeIcon(nextTheme);
+        });
+        initTheme();
+
+        // --- TAB SWITCHER ---
+        selectors.tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectors.tabBtns.forEach(b => b.classList.remove('active'));
+                selectors.tabContents.forEach(c => c.classList.remove('active'));
+                
+                btn.classList.add('active');
+                const targetTab = btn.getAttribute('data-tab');
+                document.getElementById(targetTab).classList.add('active');
+
+                // Auto Trigger functions on tab entry if needed
+                if (targetTab === 'tab-remapper') {
+                    scanOrphanStatuses();
+                }
+            });
+        });
+
+        // --- UTILITY: Generate UUID ---
+        function generateUUID() {
+            return 'stud_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
+        }
+
+        // --- UTILITY: String Similarity for Names ---
+        function getNameSimilarity(name1, name2) {
+            const norm = (s) => s.trim().replace(/\s+/g, ' ').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه');
+            n1 = norm(name1);
+            n2 = norm(name2);
+            if (n1 === n2) return 1.0;
+            
+            const w1 = n1.split(' ');
+            const w2 = n2.split(' ');
+            let matches = 0;
+            w1.forEach(w => {
+                if (w2.includes(w)) matches++;
+            });
+            const totalWords = Math.max(w1.length, w2.length);
+            return matches / totalWords;
+        }
+
+        // --- UTILITY: Date Parsing ---
+        const arabicMonthMap = {
+            'يناير': 1, 'فبراير': 2, 'مارس': 3, 'أبريل': 4, 'مايو': 5, 'يونيو': 6,
+            'يوليو': 7, 'أغسطس': 8, 'سبتمبر': 9, 'أكتوبر': 10, 'نوفمبر': 11, 'ديسمبر': 12,
+            'محرم': 1, 'صفر': 2, 'ربيع الأول': 3, 'ربيع الثاني': 4, 'جمادى الأولى': 5, 'جمادى الآخرة': 6,
+            'رجب': 7, 'شعبان': 8, 'رمضان': 9, 'شوال': 10, 'ذو القعدة': 11, 'ذو الحجة': 12
+        };
+        const toEnglishDigits = (s) => s.replace(/[٠١٢٣٤٥٦٧٨٩]/g, (d) => d.charCodeAt(0) - 1632);
+
+        function parseDateFromString(str) {
+            str = toEnglishDigits(str);
+            
+            // Try standard format YYYY-MM-DD
+            const isoMatch = str.match(/\b(\d{4})[-\/\.](\d{1,2})[-\/\.](\d{1,2})\b/);
+            if (isoMatch) return `${isoMatch[1]}-${isoMatch[2].padStart(2, '0')}-${isoMatch[3].padStart(2, '0')}`;
+
+            // Try standard format DD-MM-YYYY
+            const standardMatch = str.match(/\b(\d{1,2})[-\/\.](\d{1,2})[-\/\.](\d{4})\b/);
+            if (standardMatch) return `${standardMatch[3]}-${standardMatch[2].padStart(2, '0')}-${standardMatch[1].padStart(2, '0')}`;
+
+            // Try Gregorian date written in Arabic like 24 فبراير 2025 or 24/فبراير/2025
+            const arabicGregStr = str.match(/(\d{1,2})\s*[-\/\.\s]\s*([أ-ي]+)\s*[-\/\.\s]?\s*(\d{4})/);
+            if (arabicGregStr) {
+                const day = arabicGregStr[1];
+                const monthName = arabicGregStr[2];
+                const year = arabicGregStr[3];
+                // Check if monthName matches a known Gregorian month
+                const month = arabicMonthMap[monthName] || 1;
+                return `${year}-${month.toString().padStart(2, '0')}-${day.padStart(2, '0')}`;
+            }
+
+            return null;
+        }
+
+        // --- FILE UPLOADER (PRIMARY) ---
+        selectors.primaryDropzone.addEventListener('click', () => selectors.primaryFileInput.click());
+        selectors.primaryFileInput.addEventListener('change', handlePrimaryFileSelect);
+        
+        selectors.primaryDropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            selectors.primaryDropzone.style.borderColor = 'var(--primary-color)';
+        });
+        selectors.primaryDropzone.addEventListener('dragleave', () => {
+            selectors.primaryDropzone.style.borderColor = 'rgba(44, 95, 77, 0.3)';
+        });
+        selectors.primaryDropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            selectors.primaryDropzone.style.borderColor = 'rgba(44, 95, 77, 0.3)';
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                parsePrimaryBackup(files[0]);
+            }
+        });
+
+        function handlePrimaryFileSelect(e) {
+            if (e.target.files.length > 0) {
+                parsePrimaryBackup(e.target.files[0]);
+            }
+        }
+
+        function parsePrimaryBackup(file) {
+            state.primaryFileName = file.name;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (!data.masterList || !data.allData) {
+                        throw new Error("ملف النسخة الاحتياطية المرفوع غير سليم أو قديم جداً (لا يحتوي على قائمة الطلاب أو سجلات الحضور).");
+                    }
+                    
+                    // Normalize standard arrays/objects
+                    state.primaryBackup = {
+                        version: data.version || "2.0",
+                        timestamp: data.timestamp || new Date().toISOString(),
+                        settings: data.settings || {},
+                        masterList: data.masterList || [],
+                        archivedList: data.archivedList || [],
+                        allData: data.allData || data.allDateData || {},
+                        statuses: data.statuses || []
+                    };
+
+                    // Display Stats
+                    selectors.loadedFileName.innerText = file.name;
+                    selectors.statStudents.innerText = state.primaryBackup.masterList.length;
+                    selectors.statArchived.innerText = state.primaryBackup.archivedList.length;
+                    
+                    let recordsCount = 0;
+                    Object.keys(state.primaryBackup.allData).forEach(date => {
+                        recordsCount += Object.keys(state.primaryBackup.allData[date]).length;
+                    });
+                    selectors.statRecords.innerText = recordsCount;
+                    selectors.statStatuses.innerText = state.primaryBackup.statuses.length;
+
+                    selectors.primaryStatsBox.style.display = 'block';
+                    selectors.toolsPanel.style.display = 'block';
+                    
+                    // Trigger scan
+                    scanOrphanStatuses();
+
+                } catch (err) {
+                    alert('خطأ في قراءة ملف النسخة الاحتياطية الأساسية: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- MARK MODIFIED STATE ---
+        function markModified() {
+            state.modified = true;
+            selectors.bottomExportBar.classList.add('visible');
+        }
+
+        // --- DOWNLOAD ACTION ---
+        selectors.downloadFinalBtn.addEventListener('click', downloadFinalBackup);
+        function downloadFinalBackup() {
+            if (!state.primaryBackup) return;
+            const dataStr = JSON.stringify(state.primaryBackup, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `student-tracker-fixed-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            state.modified = false;
+            selectors.bottomExportBar.classList.remove('visible');
+            alert('تم تحميل النسخة الاحتياطية المصححة بنجاح! يمكنك الآن استعادتها بالتطبيق الرئيسي.');
+        }
+
+        // ==========================================
+        // ⚙️ TAB 1: STATUS REMAPPER LOGIC
+        // ==========================================
+        let orphanRemapDestinations = {}; // Maps orphan_key -> destination_option
+        let activeRemapOrphanKey = ''; // Temp variable for modal trigger
+
+        function scanOrphanStatuses() {
+            if (!state.primaryBackup) return;
+            selectors.remapperLoadingAlert.style.display = 'flex';
+            selectors.remapperCleanState.style.display = 'none';
+            selectors.remapperWorkState.style.display = 'none';
+
+            setTimeout(() => {
+                const activeKeys = new Set(state.primaryBackup.statuses.map(s => s.key));
+                const uniqueRecordKeys = {};
+
+                // Scan allDateData
+                Object.keys(state.primaryBackup.allData).forEach(date => {
+                    const dailyData = state.primaryBackup.allData[date];
+                    Object.keys(dailyData).forEach(studId => {
+                        const statusObj = dailyData[studId];
+                        if (statusObj && statusObj.status && statusObj.status.length > 0) {
+                            const key = statusObj.status[0];
+                            if (!activeKeys.has(key)) {
+                                uniqueRecordKeys[key] = (uniqueRecordKeys[key] || 0) + 1;
+                            }
+                        }
+                    });
+                });
+
+                state.orphanStatuses = Object.keys(uniqueRecordKeys).map(k => ({ key: k, count: uniqueRecordKeys[k] }));
+
+                selectors.remapperLoadingAlert.style.display = 'none';
+
+                if (state.orphanStatuses.length === 0) {
+                    selectors.remapperCleanState.style.display = 'block';
+                } else {
+                    renderOrphanStatuses();
+                    selectors.remapperWorkState.style.display = 'block';
+                }
+            }, 300);
+        }
+
+        function renderOrphanStatuses() {
+            selectors.orphanStatusesList.innerHTML = '';
+            orphanRemapDestinations = {};
+
+            state.orphanStatuses.forEach(orphan => {
+                orphanRemapDestinations[orphan.key] = 'ignore'; // Default
+
+                const row = document.createElement('div');
+                row.className = 'orphan-row';
+                
+                let selectHtml = `<select data-orphan="${orphan.key}" class="orphan-action-select">
+                    <option value="ignore">تجاهل هذه الحالة (مسح سجلاتها)</option>
+                    <option value="create_new">💡 إنشاء كحالة جديدة في الإعدادات...</option>
+                    <optgroup label="دمج وتحويل لحالة نشطة حالياً:">`;
+                
+                state.primaryBackup.statuses.forEach(s => {
+                    selectHtml += `<option value="map_${s.key}">${s.symbol} ${s.label}</option>`;
+                });
+                selectHtml += `</optgroup></select>`;
+
+                row.innerHTML = `
+                    <div style="font-weight: bold; color: var(--danger-color); font-family: monospace; font-size:1.05rem;">${orphan.key}</div>
+                    <div><span class="btn btn-secondary" style="padding: 2px 10px; font-size: 0.8rem; cursor:default;">${orphan.count} سجل</span></div>
+                    <div>${selectHtml}</div>
+                `;
+
+                selectors.orphanStatusesList.appendChild(row);
+            });
+
+            // Bind events
+            document.querySelectorAll('.orphan-action-select').forEach(sel => {
+                sel.addEventListener('change', (e) => {
+                    const orphanKey = e.target.getAttribute('data-orphan');
+                    const value = e.target.value;
+                    
+                    if (value === 'create_new') {
+                        activeRemapOrphanKey = orphanKey;
+                        openNewStatusModal(orphanKey);
+                    } else {
+                        orphanRemapDestinations[orphanKey] = value;
+                    }
+                });
+            });
+        }
+
+        // --- NEW STATUS MODAL LOGIC ---
+        function openNewStatusModal(orphanKey) {
+            selectors.newStatusLabel.value = orphanKey;
+            selectors.newStatusSymbol.value = '📝';
+            selectors.newStatusModal.classList.add('open');
+        }
+
+        selectors.closeModalBtn.addEventListener('click', closeModal);
+        selectors.cancelStatusBtn.addEventListener('click', closeModal);
+        function closeModal() {
+            selectors.newStatusModal.classList.remove('open');
+            // Revert select input if cancelled
+            if (activeRemapOrphanKey) {
+                const sel = document.querySelector(`.orphan-action-select[data-orphan="${activeRemapOrphanKey}"]`);
+                if (sel) sel.value = 'ignore';
+            }
+            activeRemapOrphanKey = '';
+        }
+
+        selectors.saveNewStatusBtn.addEventListener('click', () => {
+            const label = selectors.newStatusLabel.value.trim();
+            const symbol = selectors.newStatusSymbol.value.trim();
+            const color = selectors.newStatusColor.value;
+
+            if (!label || !symbol) {
+                alert('الرجاء إدخال اسم الحالة والرمز التعبيري.');
+                return;
+            }
+
+            const newKey = 'custom_' + Math.random().toString(36).substr(2, 5);
+            const newStatus = {
+                key: newKey,
+                label: label,
+                symbol: symbol,
+                color: color,
+                notification: { enabled: false, days: 2 }
+            };
+
+            // Add to active statuses
+            state.primaryBackup.statuses.push(newStatus);
+            selectors.statStatuses.innerText = state.primaryBackup.statuses.length;
+            
+            // Map the orphan to this new key
+            orphanRemapDestinations[activeRemapOrphanKey] = 'map_' + newKey;
+
+            // Re-render select options to include this new status in list (without losing selections)
+            const activeOrphan = activeRemapOrphanKey;
+            selectors.newStatusModal.classList.remove('open');
+            activeRemapOrphanKey = '';
+            
+            renderOrphanStatuses();
+            
+            // Restore previous user choices
+            Object.keys(orphanRemapDestinations).forEach(k => {
+                const sel = document.querySelector(`.orphan-action-select[data-orphan="${k}"]`);
+                if (sel) sel.value = orphanRemapDestinations[k];
+            });
+        });
+
+        // --- APPLY REMAPPING ---
+        selectors.applyRemapBtn.addEventListener('click', () => {
+            if (!state.primaryBackup) return;
+
+            let updatedCount = 0;
+            let deletedCount = 0;
+
+            Object.keys(state.primaryBackup.allData).forEach(date => {
+                const dailyData = state.primaryBackup.allData[date];
+                Object.keys(dailyData).forEach(studId => {
+                    const statusObj = dailyData[studId];
+                    if (statusObj && statusObj.status && statusObj.status.length > 0) {
+                        const key = statusObj.status[0];
+                        if (orphanRemapDestinations[key]) {
+                            const decision = orphanRemapDestinations[key];
+                            if (decision === 'ignore') {
+                                // Delete the status record
+                                delete dailyData[studId];
+                                deletedCount++;
+                            } else if (decision.startsWith('map_')) {
+                                const targetKey = decision.replace('map_', '');
+                                statusObj.status = [targetKey];
+                                updatedCount++;
+                            }
+                        }
+                    }
+                });
+
+                // Clean empty days
+                if (Object.keys(dailyData).length === 0) {
+                    delete state.primaryBackup.allData[date];
+                }
+            });
+
+            markModified();
+            scanOrphanStatuses();
+            alert(`تم تطبيق التغييرات بنجاح!\n- تحديث: ${updatedCount} سجل.\n- مسح: ${deletedCount} سجل.`);
+        });
+
+        // ==========================================
+        // 🔀 TAB 2: BACKUP MERGER LOGIC
+        // ==========================================
+        selectors.mergerFileInput.addEventListener('change', handleMergerFilesSelect);
+
+        function handleMergerFilesSelect(e) {
+            const files = e.target.files;
+            if (files.length === 0) return;
+
+            let loadedCount = 0;
+            selectors.mergerFilesPreview.innerHTML = '';
+            selectors.mergerFilesPreview.style.display = 'block';
+            state.mergerFiles = [];
+
+            Array.from(files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        const parsed = JSON.parse(evt.target.result);
+                        if (!parsed.masterList || !parsed.allData) {
+                            throw new Error("ملف غير سليم.");
+                        }
+
+                        state.mergerFiles.push({
+                            filename: file.name,
+                            data: parsed
+                        });
+
+                        const item = document.createElement('div');
+                        item.className = 'sec-file-item';
+                        item.innerHTML = `
+                            <div><strong>${file.name}</strong></div>
+                            <div class="stat-lbl">${parsed.masterList.length} طالب، ${Object.keys(parsed.allData).length} يوم</div>
+                        `;
+                        selectors.mergerFilesPreview.appendChild(item);
+
+                        loadedCount++;
+                        if (loadedCount === files.length) {
+                            selectors.mergerProcessSettings.style.display = 'block';
+                        }
+                    } catch (err) {
+                        alert(`فشل رفع ملف الدمج ${file.name}: ${err.message}`);
+                    }
+                };
+                reader.readAsText(file);
+            });
+        }
+
+        // --- START PROCESSING MERGE ---
+        selectors.startMergeBtn.addEventListener('click', () => {
+            if (state.mergerFiles.length === 0) return;
+
+            // Clear temporary maps
+            state.studentIDMap = {};
+            state.studentMergeConflicts = [];
+            state.recordMergeConflicts = [];
+            state.mergeResolvedConflicts = {};
+
+            // 1. MATCH STUDENTS
+            // Check student list from secondary files
+            state.mergerFiles.forEach((secFile, fileIdx) => {
+                const secBackup = secFile.data;
+                
+                secBackup.masterList.concat(secBackup.archivedList || []).forEach(secStudent => {
+                    // Search in primary backup masterList + archivedList
+                    const sameIDPrimary = state.primaryBackup.masterList
+                        .concat(state.primaryBackup.archivedList || [])
+                        .find(p => p.id === secStudent.id);
+
+                    if (sameIDPrimary) {
+                        // Match automatically since ID is identical
+                        state.studentIDMap[secStudent.id] = sameIDPrimary.id;
+                    } else {
+                        // Check for duplicate names (User feedback request)
+                        const primaryWithSameName = state.primaryBackup.masterList
+                            .concat(state.primaryBackup.archivedList || [])
+                            .filter(p => p.name.trim() === secStudent.name.trim());
+
+                        if (primaryWithSameName.length > 0) {
+                            // High potential conflict (same name, different ID)
+                            state.studentMergeConflicts.push({
+                                secStudent: secStudent,
+                                matchedPrimaryStudents: primaryWithSameName,
+                                fileIndex: fileIdx
+                            });
+                        } else {
+                            // Truly new student
+                            // Generate mapping to prevent any potential ID clashes (if they clashes, else keep ID)
+                            const idExists = state.primaryBackup.masterList
+                                .concat(state.primaryBackup.archivedList || [])
+                                .some(p => p.id === secStudent.id);
+
+                            if (idExists) {
+                                const newId = generateUUID();
+                                state.studentIDMap[secStudent.id] = newId;
+                            } else {
+                                state.studentIDMap[secStudent.id] = secStudent.id;
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Display Interactive Resolver UI
+            selectors.studentMatchesContainer.innerHTML = '';
+            
+            if (state.studentMergeConflicts.length > 0) {
+                state.studentMergeConflicts.forEach((conflict, idx) => {
+                    const row = document.createElement('div');
+                    row.className = 'conflict-card';
+                    
+                    let optionsHtml = '';
+                    conflict.matchedPrimaryStudents.forEach(p => {
+                        optionsHtml += `
+                            <label style="display:flex; align-items:center; gap:0.5rem; margin-bottom: 0.5rem; cursor:pointer;">
+                                <input type="radio" name="stud_conf_${idx}" value="merge_${p.id}" checked>
+                                <span>نعم، هو نفس الطالب <strong>"${p.name}"</strong> (المعرّف الحالي: ${p.id})</span>
+                            </label>
+                        `;
+                    });
+                    optionsHtml += `
+                        <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                            <input type="radio" name="stud_conf_${idx}" value="new_student">
+                            <span>لا، هذا شخص آخر تماماً (أضفه كطالب جديد)</span>
+                        </label>
+                    `;
+
+                    row.innerHTML = `
+                        <div style="font-weight: bold; margin-bottom: 0.5rem;">
+                            تنبيه تشابه أسماء في ملف [${state.mergerFiles[conflict.fileIndex].filename}]:
+                        </div>
+                        <div class="unresolved-student-name" style="font-size:1.1rem; margin-bottom: 0.75rem;">
+                            "${conflict.secStudent.name}"
+                        </div>
+                        <div>
+                            ${optionsHtml}
+                        </div>
+                    `;
+                    selectors.studentMatchesContainer.appendChild(row);
+                });
+                
+                selectors.mergerResolverSection.style.display = 'block';
+            } else {
+                // No name conflicts, check records conflicts directly
+                processRecordsMerge();
+            }
+        });
+
+        // --- RECORD CONFLICT CALCULATOR ---
+        function processRecordsMerge() {
+            // Read conflicts in records and construct options
+            const strategy = selectors.mergeConflictStrategy.value;
+            state.recordMergeConflicts = [];
+
+            state.mergerFiles.forEach((secFile, fileIdx) => {
+                const secBackup = secFile.data;
+                Object.keys(secBackup.allData).forEach(date => {
+                    const secDaily = secBackup.allData[date];
+                    Object.keys(secDaily).forEach(secStudId => {
+                        const mappedStudId = state.studentIDMap[secStudId];
+                        const secRecord = secDaily[secStudId];
+                        
+                        if (secRecord && secRecord.status && secRecord.status.length > 0) {
+                            const secStatus = secRecord.status[0];
+
+                            // Check primary
+                            if (state.primaryBackup.allData[date] && state.primaryBackup.allData[date][mappedStudId]) {
+                                const priRecord = state.primaryBackup.allData[date][mappedStudId];
+                                if (priRecord && priRecord.status && priRecord.status.length > 0) {
+                                    const priStatus = priRecord.status[0];
+                                    if (priStatus !== secStatus) {
+                                        // Conflict found!
+                                        if (strategy === 'manual') {
+                                            state.recordMergeConflicts.push({
+                                                date: date,
+                                                studentId: mappedStudId,
+                                                priStatus: priStatus,
+                                                secStatus: secStatus,
+                                                fileIndex: fileIdx
+                                            });
+                                        } else if (strategy === 'newer') {
+                                            // auto-choose secondary
+                                            state.mergeResolvedConflicts[`${mappedStudId}-${date}`] = secStatus;
+                                        } else {
+                                            // auto-choose primary
+                                            state.mergeResolvedConflicts[`${mappedStudId}-${date}`] = priStatus;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+
+            // Display conflicts if manual resolving selected
+            selectors.recordConflictsList.innerHTML = '';
+            if (strategy === 'manual' && state.recordMergeConflicts.length > 0) {
+                state.recordMergeConflicts.forEach((conflict, idx) => {
+                    const student = state.primaryBackup.masterList
+                        .concat(state.primaryBackup.archivedList || [])
+                        .find(p => p.id === conflict.studentId);
+                    
+                    const card = document.createElement('div');
+                    card.className = 'conflict-card';
+                    
+                    const priOpt = state.primaryBackup.statuses.find(s => s.key === conflict.priStatus) || { label: conflict.priStatus, symbol: '❓' };
+                    const secOpt = state.primaryBackup.statuses.find(s => s.key === conflict.secStatus) || { label: conflict.secStatus, symbol: '❓' };
+
+                    card.innerHTML = `
+                        <div style="font-weight: bold;">تعارض حضور في يوم: ${conflict.date}</div>
+                        <div style="color: var(--primary-color); font-size:1.1rem; margin-bottom: 0.5rem;">الطالب: ${student ? student.name : 'مجهول'}</div>
+                        <div class="conflict-grid">
+                            <div class="conflict-option selected" data-conflict-idx="${idx}" data-val="${conflict.priStatus}">
+                                <div class="conflict-option-header">النسخة الأساسية الأولى</div>
+                                <div class="conflict-option-val">${priOpt.symbol} ${priOpt.label}</div>
+                            </div>
+                            <div class="conflict-option" data-conflict-idx="${idx}" data-val="${conflict.secStatus}">
+                                <div class="conflict-option-header">الملف المدمج (${state.mergerFiles[conflict.fileIndex].filename})</div>
+                                <div class="conflict-option-val">${secOpt.symbol} ${secOpt.label}</div>
+                            </div>
+                        </div>
+                    `;
+                    selectors.recordConflictsList.appendChild(card);
+                });
+
+                // Bind conflict option clicks
+                selectors.recordConflictsList.querySelectorAll('.conflict-option').forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        const parent = opt.parentElement;
+                        parent.querySelectorAll('.conflict-option').forEach(o => o.classList.remove('selected'));
+                        opt.classList.add('selected');
+                    });
+                });
+
+                selectors.recordConflictsSection.style.display = 'block';
+                selectors.mergerResolverSection.style.display = 'block';
+            } else {
+                // No conflicts or auto-resolved, execute merge immediately
+                executeMerge();
+            }
+        }
+
+        // --- FINALIZE / EXECUTE MERGE ---
+        selectors.finalizeMergeBtn.addEventListener('click', () => {
+            // 1. Resolve student matches
+            state.studentMergeConflicts.forEach((conflict, idx) => {
+                const choiceInput = document.querySelector(`input[name="stud_conf_${idx}"]:checked`);
+                if (choiceInput) {
+                    const val = choiceInput.value;
+                    if (val === 'new_student') {
+                        // Keep ID mapping fresh
+                        const newId = generateUUID();
+                        state.studentIDMap[conflict.secStudent.id] = newId;
+
+                        // Add this new student to primary
+                        const newStudent = { id: newId, name: conflict.secStudent.name };
+                        if (conflict.secStudent.archivedAt) {
+                            newStudent.archivedAt = conflict.secStudent.archivedAt;
+                            state.primaryBackup.archivedList.push(newStudent);
+                        } else {
+                            state.primaryBackup.masterList.push(newStudent);
+                        }
+                    } else if (val.startsWith('merge_')) {
+                        const primaryId = val.replace('merge_', '');
+                        state.studentIDMap[conflict.secStudent.id] = primaryId;
+                    }
+                }
+            });
+
+            // 2. Resolve manual record conflicts if visible
+            if (selectors.mergeConflictStrategy.value === 'manual') {
+                selectors.recordConflictsList.querySelectorAll('.conflict-card').forEach((card, idx) => {
+                    const selected = card.querySelector('.conflict-option.selected');
+                    if (selected) {
+                        const conflict = state.recordMergeConflicts[idx];
+                        const val = selected.getAttribute('data-val');
+                        state.mergeResolvedConflicts[`${conflict.studentId}-${conflict.date}`] = val;
+                    }
+                });
+            }
+
+            executeMerge();
+        });
+
+        function executeMerge() {
+            // Apply merge into primaryBackup
+            let addedStudentsCount = 0;
+            let addedRecordsCount = 0;
+
+            // Step A: Add missing students
+            state.mergerFiles.forEach(secFile => {
+                const secBackup = secFile.data;
+                secBackup.masterList.concat(secBackup.archivedList || []).forEach(secStudent => {
+                    const mappedId = state.studentIDMap[secStudent.id];
+                    
+                    // Check if already in primary
+                    const exists = state.primaryBackup.masterList
+                        .concat(state.primaryBackup.archivedList || [])
+                        .some(p => p.id === mappedId);
+
+                    if (!exists) {
+                        const clone = { id: mappedId, name: secStudent.name };
+                        if (secStudent.archivedAt) {
+                            clone.archivedAt = secStudent.archivedAt;
+                            state.primaryBackup.archivedList.push(clone);
+                        } else {
+                            state.primaryBackup.masterList.push(clone);
+                        }
+                        addedStudentsCount++;
+                    }
+                });
+            });
+
+            // Step B: Merge Records allData
+            state.mergerFiles.forEach(secFile => {
+                const secBackup = secFile.data;
+                Object.keys(secBackup.allData).forEach(date => {
+                    if (!state.primaryBackup.allData[date]) {
+                        state.primaryBackup.allData[date] = {};
+                    }
+
+                    const primaryDaily = state.primaryBackup.allData[date];
+                    const secDaily = secBackup.allData[date];
+
+                    Object.keys(secDaily).forEach(secStudId => {
+                        const mappedStudId = state.studentIDMap[secStudId];
+                        const secRecord = secDaily[secStudId];
+
+                        if (secRecord && secRecord.status && secRecord.status.length > 0) {
+                            const secStatus = secRecord.status[0];
+
+                            // Check conflict
+                            const conflictKey = `${mappedStudId}-${date}`;
+                            if (state.mergeResolvedConflicts[conflictKey] !== undefined) {
+                                const resolvedStatus = state.mergeResolvedConflicts[conflictKey];
+                                primaryDaily[mappedStudId] = { status: [resolvedStatus] };
+                                addedRecordsCount++;
+                            } else {
+                                // No conflict, copy directly
+                                primaryDaily[mappedStudId] = { status: [secStatus] };
+                                addedRecordsCount++;
+                            }
+                        }
+                    });
+                });
+            });
+
+            // Step C: Merge Statuses (Union)
+            state.mergerFiles.forEach(secFile => {
+                const secBackup = secFile.data;
+                (secBackup.statuses || []).forEach(secStatus => {
+                    const exists = state.primaryBackup.statuses.some(s => s.key === secStatus.key);
+                    if (!exists) {
+                        state.primaryBackup.statuses.push(secStatus);
+                    }
+                });
+            });
+
+            // Update UI Stats
+            selectors.statStudents.innerText = state.primaryBackup.masterList.length;
+            selectors.statArchived.innerText = state.primaryBackup.archivedList.length;
+            selectors.statStatuses.innerText = state.primaryBackup.statuses.length;
+            
+            let recordsCount = 0;
+            Object.keys(state.primaryBackup.allData).forEach(date => {
+                recordsCount += Object.keys(state.primaryBackup.allData[date]).length;
+            });
+            selectors.statRecords.innerText = recordsCount;
+
+            // Reset tab view
+            selectors.mergerResolverSection.style.display = 'none';
+            selectors.recordConflictsSection.style.display = 'none';
+            selectors.mergerFilesPreview.style.display = 'none';
+            selectors.mergerProcessSettings.style.display = 'none';
+            selectors.mergerFileInput.value = '';
+            state.mergerFiles = [];
+
+            markModified();
+            alert(`تم الدمج بنجاح!\n- الطلاب الجدد المضافين: ${addedStudentsCount}\n- السجلات اليومية المستوردة: ${addedRecordsCount}`);
+        }
+
+        // ==========================================
+        // 💬 TAB 3: WHATSAPP IMPORTER LOGIC
+        // ==========================================
+        selectors.parseWhatsappBtn.addEventListener('click', parseWhatsAppMessages);
+        selectors.backToInputBtn.addEventListener('click', () => {
+            selectors.importerStepResolve.classList.remove('active');
+            selectors.importerStepInput.classList.add('active');
+        });
+
+        function cleanWhatsAppHeaders(text) {
+            // Remove headers like: [10:45 AM, 7/12/2024] Sender Name:
+            let clean = text.replace(/^\[\d{1,2}:\d{2}\s*(?:AM|PM|ص|م)?,?\s*\d{1,4}[-\/\.]\d{1,2}[-\/\.]\d{1,4}\]\s*[^:\n]+:\s*/gmi, '');
+            
+            // Remove headers like: Sender Name\n[10:45 AM, 7/12/2024]
+            clean = clean.replace(/^[^\n]+\n\[\d{1,2}:\d{2}\s*(?:AM|PM|ص|م)?,?\s*\d{1,4}[-\/\.]\d{1,2}[-\/\.]\d{1,4}\]/gmi, '');
+            
+            // Remove other common metadata formats
+            clean = clean.replace(/^\[\d{2}:\d{2},\s*\d{1,2}\/\d{1,2}\/\d{4}\]\s*[^:\n]+:\s*/gmi, '');
+            clean = clean.replace(/^[^:\n]+:\s*\[\d{2}:\d{2},\s*\d{1,2}\/\d{1,2}\/\d{4}\]/gmi, '');
+            
+            return clean;
+        }
+
+        function parseWhatsAppMessages() {
+            const raw = selectors.whatsappRawText.value.trim();
+            if (!raw) {
+                alert('الرجاء لصق نصوص تقارير الواتساب أولاً.');
+                return;
+            }
+
+            // Clean lines
+            const cleaned = cleanWhatsAppHeaders(raw);
+            
+            // Split into individual messages
+            // Split by occurrences of "*تقرير" or "تقرير" or "*اليوم:"
+            const rawBlocks = cleaned.split(/(?=\*?(?:تقرير\s+حلقة|تقرير|اليوم:))/g);
+            
+            state.whatsappReports = [];
+
+            rawBlocks.forEach((block, blockIdx) => {
+                const trimmedBlock = block.trim();
+                if (!trimmedBlock) return;
+
+                // 1. Extract Date
+                let dateStr = parseDateFromString(trimmedBlock);
+                
+                // 2. Parse Students and Statuses
+                const parsedRecords = [];
+                const lines = trimmedBlock.split('\n');
+
+                // Helper to match status by labels/emojis
+                const findStatusKey = (text) => {
+                    const opt = state.primaryBackup.statuses.find(s => {
+                        const lblClean = s.label.trim().replace(/\.$/, ''); // remove trailing dot
+                        const textClean = text.trim();
+                        return textClean.includes(s.symbol) || textClean.includes(lblClean);
+                    });
+                    return opt ? opt.key : null;
+                };
+
+                // Parser state for grouped layout
+                let activeStatusKey = null;
+
+                lines.forEach(line => {
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine) return;
+
+                    // Group Header Detection: e.g. *🌟 أنجز بتميز. (2)*
+                    if (trimmedLine.startsWith('*') && trimmedLine.endsWith('*')) {
+                        const innerText = trimmedLine.replace(/\*/g, '');
+                        const foundKey = findStatusKey(innerText);
+                        if (foundKey) {
+                            activeStatusKey = foundKey;
+                            return;
+                        }
+                    }
+
+                    // Bulleted Names: e.g. - أحمد or • خالد
+                    if (trimmedLine.startsWith('-') || trimmedLine.startsWith('•') || trimmedLine.startsWith('*')) {
+                        const name = trimmedLine.replace(/^[-•\*]\s*/, '').trim();
+                        if (name && activeStatusKey) {
+                            parsedRecords.push({
+                                name: name,
+                                statusKey: activeStatusKey,
+                                rawStatusText: ''
+                            });
+                        }
+                    }
+                    // Numbered List: e.g. 1. أحمد \n ✅ أنجز المقرر
+                    // Let's support numbered names
+                    else if (/^\d+\.\s*/.test(trimmedLine)) {
+                        const name = trimmedLine.replace(/^\d+\.\s*/, '').trim();
+                        if (name) {
+                            // Look ahead for status on next line if possible, but inside split we do it inline
+                            // Check if status is inline like: 1. أحمد (✅ أنجز المقرر)
+                            const inlineStatusKey = findStatusKey(trimmedLine);
+                            parsedRecords.push({
+                                name: name, // We will clean the inline status text from name in resolvers
+                                statusKey: inlineStatusKey || 'not_completed',
+                                rawStatusText: trimmedLine
+                            });
+                        }
+                    }
+                });
+
+                if (parsedRecords.length > 0) {
+                    state.whatsappReports.push({
+                        id: 'report_' + blockIdx,
+                        date: dateStr || '', // If null, user will select manually
+                        parsedRecords: parsedRecords
+                    });
+                }
+            });
+
+            if (state.whatsappReports.length === 0) {
+                alert('عذراً، لم نتمكن من التعرف على أي تقارير أو أسماء طلاب بالصيغة المتبعة بالرسائل الملصقة.');
+                return;
+            }
+
+            // Switch view
+            selectors.importerStepInput.classList.remove('active');
+            selectors.importerStepResolve.classList.add('active');
+
+            renderWhatsAppReportsResolve();
+        }
+
+        // --- RENDER RESOLVING SCREEN ---
+        function renderWhatsAppReportsResolve() {
+            selectors.whatsappReportsContainer.innerHTML = '';
+
+            // Step A: Find all unique unresolved names across all reports
+            const allStudents = state.primaryBackup.masterList.concat(state.primaryBackup.archivedList || []);
+            const uniqueUnresolvedNames = new Set();
+            const autoMatchedNames = {}; // name -> studentId
+
+            state.whatsappReports.forEach(report => {
+                report.parsedRecords.forEach(record => {
+                    const exactMatch = allStudents.find(s => s.name.trim() === record.name.trim());
+                    if (exactMatch) {
+                        autoMatchedNames[record.name] = exactMatch.id;
+                        record.studentId = exactMatch.id;
+                        record.resolved = true;
+                    } else {
+                        uniqueUnresolvedNames.add(record.name.trim());
+                        record.resolved = false;
+                    }
+                });
+            });
+
+            // Step B: Render Unresolved Names Card at the top (if any)
+            if (uniqueUnresolvedNames.size > 0) {
+                const unresolvedCard = document.createElement('div');
+                unresolvedCard.className = 'parsed-report-card';
+                unresolvedCard.style.borderColor = 'var(--warning-color)';
+                unresolvedCard.style.backgroundColor = 'rgba(255, 193, 7, 0.02)';
+                
+                let studentResolverHtml = '';
+                let index = 0;
+                uniqueUnresolvedNames.forEach(name => {
+                    // Get suggestions ordered by similarity
+                    const suggestions = allStudents
+                        .map(s => ({ student: s, sim: getNameSimilarity(s.name, name) }))
+                        .filter(item => item.sim > 0.3)
+                        .sort((a, b) => b.sim - a.sim);
+
+                    let optionsHtml = `<option value="new_student">[إضافة كطالب جديد بالاسم: ${name}]</option>
+                                       <option value="ignore">[تجاهل هذا الاسم تماماً]</option>`;
+                    
+                    suggestions.forEach(item => {
+                        const isArchived = state.primaryBackup.archivedList.some(arch => arch.id === item.student.id);
+                        const labelSuffix = isArchived ? ' (مؤرشف)' : '';
+                        optionsHtml += `<option value="link_${item.student.id}">${item.student.name}${labelSuffix}</option>`;
+                    });
+
+                    // Fallback: list all students if no suggestion above 0.3
+                    if (suggestions.length === 0) {
+                        allStudents.forEach(s => {
+                            optionsHtml += `<option value="link_${s.id}">${s.name}</option>`;
+                        });
+                    }
+
+                    studentResolverHtml += `
+                        <div class="unresolved-student-row" data-name="${name}" style="margin-bottom: 1rem;">
+                            <div class="unresolved-student-name">"${name}"</div>
+                            <div>
+                                <select class="student-resolver-select" data-name="${name}">
+                                    ${optionsHtml}
+                                </select>
+                                <div class="unresolved-checkbox-group">
+                                    <input type="checkbox" class="update-name-checkbox" id="up_name_${index}" checked>
+                                    <label for="up_name_${index}">تحديث اسم الطالب في السجل الرئيسي ليطابق هذا الاسم مستقبلاً</label>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    index++;
+                });
+
+                unresolvedCard.innerHTML = `
+                    <div class="parsed-report-header" style="border-bottom: 2px solid var(--warning-color); padding-bottom: 0.5rem; margin-bottom: 1.5rem;">
+                        <div class="parsed-report-title" style="color: #856404; font-size: 1.2rem;">
+                            <i class="fas fa-user-plus"></i>
+                            <span>مطابقة الأسماء المضافة حديثاً أو غير المعرّفة (عدد الأسماء الفريدة: ${uniqueUnresolvedNames.size})</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 1rem;">
+                            الأسماء التالية تم استخراجها من رسائل الواتساب ولم تطابق أي طالب حالي. يرجى تحديد الإجراء المناسب لكل اسم (سيتم تطبيق هذا الإجراء على كافة تكرارات هذا الاسم عبر كل الأشهر والرسائل تلقائياً):
+                        </p>
+                        ${studentResolverHtml}
+                    </div>
+                `;
+                selectors.whatsappReportsContainer.appendChild(unresolvedCard);
+            }
+
+            // Step C: Render Individual Reports Preview list below
+            const listTitle = document.createElement('h3');
+            listTitle.style.margin = '2rem 0 1rem 0';
+            listTitle.style.color = 'var(--primary-color)';
+            listTitle.innerHTML = `<i class="fas fa-calendar-alt"></i> معاينة التقارير المستخرجة حسب الأيام (عدد التقارير: ${state.whatsappReports.length})`;
+            selectors.whatsappReportsContainer.appendChild(listTitle);
+
+            state.whatsappReports.forEach((report) => {
+                const card = document.createElement('div');
+                card.className = 'parsed-report-card';
+
+                // Date Picker Html
+                const dateVal = report.date || '';
+                const dateInputHtml = `<input type="date" value="${dateVal}" class="report-date-picker" data-report-id="${report.id}" style="width:auto; display:inline-block; margin-bottom:0; padding:0.4rem;">`;
+
+                // Students Preview List HTML
+                let studentsPreviewHtml = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.5rem; margin-top: 0.75rem;">';
+                report.parsedRecords.forEach(record => {
+                    const statusOpt = state.primaryBackup.statuses.find(s => s.key === record.statusKey) || { label: record.statusKey, symbol: '❓' };
+                    const isMatched = record.resolved;
+                    const badgeHtml = isMatched 
+                        ? `<span style="font-size:0.75rem; color:var(--success-color); background:rgba(40,167,69,0.05); padding:2px 6px; border-radius:4px;"><i class="fas fa-check"></i> مطابقة تلقائية</span>`
+                        : `<span style="font-size:0.75rem; color:var(--warning-color); background:rgba(255,193,7,0.05); padding:2px 6px; border-radius:4px;"><i class="fas fa-user-clock"></i> بانتظار المطابقة بالأعلى</span>`;
+                    
+                    studentsPreviewHtml += `
+                        <div style="padding: 0.5rem; border: 1px solid rgba(0,0,0,0.05); border-radius: 6px; background: rgba(0,0,0,0.01);">
+                            <div style="font-weight: bold; font-size: 0.9rem;">${record.name}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.25rem;">${statusOpt.symbol} ${statusOpt.label}</div>
+                            <div style="margin-top: 0.25rem;">${badgeHtml}</div>
+                        </div>
+                    `;
+                });
+                studentsPreviewHtml += '</div>';
+
+                card.innerHTML = `
+                    <div class="parsed-report-header">
+                        <div class="parsed-report-title">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>تاريخ التقرير: </span>
+                            ${dateInputHtml}
+                        </div>
+                        <div class="stat-lbl">${report.parsedRecords.length} طالب مسجل باليوم</div>
+                    </div>
+                    <div>
+                        ${studentsPreviewHtml}
+                    </div>
+                `;
+
+                selectors.whatsappReportsContainer.appendChild(card);
+            });
+        }
+
+        // --- FINALIZE WHATSAPP IMPORT ---
+        selectors.finalizeWhatsappImportBtn.addEventListener('click', () => {
+            // Check dates validity
+            let dateError = false;
+            document.querySelectorAll('.report-date-picker').forEach(picker => {
+                const val = picker.value;
+                const reportId = picker.getAttribute('data-report-id');
+                const rep = state.whatsappReports.find(r => r.id === reportId);
+                if (rep) {
+                    rep.date = val;
+                    if (!val) dateError = true;
+                }
+            });
+
+            if (dateError) {
+                alert('الرجاء إدخال تواريخ صحيحة لجميع التقارير المستوردة.');
+                return;
+            }
+
+            // Gather resolutions for unresolved names
+            const unresolvedResolutions = {}; // name -> { val, updateName }
+            const resolverSelects = document.querySelectorAll('.student-resolver-select');
+            
+            resolverSelects.forEach((sel, index) => {
+                const name = sel.getAttribute('data-name');
+                const val = sel.value;
+                const updateNameChk = document.getElementById(`up_name_${index}`);
+                const updateName = updateNameChk ? updateNameChk.checked : false;
+                
+                unresolvedResolutions[name] = { val, updateName };
+            });
+
+            let newStudentsAdded = 0;
+            let recordsAdded = 0;
+            const resolvedNamesMap = {}; // name -> targetStudentId
+
+            // Pre-process resolutions to create new students or map existing ones
+            const allStudents = state.primaryBackup.masterList.concat(state.primaryBackup.archivedList || []);
+            
+            // First, map auto-matched names
+            state.whatsappReports.forEach(report => {
+                report.parsedRecords.forEach(record => {
+                    const exactMatch = allStudents.find(s => s.name.trim() === record.name.trim());
+                    if (exactMatch) {
+                        resolvedNamesMap[record.name] = exactMatch.id;
+                    }
+                });
+            });
+
+            // Second, process resolutions chosen by the user
+            Object.keys(unresolvedResolutions).forEach(name => {
+                const res = unresolvedResolutions[name];
+                if (res.val === 'ignore') {
+                    resolvedNamesMap[name] = 'ignore';
+                } else if (res.val === 'new_student') {
+                    const newId = generateUUID();
+                    const newStudent = { id: newId, name: name };
+                    state.primaryBackup.masterList.push(newStudent);
+                    resolvedNamesMap[name] = newId;
+                    newStudentsAdded++;
+                } else if (res.val.startsWith('link_')) {
+                    const targetId = res.val.replace('link_', '');
+                    resolvedNamesMap[name] = targetId;
+
+                    if (res.updateName) {
+                        const student = state.primaryBackup.masterList
+                            .concat(state.primaryBackup.archivedList || [])
+                            .find(s => s.id === targetId);
+                        if (student) {
+                            student.name = name; // Update name in master/archived list
+                        }
+                    }
+                }
+            });
+
+            // Now, import all records
+            state.whatsappReports.forEach(report => {
+                const date = report.date;
+                if (!state.primaryBackup.allData[date]) {
+                    state.primaryBackup.allData[date] = {};
+                }
+
+                report.parsedRecords.forEach(record => {
+                    const studentId = resolvedNamesMap[record.name];
+                    if (studentId && studentId !== 'ignore') {
+                        state.primaryBackup.allData[date][studentId] = { status: [record.statusKey] };
+                        recordsAdded++;
+                    }
+                });
+            });
+
+            // Update stats
+            selectors.statStudents.innerText = state.primaryBackup.masterList.length;
+            selectors.statArchived.innerText = state.primaryBackup.archivedList.length;
+            
+            let recordsCount = 0;
+            Object.keys(state.primaryBackup.allData).forEach(d => {
+                recordsCount += Object.keys(state.primaryBackup.allData[d]).length;
+            });
+            selectors.statRecords.innerText = recordsCount;
+
+            // Reset tab view
+            selectors.whatsappRawText.value = '';
+            selectors.importerStepResolve.classList.remove('active');
+            selectors.importerStepInput.classList.add('active');
+
+            markModified();
+            alert(`تم استيراد تقارير الواتساب بنجاح!\n- الطلاب الجدد المضافين: ${newStudentsAdded}\n- السجلات اليومية المستوردة: ${recordsAdded}`);
+        });
+
+    </script>
+</body>
+</html>

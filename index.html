@@ -47,6 +47,14 @@
         .btn-secondary { background-color: var(--secondary-color); }
         .btn-warning { background-color: var(--warning-color); color: #212529;}
         .student-card { background-color: #fdfdff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; }
+        .archived-students-section { margin-top: 1.5rem; border-top: 2px dashed #e0e0e0; padding-top: 1rem; }
+        .archived-students-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 0.5rem; border-radius: 5px; background: #f8f9fa; border: 1px solid #e0e0e0; }
+        .archived-students-header:hover { background: #e9ecef; }
+        .archived-students-list { margin-top: 0.5rem; }
+        .archived-student-item { padding: 0.5rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #fff8f0; border-radius: 4px; margin-bottom: 4px; }
+        .btn-archive { background-color: #fd7e14; color: white; }
+        .btn-restore { background-color: #17a2b8; color: white; }
+        .archive-badge { background: #fd7e14; color: white; border-radius: 12px; font-size: 0.75rem; padding: 2px 8px; margin-right: 6px; }
         .student-name-link { font-weight: bold; cursor: pointer; color: var(--primary-color); text-decoration: underline; }
         .attendance-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
         .attendance-btn { padding: 0.5rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; text-align: center; display: flex; align-items: center; justify-content: center; gap: 0.25rem; border: 2px solid transparent; }
@@ -110,7 +118,7 @@
         <option value="female">قالب الطالبات (مؤنث)</option>
     </select>
     <p style="font-size: 0.8rem; color: var(--secondary-color); margin-top: 0.25rem;">ملاحظة: بعد تغيير القالب، اذهب إلى "إدارة الحالات" ثم اضغط على "استعادة الحالات الافتراضية" لتطبيق القالب الجديد.</p>
-</div><button id="save-settings-btn" class="btn-success" style="width: 100%; margin-top: 0.5rem;"><i class="fas fa-save"></i> حفظ الإعدادات</button><div style="margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;"><button id="manage-statuses-btn" class="btn"><i class="fas fa-tags"></i> إدارة الحالات</button><button id="refresh-data-btn" class="btn-secondary"><i class="fas fa-sync-alt"></i> تحديث البيانات</button><button id="factory-reset-btn" class="btn-danger"><i class="fas fa-trash-alt"></i> إعادة ضبط</button></div></section>
+</div><button id="save-settings-btn" class="btn-success" style="width: 100%; margin-top: 0.5rem;"><i class="fas fa-save"></i> حفظ الإعدادات</button><div style="margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;"><button id="manage-statuses-btn" class="btn"><i class="fas fa-tags"></i> إدارة الحالات</button><button id="refresh-data-btn" class="btn-secondary"><i class="fas fa-sync-alt"></i> تحديث البيانات</button><button id="factory-reset-btn" class="btn-danger"><i class="fas fa-trash-alt"></i> إعادة ضبط</button></div><div style="margin-top: 0.5rem;"><a href="developer_tools/index.html" class="btn btn-warning" style="width: 100%; text-decoration: none;"><i class="fas fa-tools"></i> أدوات التعديل المطور</a></div></section>
         <section id="date-management"><h2><i class="fas fa-calendar-alt"></i> إدارة التاريخ</h2><div style="display: flex; gap: 0.5rem; align-items: center;"><input type="date" id="current-date" style="flex-grow: 1;"><button id="today-btn"><i class="fas fa-calendar-day"></i></button></div><div id="date-display" style="text-align: center; margin: 1rem 0; font-weight: bold; color: var(--primary-color);"></div><div style="display: flex; gap: 0.5rem;"><button id="prev-day-btn" style="flex: 1;"><i class="fas fa-arrow-right"></i> السابق</button><button id="next-day-btn" style="flex: 1;">التالي <i class="fas fa-arrow-left"></i></button></div></section>
         <section id="student-management"><h2><i class="fas fa-users"></i> <span id="students-section-title-text">الطلاب</span> (<span id="registered-count">0</span>)</h2><div id="student-list-container"></div><div style="margin-top: 1rem;"><button id="manage-students-btn" class="btn"><i class="fas fa-user-edit"></i> إدارة قائمة الطلاب</button></div></section>
         <section id="actions"><h2><i class="fas fa-cogs"></i> الإجراءات والتقارير</h2><label for="message-template-select">قالب الرسالة:</label><select id="message-template-select"><option value="grouped" selected>حسب الحالة</option><option value="detailed">مفصل</option><option value="summary">ملخص</option><option value="absentees">الغياب فقط</option></select><button id="generate-whatsapp-btn" class="btn-success" style="width: 100%; margin-top: 1rem;"><i class="fab fa-whatsapp"></i> إنشاء رسالة واتساب</button><div style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="print-report-btn" class="btn"><i class="fas fa-print"></i> طباعة تقرير</button><button id="export-csv-btn" class="btn"><i class="fas fa-file-csv"></i> تصدير Excel</button></div><div id="backup-restore-controls" style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;"><button id="backup-btn" class="btn-secondary"><i class="fas fa-download"></i> تنزيل نسخة احتياطية</button><button id="restore-btn" class="btn-secondary"><i class="fas fa-upload"></i> استعادة نسخة</button><input type="file" id="restore-file-input" class="hidden" accept=".json">
@@ -140,7 +148,15 @@
     <!-- Modals & Sidebars -->
     <div class="overlay" id="main-overlay"></div>
     <div class="sidebar" id="notifications-sidebar"><div class="sidebar-header"><h2 class="sidebar-title">الإشعارات</h2><button class="close-sidebar" id="close-notifications"><i class="fas fa-times"></i></button></div><div id="notifications-list"></div></div>
-    <div class="overlay" id="student-modal-overlay"><div class="modal-content"><h2 id="manage-students-modal-title">إدارة قائمة الطلاب الرئيسية</h2><div id="master-student-list"></div><hr><form id="add-student-form" style="display: flex; gap: 0.5rem; margin-top: 1rem;"><input type="text" id="new-student-name" placeholder="اسم الطالب الجديد..." required style="flex-grow: 1;"><button type="submit" class="btn-success" id="add-student-btn"><i class="fas fa-plus"></i> إضافة طالب</button></form><button id="close-student-modal" class="btn-secondary" style="width: 100%; margin-top: 1rem;">إغلاق</button></div></div>
+    <div class="overlay" id="student-modal-overlay"><div class="modal-content"><h2 id="manage-students-modal-title">إدارة قائمة الطلاب الرئيسية</h2><div id="master-student-list"></div><hr><form id="add-student-form" style="display: flex; gap: 0.5rem; margin-top: 1rem;"><input type="text" id="new-student-name" placeholder="اسم الطالب الجديد..." required style="flex-grow: 1;"><button type="submit" class="btn-success" id="add-student-btn"><i class="fas fa-plus"></i> إضافة طالب</button></form>
+    <div class="archived-students-section" id="archived-students-section">
+        <div class="archived-students-header" id="archived-students-toggle">
+            <span><i class="fas fa-archive" style="color: #fd7e14;"></i> <span id="archived-section-title">الطلاب المؤرشفون</span> <span class="archive-badge" id="archived-count-badge">0</span></span>
+            <i class="fas fa-chevron-down" id="archived-chevron" style="color: #6c757d;"></i>
+        </div>
+        <div class="archived-students-list" id="archived-students-list" style="display:none;"></div>
+    </div>
+    <button id="close-student-modal" class="btn-secondary" style="width: 100%; margin-top: 1rem;">إغلاق</button></div></div>
     <div class="overlay" id="statuses-modal-overlay"><div class="modal-content">
         <div class="modal-header">
             <h2>إدارة الحالات الدراسية</h2>
@@ -354,7 +370,8 @@
                                 MASTER_LIST: 'studentTracker_v2_masterList',
                                 ALL_DATA: 'studentTracker_v2_allData',
                                 STATUSES: 'studentTracker_v2_statuses',
-                                SETTINGS: 'mosqueSettings_v2'
+                                SETTINGS: 'mosqueSettings_v2',
+                                ARCHIVED_LIST: 'studentTracker_v2_archivedList'
                             };
 
                             const I18N = {
@@ -368,6 +385,10 @@
                                     addStudentBtn: 'إضافة طالب',
                                     studentExistsAlert: 'الطالب موجود بالفعل',
                                     deleteStudentConfirm: 'هل أنت متأكد من حذف الطالب',
+                                    archiveStudentConfirm: 'هل تريد أرشفة الطالب',
+                                    archiveStudentNote: 'سيتم إخفاؤه من القائمة اليومية مع الاحتفاظ بسجلاته. يمكنك استعادته لاحقاً.',
+                                    restoreStudentConfirm: 'هل تريد استعادة الطالب',
+                                    archivedSectionTitle: 'الطلاب المؤرشفون',
                                     studentProfileTitle: 'سجل الطالب',
                                     noRecordsForStudent: 'لا توجد سجلات لهذا الطالب.',
                                     notificationText: 'الطالب',
@@ -387,6 +408,10 @@
                                     addStudentBtn: 'إضافة طالبة',
                                     studentExistsAlert: 'الطالبة موجودة بالفعل',
                                     deleteStudentConfirm: 'هل أنت متأكد من حذف الطالبة',
+                                    archiveStudentConfirm: 'هل تريد أرشفة الطالبة',
+                                    archiveStudentNote: 'سيتم إخفاؤها من القائمة اليومية مع الاحتفاظ بسجلاتها. يمكنك استعادتها لاحقاً.',
+                                    restoreStudentConfirm: 'هل تريد استعادة الطالبة',
+                                    archivedSectionTitle: 'الطالبات المؤرشفات',
                                     studentProfileTitle: 'سجل الطالبة',
                                     noRecordsForStudent: 'لا توجد سجلات لهذه الطالبة.',
                                     notificationText: 'الطالبة',
@@ -442,6 +467,7 @@
                             let ATTENDANCE_OPTIONS = [];
                             let students = []; // This is the daily view model, a result of joining master list and daily data
                             let studentMasterList = []; // Array of {id, name}
+                            let archivedStudents = []; // Array of {id, name, archivedAt}
                             let allDateData = {}; // Object of { date: { studentId: { status: [] } } }
                             let currentDate = '';
                             let studentChartInstance = null;
@@ -463,6 +489,7 @@
                                 localStorage.setItem(STORAGE_KEYS.ALL_DATA, JSON.stringify(allDateData));
                                 localStorage.setItem(STORAGE_KEYS.MASTER_LIST, JSON.stringify(studentMasterList));
                                 localStorage.setItem(STORAGE_KEYS.STATUSES, JSON.stringify(ATTENDANCE_OPTIONS));
+                                localStorage.setItem(STORAGE_KEYS.ARCHIVED_LIST, JSON.stringify(archivedStudents));
                             }
                     
                             function loadState() {
@@ -483,6 +510,7 @@
 
                                 try {
                                     studentMasterList = processLocalStorageKey(STORAGE_KEYS.MASTER_LIST, 'قائمة الطلاب الرئيسية', []);
+                                    archivedStudents = processLocalStorageKey(STORAGE_KEYS.ARCHIVED_LIST, 'قائمة الطلاب المؤرشفين', []);
                                     allDateData = processLocalStorageKey(STORAGE_KEYS.ALL_DATA, 'سجلات الحضور اليومية', {});
                                     let settings = processLocalStorageKey(STORAGE_KEYS.SETTINGS, 'الإعدادات العامة', {});
                                     
@@ -562,7 +590,9 @@
                     
                             function loadStudentsForDate(dateString) {
                                 const todaysData = allDateData[dateString] || {};
-                                students = studentMasterList.map(masterStudent => {
+                                // Only load ACTIVE (non-archived) students for the daily view
+                                const archivedIds = new Set(archivedStudents.map(s => s.id));
+                                students = studentMasterList.filter(s => !archivedIds.has(s.id)).map(masterStudent => {
                                     const studentDataForToday = todaysData[masterStudent.id] || { status: [] };
                                     return {
                                         ...masterStudent, // Contains id and name
@@ -621,16 +651,20 @@
                     
                             function renderStudents() {
                                 allSelectors.studentListContainer.innerHTML = '';
-                                allSelectors.registeredCountEl.textContent = studentMasterList.length;
+                                // Show count of active (non-archived) students only
+                                const archivedIds = new Set(archivedStudents.map(s => s.id));
+                                const activeCount = studentMasterList.filter(s => !archivedIds.has(s.id)).length;
+                                allSelectors.registeredCountEl.textContent = activeCount;
                     
-                                if (studentMasterList.length === 0) {
+                                if (activeCount === 0) {
                                     const gender = allSelectors.genderTemplateSelect.value;
                                     const texts = I18N[gender];
+                                    const hasArchived = archivedStudents.length > 0;
                                     const emptyStateHTML = `
                                         <div style="text-align: center; padding: 2rem; color: var(--secondary-color);">
-                                            <i class="fas fa-users" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                                            <p>${texts.emptyStateNoStudents}</p>
-                                            <p>${texts.emptyStateAddFirstStudent}</p>
+                                            <i class="fas fa-${hasArchived ? 'archive' : 'users'}" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                            <p>${hasArchived ? 'جميع الطلاب في الأرشيف.' : texts.emptyStateNoStudents}</p>
+                                            <p>${hasArchived ? 'يمكنك استعادة الطلاب من قائمة "إدارة قائمة الطلاب".' : texts.emptyStateAddFirstStudent}</p>
                                         </div>
                                     `;
                                     allSelectors.studentListContainer.innerHTML = emptyStateHTML;
@@ -673,13 +707,16 @@
                     
                             function renderMasterStudentList() {
                                 allSelectors.masterStudentListContainer.innerHTML = '';
-                                studentMasterList.forEach(student => {
+                                const archivedIds = new Set(archivedStudents.map(s => s.id));
+                                // Only show active (non-archived) students in main list
+                                const activeStudents = studentMasterList.filter(s => !archivedIds.has(s.id));
+                                activeStudents.forEach(student => {
                                     const itemDiv = document.createElement('div');
                                     itemDiv.className = 'master-student-item';
                                     itemDiv.style = 'padding: 0.5rem; border-bottom: 1px solid #eee;';
                                     const viewMode = document.createElement('div');
                                     viewMode.className = 'view-mode';
-                                    viewMode.innerHTML = `<span>${student.name}</span><div><button class="btn-secondary btn-edit" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">تعديل</button><button class="btn-danger btn-delete" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">حذف</button></div>`;
+                                    viewMode.innerHTML = `<span>${student.name}</span><div><button class="btn-secondary btn-edit" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">تعديل</button><button class="btn-archive" style="padding: 0.2rem 0.5rem; font-size: 0.8rem; border-radius: 5px; border: none; cursor: pointer;"><i class="fas fa-archive"></i> أرشفة</button></div>`;
                                     const editMode = document.createElement('div');
                                     editMode.className = 'edit-mode';
                                     editMode.style.display = 'none';
@@ -689,9 +726,10 @@
                                     allSelectors.masterStudentListContainer.appendChild(itemDiv);
                                     itemDiv.querySelector('.btn-edit').onclick = () => { viewMode.style.display = 'none'; editMode.style.display = 'flex'; };
                                     itemDiv.querySelector('.btn-cancel').onclick = () => { viewMode.style.display = 'flex'; editMode.style.display = 'none'; };
-                                    itemDiv.querySelector('.btn-delete').onclick = () => deleteFromMasterList(student.id);
+                                    itemDiv.querySelector('.btn-archive').onclick = () => archiveStudent(student.id);
                                     itemDiv.querySelector('.btn-save').onclick = () => handleEditStudent(student.id, itemDiv.querySelector('input').value.trim());
                                 });
+                                renderArchivedStudents();
                             }
                     
                             function handleEditStudent(studentId, newName) {
@@ -712,20 +750,93 @@
                                 renderMasterStudentList();
                             }
                     
-                            function deleteFromMasterList(studentId) {
-                                const studentToDelete = studentMasterList.find(s => s.id === studentId);
-                                if (!studentToDelete) return;
-                    
+                            function archiveStudent(studentId) {
+                                const student = studentMasterList.find(s => s.id === studentId);
+                                if (!student) return;
+
                                 const gender = allSelectors.genderTemplateSelect.value;
-                                if (confirm(`${I18N[gender].deleteStudentConfirm} "${studentToDelete.name}"؟ سيتم حذف جميع سجلاته.`)) {
-                                    studentMasterList = studentMasterList.filter(s => s.id !== studentId);
-                                    Object.keys(allDateData).forEach(date => {
-                                        delete allDateData[date][studentId];
+                                const texts = I18N[gender];
+                                if (confirm(`${texts.archiveStudentConfirm} "${student.name}"؟\n${texts.archiveStudentNote}`)) {
+                                    archivedStudents.push({
+                                        id: student.id,
+                                        name: student.name,
+                                        archivedAt: new Date().toISOString().split('T')[0]
                                     });
                                     saveState();
                                     loadStudentsForDate(currentDate);
                                     renderStudents();
                                     renderMasterStudentList();
+                                }
+                            }
+
+                            function restoreStudent(studentId) {
+                                const student = archivedStudents.find(s => s.id === studentId);
+                                if (!student) return;
+
+                                const gender = allSelectors.genderTemplateSelect.value;
+                                const texts = I18N[gender];
+                                if (confirm(`${texts.restoreStudentConfirm} "${student.name}" إلى القائمة النشطة؟`)) {
+                                    archivedStudents = archivedStudents.filter(s => s.id !== studentId);
+                                    saveState();
+                                    loadStudentsForDate(currentDate);
+                                    renderStudents();
+                                    renderMasterStudentList();
+                                }
+                            }
+
+                            function renderArchivedStudents() {
+                                const gender = allSelectors.genderTemplateSelect.value;
+                                const texts = I18N[gender];
+
+                                const titleEl = document.getElementById('archived-section-title');
+                                if (titleEl) titleEl.textContent = texts.archivedSectionTitle;
+
+                                const badgeEl = document.getElementById('archived-count-badge');
+                                if (badgeEl) badgeEl.textContent = archivedStudents.length;
+
+                                const sectionEl = document.getElementById('archived-students-section');
+                                if (sectionEl) sectionEl.style.display = archivedStudents.length > 0 ? 'block' : 'none';
+
+                                const listEl = document.getElementById('archived-students-list');
+                                if (!listEl) return;
+                                listEl.innerHTML = '';
+
+                                if (archivedStudents.length === 0) return;
+
+                                archivedStudents.forEach(student => {
+                                    const itemDiv = document.createElement('div');
+                                    itemDiv.className = 'archived-student-item';
+                                    const archivedDateFormatted = student.archivedAt
+                                        ? new Intl.DateTimeFormat('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(student.archivedAt + 'T00:00:00'))
+                                        : '';
+                                    itemDiv.innerHTML = `
+                                        <div>
+                                            <div style="font-weight: bold;">${student.name}</div>
+                                            ${archivedDateFormatted ? `<div style="font-size: 0.8rem; color: #6c757d;"><i class="fas fa-calendar-alt"></i> أُرشف في: ${archivedDateFormatted}</div>` : ''}
+                                        </div>
+                                        <button class="btn-restore" style="padding: 0.3rem 0.75rem; font-size: 0.85rem; border-radius: 5px; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;">
+                                            <i class="fas fa-undo-alt"></i> استعادة
+                                        </button>
+                                    `;
+                                    itemDiv.querySelector('.btn-restore').onclick = () => restoreStudent(student.id);
+                                    listEl.appendChild(itemDiv);
+                                });
+
+                                // Attach toggle listener only once
+                                const toggleBtn = document.getElementById('archived-students-toggle');
+                                if (toggleBtn && !toggleBtn.dataset.listenerAttached) {
+                                    toggleBtn.dataset.listenerAttached = 'true';
+                                    toggleBtn.addEventListener('click', () => {
+                                        const list = document.getElementById('archived-students-list');
+                                        const chevron = document.getElementById('archived-chevron');
+                                        if (list.style.display === 'none') {
+                                            list.style.display = 'block';
+                                            chevron.className = 'fas fa-chevron-up';
+                                        } else {
+                                            list.style.display = 'none';
+                                            chevron.className = 'fas fa-chevron-down';
+                                        }
+                                    });
                                 }
                             }
                     
@@ -976,7 +1087,8 @@
                     const sortedDates = Object.keys(allDateData).sort((a,b) => new Date(b) - new Date(a));
                     if (sortedDates.length < 1) { renderNotifications([]); return; }
                     const activeNotifRules = ATTENDANCE_OPTIONS.filter(opt => opt.notification?.enabled);
-                    studentMasterList.forEach(student => {
+                    const archivedIds = new Set(archivedStudents.map(s => s.id));
+                    studentMasterList.filter(s => !archivedIds.has(s.id)).forEach(student => {
                         activeNotifRules.forEach(rule => {
                             let consecutiveCount = 0;
                             for (const date of sortedDates) {
@@ -1375,7 +1487,7 @@
                         
                                         function downloadBackup() {
                                             const settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS) || '{}');
-                                            const backupData = { version: "2.0", timestamp: new Date().toISOString(), settings: settings, masterList: studentMasterList, allData: allDateData, statuses: ATTENDANCE_OPTIONS };
+                                            const backupData = { version: "2.0", timestamp: new Date().toISOString(), settings: settings, masterList: studentMasterList, archivedList: archivedStudents, allData: allDateData, statuses: ATTENDANCE_OPTIONS };
                                             const dataStr = JSON.stringify(backupData, null, 2);
                                             const blob = new Blob([dataStr], { type: "application/json" });
                                             const url = URL.createObjectURL(blob);
@@ -1396,6 +1508,7 @@
                                                     if (backupData.version !== "2.0" || !backupData.masterList || !backupData.allData) throw new Error("ملف نسخة احتياطية غير متوافق.");
                                                     if (confirm("تحذير: سيتم استبدال جميع البيانات الحالية. هل أنت متأكد؟")) {
                                                         studentMasterList = backupData.masterList;
+                                                        archivedStudents = backupData.archivedList || [];
                                                         allDateData = backupData.allData;
                                                         if (backupData.statuses) ATTENDANCE_OPTIONS = backupData.statuses;
                                                         
@@ -1450,9 +1563,11 @@
                                     const studentStatusCounts = {};
                                     let recordedDays = 0;
                                     const dateSet = new Set();
+                                    // Exclude archived students from statistics
+                                    const archivedIds = new Set(archivedStudents.map(s => s.id));
                         
                                     ATTENDANCE_OPTIONS.forEach(opt => statusCounts[opt.key] = 0);
-                                    studentMasterList.forEach(student => {
+                                    studentMasterList.filter(s => !archivedIds.has(s.id)).forEach(student => {
                                         studentStatusCounts[student.id] = {};
                                         ATTENDANCE_OPTIONS.forEach(opt => studentStatusCounts[student.id][opt.key] = 0);
                                     });
