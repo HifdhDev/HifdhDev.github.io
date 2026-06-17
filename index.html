@@ -716,7 +716,7 @@
                                     itemDiv.style = 'padding: 0.5rem; border-bottom: 1px solid #eee;';
                                     const viewMode = document.createElement('div');
                                     viewMode.className = 'view-mode';
-                                    viewMode.innerHTML = `<span>${student.name}</span><div><button class="btn-secondary btn-edit" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">تعديل</button><button class="btn-archive" style="padding: 0.2rem 0.5rem; font-size: 0.8rem; border-radius: 5px; border: none; cursor: pointer;"><i class="fas fa-archive"></i> أرشفة</button></div>`;
+                                    viewMode.innerHTML = `<span>${student.name}</span><div style="display: flex; gap: 0.25rem;"><button class="btn-secondary btn-edit" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">تعديل</button><button class="btn-archive" style="padding: 0.2rem 0.5rem; font-size: 0.8rem; border-radius: 5px; border: none; cursor: pointer;"><i class="fas fa-archive"></i> أرشفة</button><button class="btn-danger btn-delete" style="padding: 0.2rem 0.5rem; font-size: 0.8rem; border-radius: 5px; border: none; cursor: pointer;"><i class="fas fa-trash-alt"></i> حذف</button></div>`;
                                     const editMode = document.createElement('div');
                                     editMode.className = 'edit-mode';
                                     editMode.style.display = 'none';
@@ -727,6 +727,7 @@
                                     itemDiv.querySelector('.btn-edit').onclick = () => { viewMode.style.display = 'none'; editMode.style.display = 'flex'; };
                                     itemDiv.querySelector('.btn-cancel').onclick = () => { viewMode.style.display = 'flex'; editMode.style.display = 'none'; };
                                     itemDiv.querySelector('.btn-archive').onclick = () => archiveStudent(student.id);
+                                    itemDiv.querySelector('.btn-delete').onclick = () => deleteStudent(student.id);
                                     itemDiv.querySelector('.btn-save').onclick = () => handleEditStudent(student.id, itemDiv.querySelector('input').value.trim());
                                 });
                                 renderArchivedStudents();
@@ -784,6 +785,34 @@
                                 }
                             }
 
+                            function deleteStudent(studentId) {
+                                let student = studentMasterList.find(s => s.id === studentId);
+                                if (!student) student = archivedStudents.find(s => s.id === studentId);
+                                if (!student) return;
+
+                                const gender = allSelectors.genderTemplateSelect.value;
+                                const texts = I18N[gender];
+                                if (confirm(`⚠️ تحذير: ${texts.deleteStudentConfirm} "${student.name}" نهائياً؟\nسيتم حذف الطالب وجميع سجلات إنجازه وحضوره التاريخية بشكل دائم ولا يمكن التراجع عن ذلك.`)) {
+                                    studentMasterList = studentMasterList.filter(s => s.id !== studentId);
+                                    archivedStudents = archivedStudents.filter(s => s.id !== studentId);
+                                    
+                                    // Clean historical data
+                                    Object.keys(allDateData).forEach(date => {
+                                        if (allDateData[date] && allDateData[date][studentId]) {
+                                            delete allDateData[date][studentId];
+                                        }
+                                        if (allDateData[date] && Object.keys(allDateData[date]).length === 0) {
+                                            delete allDateData[date];
+                                        }
+                                    });
+
+                                    saveState();
+                                    loadStudentsForDate(currentDate);
+                                    renderStudents();
+                                    renderMasterStudentList();
+                                }
+                            }
+
                             function renderArchivedStudents() {
                                 const gender = allSelectors.genderTemplateSelect.value;
                                 const texts = I18N[gender];
@@ -814,11 +843,17 @@
                                             <div style="font-weight: bold;">${student.name}</div>
                                             ${archivedDateFormatted ? `<div style="font-size: 0.8rem; color: #6c757d;"><i class="fas fa-calendar-alt"></i> أُرشف في: ${archivedDateFormatted}</div>` : ''}
                                         </div>
-                                        <button class="btn-restore" style="padding: 0.3rem 0.75rem; font-size: 0.85rem; border-radius: 5px; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;">
-                                            <i class="fas fa-undo-alt"></i> استعادة
-                                        </button>
+                                        <div style="display: flex; gap: 0.25rem;">
+                                            <button class="btn-restore" style="padding: 0.3rem 0.75rem; font-size: 0.85rem; border-radius: 5px; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;">
+                                                <i class="fas fa-undo-alt"></i> استعادة
+                                            </button>
+                                            <button class="btn-danger btn-delete-archived" style="padding: 0.3rem 0.75rem; font-size: 0.85rem; border-radius: 5px; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;">
+                                                <i class="fas fa-trash-alt"></i> حذف نهائي
+                                            </button>
+                                        </div>
                                     `;
                                     itemDiv.querySelector('.btn-restore').onclick = () => restoreStudent(student.id);
+                                    itemDiv.querySelector('.btn-delete-archived').onclick = () => deleteStudent(student.id);
                                     listEl.appendChild(itemDiv);
                                 });
 
